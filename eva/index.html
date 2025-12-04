@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVANGELION x niko and ...</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Noto Serif JP (For EVA Vibe) & Roboto Condensed -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700;900&family=Roboto+Condensed:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom EVA Colors */
+        :root {
+            --eva-red: #e60012;
+            --eva-orange: #ff6600;
+            --eva-black: #080808;
+        }
+
+        body {
+            background-color: var(--eva-black);
+            color: white;
+            overflow: hidden; /* Prevent scroll for the immersive feel */
+            font-family: 'Roboto Condensed', sans-serif;
+            cursor: crosshair;
+        }
+
+        /* Japanese Serif Font for the Title */
+        .font-mincho {
+            font-family: 'Noto Serif JP', serif;
+        }
+        
+        .font-mono-tech {
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* --- CRT Screen Effect --- */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            /* Changed z-index from 50 to 5 so it sits behind images (which start at z-10) */
+            z-index: 5;
+            opacity: 0.6;
+        }
+
+        /* --- Glitch Effect for Title --- */
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--eva-red);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 blue;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(38px, 9999px, 34px, 0); }
+            5% { clip: rect(72px, 9999px, 12px, 0); }
+            10% { clip: rect(9px, 9999px, 79px, 0); }
+            15% { clip: rect(15px, 9999px, 92px, 0); }
+            20% { clip: rect(2px, 9999px, 16px, 0); }
+            25% { clip: rect(93px, 9999px, 7px, 0); }
+            30% { clip: rect(6px, 9999px, 38px, 0); }
+            35% { clip: rect(29px, 9999px, 85px, 0); }
+            40% { clip: rect(69px, 9999px, 20px, 0); }
+            45% { clip: rect(48px, 9999px, 96px, 0); }
+            50% { clip: rect(10px, 9999px, 50px, 0); }
+            55% { clip: rect(82px, 9999px, 10px, 0); }
+            60% { clip: rect(52px, 9999px, 74px, 0); }
+            65% { clip: rect(25px, 9999px, 48px, 0); }
+            70% { clip: rect(96px, 9999px, 25px, 0); }
+            75% { clip: rect(1px, 9999px, 90px, 0); }
+            80% { clip: rect(36px, 9999px, 57px, 0); }
+            85% { clip: rect(78px, 9999px, 32px, 0); }
+            90% { clip: rect(12px, 9999px, 63px, 0); }
+            95% { clip: rect(59px, 9999px, 86px, 0); }
+            100% { clip: rect(40px, 9999px, 18px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(10px, 9999px, 80px, 0); }
+            /* ... abbreviated variation for chaos ... */
+            100% { clip: rect(20px, 9999px, 60px, 0); }
+        }
+
+        /* --- Image Styles --- */
+        .floating-img {
+            transition: transform 0.1s ease-out, filter 0.3s ease;
+            filter: grayscale(80%) contrast(120%);
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        .floating-img:hover {
+            filter: grayscale(0%) contrast(100%);
+            z-index: 20;
+        }
+
+        /* --- Red Line Animation --- */
+        .red-line {
+            background: var(--eva-red);
+            box-shadow: 0 0 10px var(--eva-red);
+            animation: line-glow 2s infinite alternate;
+        }
+        @keyframes line-glow {
+            from { box-shadow: 0 0 5px var(--eva-red); }
+            to { box-shadow: 0 0 15px var(--eva-red), 0 0 30px var(--eva-red); }
+        }
+
+        /* --- Enter Animation --- */
+        .reveal-anim {
+            animation: text-reveal 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes text-reveal {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu-overlay {
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            transition: clip-path 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .mobile-menu-overlay.open {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+    </style>
+</head>
+<body class="w-full h-screen relative selection:bg-red-600 selection:text-white">
+
+    <!-- Scanline Overlay -->
+    <div class="scanlines"></div>
+
+    <!-- Navigation Menu (Desktop) -->
+    <nav class="hidden md:flex absolute top-8 left-8 right-8 z-50 flex-wrap justify-start gap-x-2 gap-y-1 text-base font-mono-tech tracking-wider text-[var(--eva-red)] reveal-anim leading-tight" style="animation-delay: 0.5s;">
+        <span class="hover:text-white transition-colors cursor-pointer">MILITARY SHIRT</span> / 
+        <span class="hover:text-white transition-colors cursor-pointer">BEANIE</span> / 
+        <span class="hover:text-white transition-colors cursor-pointer">PULLOVER</span> / 
+        <span class="hover:text-white transition-colors cursor-pointer">SWEAT</span> / 
+        <span class="hover:text-white transition-colors cursor-pointer">NYLON JACKET</span> / 
+        <span class="hover:text-white transition-colors cursor-pointer">CARD CASE</span> / 
+        <span class="hover:text-white transition-colors cursor-pointer">KNIT</span>
+    </nav>
+
+    <!-- Navigation Toggle (Mobile) -->
+    <button id="menu-toggle" class="md:hidden absolute top-4 left-4 z-[60] text-[var(--eva-red)] font-mono-tech border border-[var(--eva-red)] px-3 py-1 text-sm bg-black/50 backdrop-blur-sm hover:bg-[var(--eva-red)] hover:text-black transition-colors reveal-anim" style="animation-delay: 0.5s;">
+        MENU <span class="text-xs">▼</span>
+    </button>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="mobile-menu-overlay fixed inset-0 z-[55] bg-black/95 flex flex-col items-center justify-center gap-6 md:hidden">
+        <div class="text-[var(--eva-red)] font-mono-tech text-2xl flex flex-col gap-4 text-center tracking-widest">
+            <a href="#" class="hover:bg-[var(--eva-red)] hover:text-black px-4 py-1 transition-colors block w-full">MILITARY SHIRT</a>
+            <a href="#" class="hover:bg-[var(--eva-red)] hover:text-black px-4 py-1 transition-colors block w-full">BEANIE</a>
+            <a href="#" class="hover:bg-[var(--eva-red)] hover:text-black px-4 py-1 transition-colors block w-full">PULLOVER</a>
+            <a href="#" class="hover:bg-[var(--eva-red)] hover:text-black px-4 py-1 transition-colors block w-full">SWEAT</a>
+            <a href="#" class="hover:bg-[var(--eva-red)] hover:text-black px-4 py-1 transition-colors block w-full">NYLON JACKET</a>
+            <a href="#" class="hover:bg-[var(--eva-red)] hover:text-black px-4 py-1 transition-colors block w-full">CARD CASE</a>
+            <a href="#" class="hover:bg-[var(--eva-red)] hover:text-black px-4 py-1 transition-colors block w-full">KNIT</a>
+        </div>
+        <div class="absolute bottom-10 text-gray-500 text-xs font-mono-tech">SYSTEM: ONLINE</div>
+    </div>
+
+    <!-- NERV Logo (Top Right) -->
+    <div class="absolute top-4 right-4 md:top-6 md:right-12 z-50 w-20 h-20 md:w-40 md:h-40 reveal-anim mix-blend-screen" style="animation-delay: 0.8s;">
+        <img src="img/menu_nerv.svg" 
+             alt="NERV Logo" 
+             class="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(230,0,18,0.8)] opacity-90">
+    </div>
+
+    <!-- Main Content Layer (Parallax Container) -->
+    <main id="scene" class="w-full h-full relative flex items-center justify-center overflow-hidden">
+
+        <!-- Diagonal Red Line -->
+        <div data-speed="2" class="absolute w-[200%] h-[2px] red-line transform -rotate-[30deg] top-1/2 left-[-20%] z-0 pointer-events-none opacity-80 mix-blend-screen"></div>
+
+        <!-- Image 2: Top Center (Machinery/Industrial) - BEHIND -->
+        <!-- Removed copyright watermark div -->
+        <div data-speed="-2" class="absolute top-[20%] left-[25%] md:top-[15%] md:left-[30%] w-[45vw] md:w-[22vw] aspect-[3/4] z-10 floating-img group reveal-anim" style="animation-delay: 0.4s;">
+            <img src="img/look_02_01.avif" 
+                 alt="Industrial" 
+                 class="w-full h-full object-cover transition-colors opacity-80 md:opacity-100">
+        </div>
+
+        <!-- Image 1: Bottom Left (Rooftop/City) - FRONT -->
+        <!-- Removed copyright watermark div -->
+        <div data-speed="3" class="absolute bottom-[15%] left-[-2%] md:bottom-[5%] md:left-[2%] w-[60vw] md:w-[35vw] aspect-square z-20 floating-img group reveal-anim" style="animation-delay: 0.2s;">
+            <img src="img/look_10_03.avif" 
+                 alt="City View" 
+                 class="w-full h-full object-cover transition-colors shadow-2xl shadow-black">
+        </div>
+
+        <!-- Image 3: Bottom Right (Hoodie/Back) -->
+        <!-- Removed copyright watermark div -->
+        <div data-speed="4" class="absolute bottom-0 right-0 md:right-[5%] w-[60vw] md:w-[25vw] h-[55vh] md:h-[70vh] z-30 floating-img group reveal-anim" style="animation-delay: 0.6s;">
+            <img src="img/look_03_01.avif" 
+                 alt="Model Back" 
+                 class="w-full h-full object-cover transition-colors">
+        </div>
+
+        <!-- Text Group: Japanese Description -->
+        <div data-speed="1" class="absolute top-[48%] right-[5%] md:top-[34%] md:right-[35%] w-48 md:w-64 text-[10px] md:text-xs leading-relaxed text-white font-mincho z-50 pointer-events-none hidden sm:block reveal-anim drop-shadow-md" style="animation-delay: 1.0s;">
+            <p class="mb-2">日本各地で社会現象を巻き起こし、<br>その衝撃が世界へと波及した『エヴァンゲリオン』。</p>
+            <p class="mb-2">アニメという枠を超え、語られ続けるこの作品が、<br>ついにニコアンドと邂逅。</p>
+            <p>ディテールに宿る世界観と、<br>日常に溶け込むデザインが交差する、<br>特別なコレクションをぜひ身にまとって。</p>
+        </div>
+
+        <!-- MAIN TITLE: EVANGELION -->
+        <div data-speed="6" class="absolute bottom-[22%] left-1/2 transform -translate-x-1/2 md:translate-x-0 md:left-auto md:right-[25%] z-50 mix-blend-difference pointer-events-none w-full text-center md:text-right px-4">
+            <h1 class="inline-block font-black text-white font-mincho italic tracking-tighter -rotate-6 glitch whitespace-nowrap drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]" 
+                style="font-size: clamp(1.8rem, 9.5vw, 7rem);"
+                data-text="エヴァンゲリオン">
+                エヴァンゲリオン
+            </h1>
+        </div>
+
+        <!-- SUB TITLE: niko and ... -->
+        <div data-speed="5" class="absolute bottom-[15%] right-[5%] md:bottom-[10%] md:right-[22%] z-50 pointer-events-none text-right">
+            <h2 class="font-bold text-white tracking-wide drop-shadow-md"
+                style="font-size: clamp(1rem, 4.5vw, 3rem);">
+                niko and ...
+            </h2>
+        </div>
+
+    </main>
+
+    <script>
+        // Parallax Effect Logic
+        document.addEventListener('mousemove', (e) => {
+            const scene = document.querySelector('#scene');
+            const layers = document.querySelectorAll('[data-speed]');
+            
+            const x = (window.innerWidth - e.pageX * 2) / 100;
+            const y = (window.innerHeight - e.pageY * 2) / 100;
+
+            layers.forEach(layer => {
+                const speed = layer.getAttribute('data-speed');
+                const xPos = x * speed;
+                const yPos = y * speed;
+                
+                let baseTransform = '';
+                
+                if (layer.classList.contains('red-line')) {
+                    baseTransform = 'rotate(-30deg)';
+                } else if (layer.tagName === 'DIV' && layer.querySelector('h1')) {
+                   if (window.innerWidth < 768) {
+                       baseTransform = 'translateX(-50%)'; 
+                   } else {
+                       baseTransform = ''; 
+                   }
+                }
+                
+                layer.style.transform = `translate3d(${xPos}px, ${yPos}px, 0) ${baseTransform}`;
+            });
+        });
+
+        // Mobile Menu Logic
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        let isMenuOpen = false;
+
+        menuToggle.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu.classList.add('open');
+                menuToggle.innerHTML = 'CLOSE <span class="text-xs">▲</span>';
+                menuToggle.classList.add('bg-[var(--eva-red)]', 'text-black');
+                menuToggle.classList.remove('text-[var(--eva-red)]', 'bg-black/50');
+            } else {
+                mobileMenu.classList.remove('open');
+                menuToggle.innerHTML = 'MENU <span class="text-xs">▼</span>';
+                menuToggle.classList.remove('bg-[var(--eva-red)]', 'text-black');
+                menuToggle.classList.add('text-[var(--eva-red)]', 'bg-black/50');
+            }
+        });
+
+        // Close menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                isMenuOpen = false;
+                mobileMenu.classList.remove('open');
+                menuToggle.innerHTML = 'MENU <span class="text-xs">▼</span>';
+                menuToggle.classList.remove('bg-[var(--eva-red)]', 'text-black');
+                menuToggle.classList.add('text-[var(--eva-red)]', 'bg-black/50');
+            });
+        });
+
+        // Intro Glitch Sound (Visual Representation)
+        window.addEventListener('load', () => {
+            const body = document.body;
+            body.style.transform = "scaleY(0.005) scaleX(0)";
+            body.style.opacity = "0";
+            
+            setTimeout(() => {
+                body.style.transition = "transform 0.2s ease-out, opacity 0.2s";
+                body.style.transform = "scaleY(0.005) scaleX(1)";
+                body.style.opacity = "1";
+                
+                setTimeout(() => {
+                    body.style.transition = "transform 0.3s cubic-bezier(0.23, 1, 0.32, 1)";
+                    body.style.transform = "scaleY(1) scaleX(1)";
+                }, 200);
+            }, 100);
+        });
+    </script>
+</body>
+</html>
