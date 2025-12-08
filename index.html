@@ -47,11 +47,18 @@
         .interactive-content,
         .nav-item, 
         .work-card, 
+        .video-thumbnail, 
+        .scroll-btn,      
         .hero-title-wrapper, 
         #mobile-menu, 
         #menu-btn,
         #close-menu-btn,
-        a, button, input, textarea, /* 增加 input 和 textarea */
+        #video-modal,     
+        #close-video-btn,
+        /* 新增輪播控制元件的互動 (包含動態漫畫的控制項) */
+        #prev-btn, #next-btn, #carousel-dots button,
+        #comic-prev-btn, #comic-next-btn, #comic-carousel-dots button,
+        a, button, input, textarea,
         .blob-inner { 
             pointer-events: auto;
         }
@@ -59,7 +66,7 @@
         /* --- 背景流體色塊 (Blobs) --- */
         .blob-wrapper {
             position: absolute;
-            animation: float 20s infinite ease-in-out alternate;
+            animation: float 40s infinite ease-in-out alternate;
             pointer-events: auto;
         }
 
@@ -73,7 +80,6 @@
             will-change: transform, scale, translate;
         }
 
-        /* 定義極其細微的抖動動畫 */
         @keyframes liquid-shake-subtle {
             0% { translate: 0 0; }
             25% { translate: 0.5px 0.2px; }
@@ -90,6 +96,7 @@
             filter: none;
         }
 
+        /* 個別色塊設定 */
         .blob-1 { top: 15%; left: -5%; width: 200px; height: 250px; animation-delay: 0s; }
         .blob-1 .blob-inner { background: #bcebb6; border-radius: 40% 50% 30% 60%; }
 
@@ -107,8 +114,9 @@
 
         @keyframes float {
             0% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(10px, -15px) rotate(2deg); }
-            100% { transform: translate(-5px, 10px) rotate(-1deg); }
+            33% { transform: translate(50px, -60px) rotate(4deg); }
+            66% { transform: translate(-40px, 50px) rotate(-2deg); }
+            100% { transform: translate(30px, -30px) rotate(3deg); }
         }
 
         /* --- 標題區域特效 --- */
@@ -198,7 +206,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 固定選單樣式 */
         #main-nav.scrolled-nav {
             position: fixed;
             background-color: rgba(255, 255, 255, 0.9);
@@ -261,6 +268,21 @@
             pointer-events: auto;
         }
 
+        /* 影片彈出視窗 (Video Modal) */
+        #video-modal {
+            transition: opacity 0.3s ease, visibility 0s 0.3s;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            z-index: 100;
+        }
+        #video-modal.open {
+            transition: opacity 0.3s ease, visibility 0s 0s;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
         /* RWD */
         @media (max-width: 768px) {
             .hero-section { 
@@ -280,10 +302,20 @@
             .hero-subtitle { align-items: flex-start; }
             .hero-subtitle p { margin-left: 0.5rem; text-align: left; }
         }
+        
+        /* 隱藏捲軸但保留捲動功能 */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
     </style>
 </head>
 <body class="text-gray-800 relative">
 
+    <!-- 背景色塊 -->
     <div class="blob-container" id="blob-container">
         <div class="blob-wrapper blob-1"><div class="blob-inner"></div></div>
         <div class="blob-wrapper blob-2"><div class="blob-inner"></div></div>
@@ -292,7 +324,9 @@
         <div class="blob-wrapper blob-5"><div class="blob-inner"></div></div>
     </div>
 
+    <!-- 導航列 -->
     <nav id="main-nav" class="flex justify-between items-center">
+        <!-- Logo (No Link) -->
         <div id="nav-logo" class="text-xl font-bold tracking-widest opacity-0 transition-opacity duration-300">
             GO FASTER
         </div> 
@@ -311,6 +345,7 @@
         </button>
     </nav>
 
+    <!-- 手機版全螢幕選單 -->
     <div id="mobile-menu" class="fixed inset-0 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center space-y-8">
         <button id="close-menu-btn" class="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 transition-colors">
             <svg class="w-8 h-8 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -324,19 +359,32 @@
         <a href="#contact" class="mobile-link text-3xl font-bold text-gray-800 hover:text-blue-600 transition-colors">CONTACT</a>
     </div>
 
+    <!-- 影片彈出視窗 -->
+    <div id="video-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+        <button id="close-video-btn" class="absolute top-6 right-6 text-white p-2 hover:bg-white/20 rounded-full transition-colors z-50">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <div class="w-full max-w-5xl aspect-video bg-black rounded-lg overflow-hidden relative shadow-2xl">
+            <video id="modal-video-player" class="w-full h-full" controls>
+                <source src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <!-- 首頁 Hero Section -->
     <header class="min-h-screen container mx-auto px-6 flex items-center justify-center md:justify-start hero-section relative">
         <div class="hero-text-content w-full md:w-2/3 flex flex-col justify-center items-start md:pl-10 z-10">
-            
             <div class="hero-title-wrapper mb-2 relative fade-in-up delay-100">
                 <svg class="brush-stroke" viewBox="0 0 360 80" preserveAspectRatio="none">
                     <path class="brush-path" d="M15,38 Q30,35 45,32 L320,25 Q335,24 345,28 Q355,32 355,42 L358,52 Q360,65 345,70 L40,78 Q20,78 15,70 L5,65 L8,55 L2,45 Q5,40 15,38 Z" />
                 </svg>
-                
                 <h1 class="text-7xl md:text-9xl font-script title-text relative z-10 select-none">
                     Go Faster
                 </h1>
             </div>
-
             <div class="hero-subtitle flex flex-col items-start space-y-2 mt-4">
                 <p class="text-xl md:text-2xl tracking-[0.2em] text-gray-600 font-light ml-2 fade-in-up delay-300 interactive-content">
                     もっと早く、もっと楽しく
@@ -349,6 +397,7 @@
     </header>
 
     <main class="container mx-auto px-6 py-10">
+        <!-- Web Section -->
         <section id="web" class="min-h-[80vh] py-20 reveal">
             <div class="flex items-end mb-12 border-b-2 border-gray-200 pb-4">
                 <h2 class="text-5xl font-bold text-gray-800 mr-4">WEB</h2>
@@ -378,29 +427,179 @@
             </div>
         </section>
 
+        <!-- Motion Section (Updated) -->
         <section id="motion" class="min-h-[80vh] py-20 reveal">
+            <!-- Title -->
             <div class="flex items-end mb-12 justify-end border-b-2 border-gray-200 pb-4">
                 <span class="text-gray-400 pb-2 mr-4 text-sm md:text-base text-right">Animation & Video</span>
                 <h2 class="text-5xl font-bold text-gray-800">MOTION</h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                 <div class="work-card group cursor-pointer col-span-1 md:col-span-2">
-                    <div class="h-80 bg-gray-200 rounded-lg overflow-hidden relative shadow-md">
-                        <div class="w-full h-full bg-cover bg-center work-card-img duration-500" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                         <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-bold tracking-wider">PLAY</div>
-                    </div>
-                    <h3 class="mt-4 text-xl font-bold text-gray-800">Brand Intro Reel</h3>
+
+            <!-- Part 1: Dynamic Comics (Carousel) -->
+            <div class="mb-24">
+                <div class="mb-8 max-w-3xl">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-4">Dynamic Comic Projects</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        探索如何透過動態特效賦予靜態漫畫生命力。我們運用視差滾動、粒子特效與音效氛圍，引導讀者視線並強化劇情的張力，創造出沈浸式的閱讀體驗，有效提升讀者的停留時間與互動意願。
+                    </p>
                 </div>
-                <div class="work-card group cursor-pointer">
-                    <div class="h-80 bg-gray-200 rounded-lg overflow-hidden relative shadow-md">
-                        <div class="w-full h-full bg-cover bg-center work-card-img duration-500" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
-                        <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-bold tracking-wider">PLAY</div>
+                
+                <!-- Dynamic Comics Carousel Container -->
+                <div class="relative group/carousel">
+                    <!-- Left Arrow -->
+                    <button id="comic-prev-btn" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-20 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 disabled:opacity-0 hidden md:block">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <!-- Right Arrow -->
+                    <button id="comic-next-btn" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-20 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 disabled:opacity-0 hidden md:block">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+
+                    <!-- Scrollable Container -->
+                    <div class="flex overflow-x-auto gap-6 pb-2 snap-x snap-mandatory hide-scrollbar scroll-smooth" id="comic-carousel">
+                        <!-- Comic Item 1 -->
+                        <div class="min-w-[80%] md:min-w-[45%] snap-center video-thumbnail cursor-pointer" data-video-src="https://www.w3schools.com/html/mov_bbb.mp4">
+                            <div class="aspect-video bg-gray-800 rounded-xl overflow-hidden relative shadow-lg group hover:shadow-xl transition-all">
+                                <div class="w-full h-full bg-cover bg-center opacity-80 group-hover:opacity-100 transition-opacity duration-500" style="background-image: url('https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="w-20 h-20 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </span>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                    <h4 class="text-white font-bold text-lg">Action Scene FX</h4>
+                                    <p class="text-gray-300 text-sm">After Effects / Spine</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Comic Item 2 -->
+                        <div class="min-w-[80%] md:min-w-[45%] snap-center video-thumbnail cursor-pointer" data-video-src="https://www.w3schools.com/html/movie.mp4">
+                            <div class="aspect-video bg-gray-800 rounded-xl overflow-hidden relative shadow-lg group hover:shadow-xl transition-all">
+                                <div class="w-full h-full bg-cover bg-center opacity-80 group-hover:opacity-100 transition-opacity duration-500" style="background-image: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="w-20 h-20 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </span>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                    <h4 class="text-white font-bold text-lg">Atmosphere Building</h4>
+                                    <p class="text-gray-300 text-sm">Clip Studio Paint / Unity</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Comic Item 3 -->
+                        <div class="min-w-[80%] md:min-w-[45%] snap-center video-thumbnail cursor-pointer" data-video-src="https://www.w3schools.com/html/mov_bbb.mp4">
+                            <div class="aspect-video bg-gray-800 rounded-xl overflow-hidden relative shadow-lg group hover:shadow-xl transition-all">
+                                <div class="w-full h-full bg-cover bg-center opacity-80 group-hover:opacity-100 transition-opacity duration-500" style="background-image: url('https://images.unsplash.com/photo-1608889175123-8ee362201f81?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="w-20 h-20 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </span>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                    <h4 class="text-white font-bold text-lg">Character Intro</h4>
+                                    <p class="text-gray-300 text-sm">Live2D / Photoshop</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h3 class="mt-4 text-xl font-bold text-gray-800">Micro Interactions</h3>
+                    
+                    <!-- Pagination Dots -->
+                    <div class="flex justify-center space-x-2 mt-4" id="comic-carousel-dots"></div>
+                </div>
+            </div>
+
+            <!-- Part 2: MV Visual Effects (Carousel with Arrows & Dots) -->
+            <div>
+                <div class="mb-8 max-w-3xl ml-auto text-right">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-4">MV Visual Effects</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        解析 MV 特效的製作流程，從分鏡設計、綠幕合成到後期光影渲染。透過與音樂節奏的完美同步，將抽象的歌詞意境轉化為具體的視覺衝擊，為觀眾帶來極致的視聽饗宴。
+                    </p>
+                </div>
+
+                <!-- Carousel Container -->
+                <div class="relative group/carousel">
+                    <!-- Left Arrow -->
+                    <button id="prev-btn" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-20 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 disabled:opacity-0 hidden md:block">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <!-- Right Arrow -->
+                    <button id="next-btn" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-20 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 disabled:opacity-0 hidden md:block">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+
+                    <!-- Scrollable Container -->
+                    <div class="flex overflow-x-auto gap-6 pb-2 snap-x snap-mandatory hide-scrollbar scroll-smooth" id="mv-carousel">
+                        <!-- MV Item 1 -->
+                        <div class="min-w-[80%] md:min-w-[45%] snap-center video-thumbnail cursor-pointer" data-video-src="https://www.w3schools.com/html/movie.mp4">
+                            <div class="aspect-video bg-gray-800 rounded-xl overflow-hidden relative shadow-lg group hover:shadow-xl transition-all">
+                                <div class="w-full h-full bg-cover bg-center opacity-80 group-hover:opacity-100 transition-opacity duration-500" style="background-image: url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="w-20 h-20 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </span>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                    <h4 class="text-white font-bold text-lg">Neon Cyberpunk Vibes</h4>
+                                    <p class="text-gray-300 text-sm">After Effects / Blender</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- MV Item 2 -->
+                        <div class="min-w-[80%] md:min-w-[45%] snap-center video-thumbnail cursor-pointer" data-video-src="https://www.w3schools.com/html/mov_bbb.mp4">
+                            <div class="aspect-video bg-gray-800 rounded-xl overflow-hidden relative shadow-lg group hover:shadow-xl transition-all">
+                                <div class="w-full h-full bg-cover bg-center opacity-80 group-hover:opacity-100 transition-opacity duration-500" style="background-image: url('https://images.unsplash.com/photo-1514525253440-b393452e8d26?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="w-20 h-20 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </span>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                    <h4 class="text-white font-bold text-lg">Dreamscape Compositing</h4>
+                                    <p class="text-gray-300 text-sm">Nuke / Maya</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- MV Item 3 -->
+                        <div class="min-w-[80%] md:min-w-[45%] snap-center video-thumbnail cursor-pointer" data-video-src="https://www.w3schools.com/html/movie.mp4">
+                            <div class="aspect-video bg-gray-800 rounded-xl overflow-hidden relative shadow-lg group hover:shadow-xl transition-all">
+                                <div class="w-full h-full bg-cover bg-center opacity-80 group-hover:opacity-100 transition-opacity duration-500" style="background-image: url('https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="w-20 h-20 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </span>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                    <h4 class="text-white font-bold text-lg">Glitch Art Style</h4>
+                                    <p class="text-gray-300 text-sm">Cinema 4D / Redshift</p>
+                                </div>
+                            </div>
+                        </div>
+                         <!-- MV Item 4 -->
+                         <div class="min-w-[80%] md:min-w-[45%] snap-center video-thumbnail cursor-pointer" data-video-src="https://www.w3schools.com/html/mov_bbb.mp4">
+                            <div class="aspect-video bg-gray-800 rounded-xl overflow-hidden relative shadow-lg group hover:shadow-xl transition-all">
+                                <div class="w-full h-full bg-cover bg-center opacity-80 group-hover:opacity-100 transition-opacity duration-500" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="w-20 h-20 bg-white/10 backdrop-blur-sm border border-white/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <svg class="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </span>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent">
+                                    <h4 class="text-white font-bold text-lg">Particle Simulation</h4>
+                                    <p class="text-gray-300 text-sm">Houdini / UE5</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination Dots (JS generated) -->
+                    <div class="flex justify-center space-x-2 mt-4" id="carousel-dots"></div>
                 </div>
             </div>
         </section>
 
+        <!-- Graphic Section (Keep original) -->
         <section id="graphic" class="min-h-[80vh] py-20 reveal">
             <div class="flex items-end mb-12 border-b-2 border-gray-200 pb-4">
                 <h2 class="text-5xl font-bold text-gray-800 mr-4">GRAPHIC</h2>
@@ -430,7 +629,7 @@
              </div>
         </section>
 
-        <!-- 修改後的 Contact Section：表單 -->
+        <!-- Contact Section -->
         <section id="contact" class="min-h-[80vh] py-20 reveal flex flex-col justify-center items-center text-center">
             <h2 class="text-6xl font-bold text-gray-800 interactive-content mb-4">CONTACT</h2>
             <p class="text-xl text-gray-600 mb-12 max-w-2xl interactive-content">
@@ -477,7 +676,116 @@
             const blobContainer = document.getElementById('blob-container');
             const contactForm = document.getElementById('contact-form');
             
-            // 表單送出處理
+            // Reusable Carousel Setup Function
+            function setupCarousel(carouselId, prevBtnId, nextBtnId, dotsContainerId) {
+                const carousel = document.getElementById(carouselId);
+                const prevBtn = document.getElementById(prevBtnId);
+                const nextBtn = document.getElementById(nextBtnId);
+                const dotsContainer = document.getElementById(dotsContainerId);
+
+                if (!carousel) return;
+
+                const items = carousel.querySelectorAll('.snap-center');
+                
+                // 1. Generate Dots
+                if (dotsContainer) {
+                    items.forEach((_, index) => {
+                        const dot = document.createElement('button');
+                        dot.className = `w-3 h-3 rounded-full transition-colors duration-300 ${index === 0 ? 'bg-gray-800' : 'bg-gray-300'}`;
+                        dot.ariaLabel = `Go to slide ${index + 1}`;
+                        dot.addEventListener('click', () => {
+                            items[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                        });
+                        dotsContainer.appendChild(dot);
+                    });
+                }
+
+                // 2. Update Dots on scroll
+                const updateDots = () => {
+                    if (!dotsContainer) return;
+                    
+                    const scrollCenter = carousel.scrollLeft + carousel.clientWidth / 2;
+                    let closestIndex = 0;
+                    let minDistance = Infinity;
+
+                    items.forEach((item, index) => {
+                        const itemCenter = item.offsetLeft + item.offsetWidth / 2;
+                        const distance = Math.abs(scrollCenter - itemCenter);
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            closestIndex = index;
+                        }
+                    });
+
+                    Array.from(dotsContainer.children).forEach((dot, index) => {
+                        if (index === closestIndex) {
+                            dot.classList.remove('bg-gray-300');
+                            dot.classList.add('bg-gray-800');
+                        } else {
+                            dot.classList.remove('bg-gray-800');
+                            dot.classList.add('bg-gray-300');
+                        }
+                    });
+                };
+
+                carousel.addEventListener('scroll', () => {
+                    requestAnimationFrame(updateDots);
+                });
+
+                // 3. Arrow Buttons
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', () => {
+                        carousel.scrollBy({ left: -carousel.clientWidth * 0.5, behavior: 'smooth' });
+                    });
+                }
+
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', () => {
+                        carousel.scrollBy({ left: carousel.clientWidth * 0.5, behavior: 'smooth' });
+                    });
+                }
+            }
+
+            // Initialize both carousels
+            setupCarousel('mv-carousel', 'prev-btn', 'next-btn', 'carousel-dots');
+            setupCarousel('comic-carousel', 'comic-prev-btn', 'comic-next-btn', 'comic-carousel-dots');
+
+
+            // Video Modal Logic
+            const videoModal = document.getElementById('video-modal');
+            const modalVideoPlayer = document.getElementById('modal-video-player');
+            const closeVideoBtn = document.getElementById('close-video-btn');
+            const videoThumbnails = document.querySelectorAll('.video-thumbnail');
+
+            videoThumbnails.forEach(thumb => {
+                thumb.addEventListener('click', () => {
+                    const videoSrc = thumb.getAttribute('data-video-src');
+                    if(videoSrc) {
+                        modalVideoPlayer.src = videoSrc;
+                        videoModal.classList.add('open');
+                        modalVideoPlayer.play();
+                        document.body.style.overflow = 'hidden'; // Stop background scroll
+                    }
+                });
+            });
+
+            const closeVideoModal = () => {
+                videoModal.classList.remove('open');
+                modalVideoPlayer.pause();
+                modalVideoPlayer.src = ""; // Stop video loading
+                document.body.style.overflow = '';
+            };
+
+            closeVideoBtn.addEventListener('click', closeVideoModal);
+            
+            // Close modal when clicking outside video
+            videoModal.addEventListener('click', (e) => {
+                if (e.target === videoModal) {
+                    closeVideoModal();
+                }
+            });
+
+            // Contact Form
             if(contactForm) {
                 contactForm.addEventListener('submit', function(e) {
                     e.preventDefault();
@@ -512,14 +820,11 @@
 
             mobileLinks.forEach(link => link.addEventListener('click', () => toggleMenu(false)));
 
-            /* --- Scroll Logic --- */
-            
             let lastScrollY = window.scrollY;
             let currentBlobOffset = 0;
             let targetBlobOffset = 0;
             let rafId = null;
 
-            // 動畫循環：平滑衰減 Blob 的位移
             function updateBlobPosition() {
                 currentBlobOffset += (targetBlobOffset - currentBlobOffset) * 0.1;
 
@@ -540,7 +845,6 @@
                 const currentScrollY = window.scrollY;
                 const threshold = window.innerHeight * 0.9;
                 
-                // 1. Menu 切換邏輯
                 if (currentScrollY > threshold) {
                     if (!nav.classList.contains('scrolled-nav')) {
                         nav.classList.add('scrolled-nav');
@@ -553,7 +857,6 @@
                     }
                 }
 
-                // 2. Blob 下拉慣性特效
                 const deltaY = currentScrollY - lastScrollY;
                 if (deltaY > 0) {
                     targetBlobOffset += deltaY * 0.5;
