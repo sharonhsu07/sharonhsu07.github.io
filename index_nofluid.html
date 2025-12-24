@@ -25,7 +25,7 @@
             font-family: 'Ephesis', cursive;
         }
 
-        /* --- 背景流體色塊 (Layer 0) --- */
+        /* --- 背景流體色塊 --- */
         .blob-container {
             position: fixed;
             top: -100px;
@@ -48,10 +48,7 @@
             border-radius: inherit;
             opacity: 0.9;
             mix-blend-mode: multiply;
-            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-            
-            /* 套用 SVG 液化濾鏡 */
-            filter: url(#liquid-distortion); 
+            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); 
         }
 
         @keyframes float {
@@ -70,21 +67,7 @@
         .blob-4 { bottom: 15%; left: 10%; width: 250px; height: 280px; animation-delay: -15s; }
         .blob-4 .blob-inner { background: #fcd5a9; border-radius: 60% 40% 40% 60% / 50% 50% 50% 50%; }
 
-        /* --- WebGL 湍流特效層 (Layer 1) --- */
-        #webgl-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 1; 
-            pointer-events: none; 
-            /* 使用 overlay 混合模式，讓顆粒感能融入背景色 */
-            mix-blend-mode: overlay; 
-            opacity: 0.8; 
-        }
-
-        /* --- 滑動容器架構 (Layer 10) --- */
+        /* --- 滑動容器架構 --- */
         #app-slider {
             display: flex;
             width: 300vw;
@@ -117,11 +100,13 @@
         }
         
         .ui-element {
+            /* 修正：預設不接收點擊，防止隱藏元素干擾 */
             pointer-events: none;
             transition: opacity 0.5s ease, transform 0.5s ease;
             opacity: 0;
         }
 
+        /* 修正：當元素進入顯示狀態時，才開啟點擊功能 */
         body[data-state="left"] .show-on-left { opacity: 1; transform: translateX(0); pointer-events: auto; }
         body[data-state="center"] .show-on-center { opacity: 1; transform: translateY(0); pointer-events: auto; }
         body[data-state="right"] .show-on-right { opacity: 1; transform: translateX(0); pointer-events: auto; }
@@ -235,17 +220,19 @@
         }
         .brush-path { fill: #7cb3fc; opacity: 0.9; }
 
-        .brush-path-left { fill: #86efac; opacity: 0.8; }
+        /* 修改：左頁標題塗鴉顏色改為綠色，並調整大小以配合新的容器寬度 */
+        .brush-path-left { fill: #86efac; opacity: 0.8; } /* green-300 */
         .brush-stroke-left {
             position: absolute;
-            top: 60%; 
+            top: 60%; /* 對齊調整 */
             left: 50%;
-            width: 110%; 
+            width: 110%; /* 現在容器是緊貼文字的，所以可以設超過 100% 來製造筆觸效果 */
             height: 120%; 
             transform: translate(-50%, -50%);
             z-index: -1;
         }
 
+        /* 新增：右頁標題塗鴉顏色 (粉紅) */
         .brush-path-right { fill: #f9a8d4; opacity: 0.8; }
 
         .title-text {
@@ -259,11 +246,13 @@
             line-height: 1.6; 
             display: block;
         }
+        /* 子頁面標題文字樣式 */
         .sub-page-title {
             font-size: 4.5rem; 
             line-height: 1.4;
             padding-bottom: 0.6em;
             margin-bottom: -0.6em;
+            /* 修改：增加 padding-left 防止 D 被切掉 */
             padding-left: 0.2em; 
         }
         @media (min-width: 768px) {
@@ -294,10 +283,11 @@
             border-color: #3b82f6;
             background: #eff6ff;
         }
+        /* 修改：設定圖標為灰色 */
         .tri-icon { 
             width: 24px; 
             height: 24px; 
-            fill: #6b7280; 
+            fill: #6b7280; /* gray-500 */
             transition: fill 0.3s ease; 
         }
         .tri-btn:hover .tri-icon { fill: #2563eb; }
@@ -344,11 +334,13 @@
         }
         .code-link:hover { text-decoration: underline; }
 
+        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+        /* RWD */
         @media (max-width: 768px) {
             .hero-bottom-area { flex-direction: column; }
             .hero-split-btn { 
@@ -389,35 +381,13 @@
 </head>
 <body data-state="center">
 
-    <!-- 
-        SVG Filter 修改：
-        大幅降低 scale (50 -> 25) 讓邊緣變形變小，保留圓形感。
-        降低 baseFrequency (0.015 -> 0.01) 讓波紋更平緩。
-        減少 numOctaves (2 -> 1) 減少細節，避免邊緣破碎。
-        (NEW) 減慢動畫速度：dur 20s -> 40s
-    -->
-    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;">
-        <defs>
-            <filter id="liquid-distortion">
-                <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="1" result="warp">
-                    <!-- 減慢邊緣蠕動速度：20s -> 40s -->
-                    <animate attributeName="baseFrequency" dur="40s" values="0.01;0.015;0.01" repeatCount="indefinite" />
-                </feTurbulence>
-                <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="25" in="SourceGraphic" in2="warp" />
-            </filter>
-        </defs>
-    </svg>
-
-    <!-- 背景流體色塊 -->
+    <!-- 背景色塊 -->
     <div class="blob-container">
         <div class="blob-wrapper blob-1"><div class="blob-inner"></div></div>
         <div class="blob-wrapper blob-2"><div class="blob-inner"></div></div>
         <div class="blob-wrapper blob-3"><div class="blob-inner"></div></div>
         <div class="blob-wrapper blob-4"><div class="blob-inner"></div></div>
     </div>
-
-    <!-- WebGL 湍流特效層 -->
-    <div id="webgl-container"></div>
 
     <!-- UI Layer: Fixed Controls -->
     <div id="ui-layer">
@@ -454,10 +424,15 @@
     <div id="app-slider">
 
         <!-- ================= PAGE LEFT: DESIGN TOOLS ================= -->
+        <!-- 修改：加入 bg-white/30 backdrop-blur-sm 增加毛玻璃效果 -->
         <section id="page-left" class="page-section bg-white/30 backdrop-blur-sm">
             <div class="container mx-auto px-6 py-10 min-h-full flex flex-col pt-24 md:pt-32 pb-32">
+                <!-- 更新標題設計：Design Tools -->
+                <!-- 關鍵修改：加入 self-start 來防止容器被 flex 拉伸 -->
                 <div class="hero-title-wrapper mb-12 relative inline-block self-start">
+                    <!-- 使用專屬的 svg class 控制大小與顏色 -->
                     <svg class="brush-stroke-left" viewBox="0 0 240 70" preserveAspectRatio="none">
+                        <!-- 修改：顏色改為 #c0e198 -->
                         <path class="brush-path-left" d="M10,35 Q20,30 35,28 L210,22 Q225,20 230,30 Q235,40 232,50 Q230,60 215,65 L30,72 Q15,75 10,65 L5,55 L8,45 L2,38 Q5,35 10,35 Z" style="fill: #c0e198; opacity: 0.8;" />
                     </svg>
                     <h2 class="font-script title-text sub-page-title relative z-10 select-none pb-2">
@@ -465,18 +440,26 @@
                     </h2>
                 </div>
                 
+                <!-- Tool 1: Photoshop JSX (Carousel Layout) -->
                 <div class="mb-24 tool-group" id="tool-ps">
                     <div class="flex items-center justify-between mb-6">
+                        <!-- 動態標題，會隨 Slide 切換更新 -->
                         <h3 class="text-3xl md:text-4xl font-bold text-gray-700" id="ps-title">Photoshop JSX</h3>
                         
+                        <!-- 圓形三角切換按鈕 -->
                         <button class="tri-btn" onclick="nextSlide('tool-ps')">
+                            <!-- 修改：只保留一個灰色三角形 -->
                             <svg class="tri-icon" viewBox="0 0 24 24"><path d="M10,8 L16,12 L10,16 Z"/></svg>
                         </button>
                     </div>
                     
+                    <!-- 卡片區域 -->
                     <div class="relative min-h-[550px] bg-white/60 rounded-2xl p-8 shadow-sm overflow-hidden slider-content">
                         
+                        <!-- Slide 1: Text & Font Replacer -->
                         <div class="absolute inset-0 p-8 transition-opacity duration-500 opacity-100 slide-item overflow-y-auto custom-scrollbar" data-index="0" data-title="Photoshop JSX">
+                            
+                            <!-- 1. 概述與效益 -->
                             <div class="mb-10">
                                 <h4 class="text-2xl font-bold text-blue-600 mb-2">Automated Localization Tool</h4>
                                 <p class="text-gray-600 leading-relaxed">
@@ -486,6 +469,7 @@
                                 </p>
                             </div>
 
+                            <!-- 2. 成果對照圖 -->
                             <div class="mb-10">
                                 <h5 class="text-lg font-bold text-gray-700 mb-4 border-l-4 border-blue-400 pl-3">Project Outcome</h5>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -513,6 +497,7 @@
                                 </div>
                             </div>
 
+                            <!-- 3. 操作演示 & CSV -->
                             <div class="mb-10">
                                 <h5 class="text-lg font-bold text-gray-700 mb-4 border-l-4 border-indigo-400 pl-3">Workflow Demo & Resources</h5>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -553,6 +538,7 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                                 </div>
                             </div>
 
+                            <!-- 4. 程式碼展示 -->
                             <div>
                                 <div class="flex justify-between items-center mb-4">
                                     <h5 class="text-lg font-bold text-gray-700 border-l-4 border-purple-400 pl-3">Core Script (JSX)</h5>
@@ -613,6 +599,7 @@ function parseCSVLines(text) {
                             
                         </div>
 
+                        <!-- Slide 2: Photoshop JSX (假資料) -->
                         <div class="absolute inset-0 p-8 transition-opacity duration-500 opacity-0 pointer-events-none slide-item overflow-y-auto custom-scrollbar" data-index="1" data-title="Photoshop JSX">
                             <h4 class="text-2xl font-bold text-red-500 mb-2">Auto-Slice Exporter</h4>
                             <p class="text-gray-600 mb-6">
@@ -620,6 +607,7 @@ function parseCSVLines(text) {
                                 內建防切斷文字偵測功能，確保對話框不會被一分為二。
                             </p>
                             
+                            <!-- 假圖片 -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                 <div class="bg-gray-200 h-64 rounded-lg flex items-center justify-center text-gray-500 border border-dashed border-gray-400">
                                     [Preview Image: Long Strip]
@@ -640,10 +628,12 @@ function parseCSVLines(text) {
                     </div>
                 </div>
 
+                <!-- Tool 2: AE Auto Layout (保持原樣，因為是不同工具) -->
                 <div class="mb-24 tool-group" id="tool-ae">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-3xl md:text-4xl font-bold text-gray-700">AE Auto Layout</h3>
                         <button class="tri-btn" onclick="nextSlide('tool-ae')">
+                            <!-- 修改：只保留一個三角形 -->
                             <svg class="tri-icon" viewBox="0 0 24 24"><path d="M10,8 L16,12 L10,16 Z"/></svg>
                         </button>
                     </div>
@@ -671,12 +661,14 @@ function parseCSVLines(text) {
                     <svg class="brush-stroke" viewBox="0 0 360 80" preserveAspectRatio="none">
                         <path class="brush-path" d="M15,38 Q30,35 45,32 L320,25 Q335,24 345,28 Q355,32 355,42 L358,52 Q360,65 345,70 L40,78 Q20,78 15,70 L5,65 L8,55 L2,45 Q5,40 15,38 Z" />
                     </svg>
+                    <!-- 保留您的標題 inline style -->
                     <h1 class="text-8xl md:text-9xl font-script title-text relative z-10 select-none pb-2" style="margin: -20px 0px -70px 0px; line-height: 1.3em;" >
                         Go Faster
                     </h1>
                 </div>
                 
                 <div class="text-center space-y-6 px-4 mt-8">
+                    <!-- 保留您的副標題 inline style -->
                     <p class="text-xl md:text-2xl tracking-[0.2em] text-gray-600 font-light"style="margin-top: 20px;">
                         もっと早く、もっと楽しく
                     </p>
@@ -687,6 +679,7 @@ function parseCSVLines(text) {
             </div>
 
             <div class="hero-bottom-area">
+                <!-- 修正：移除了 border-r 樣式 -->
                 <div onclick="goToLeft()" class="hero-split-btn">
                     <h2 class="text-3xl md:text-5xl font-bold text-gray-700 group-hover:text-blue-600 mb-2">DESIGN TOOL</h2>
                     <p class="text-gray-400 group-hover:text-gray-600 tracking-wider">Efficiency Solutions</p>
@@ -715,6 +708,7 @@ function parseCSVLines(text) {
                     </div>
                 </div>
 
+                <!-- WEB -->
                 <div class="mb-20 creation-group" id="create-web">
                     <div class="flex items-center justify-between mb-6 flex-row-reverse">
                         <h3 class="text-3xl md:text-4xl font-bold text-gray-700">WEB</h3>
@@ -723,11 +717,13 @@ function parseCSVLines(text) {
                         </button>
                     </div>
                     <div class="relative h-[300px] overflow-hidden slider-content">
+                        <!-- Batch 1 -->
                         <div class="absolute inset-0 transition-all duration-700 ease-in-out opacity-100 translate-x-0 slide-item w-full flex gap-4" data-index="0">
                             <div class="flex-1 bg-gray-200 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all" onclick="openPopup(this)" style="background-image: url('eva/img/look_06_01.avif')"></div>
                             <div class="flex-1 bg-gray-200 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all hidden md:block" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=600&q=80')"></div>
                             <div class="flex-1 bg-gray-200 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all hidden lg:block" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=600&q=80')"></div>
                         </div>
+                        <!-- Batch 2 -->
                         <div class="absolute inset-0 transition-all duration-700 ease-in-out opacity-0 translate-x-full pointer-events-none slide-item w-full flex gap-4" data-index="1">
                             <div class="flex-1 bg-gray-200 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=600&q=80')"></div>
                             <div class="flex-1 bg-gray-200 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all hidden md:block" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1555421689-d68471e18963?auto=format&fit=crop&w=600&q=80')"></div>
@@ -736,10 +732,12 @@ function parseCSVLines(text) {
                     </div>
                 </div>
 
+                <!-- MOTION -->
                 <div class="mb-20 creation-group" id="create-motion">
                     <div class="flex items-center justify-between mb-6 flex-row-reverse">
                         <h3 class="text-3xl md:text-4xl font-bold text-gray-700">MOTION</h3>
                         <button class="tri-btn" onclick="nextSlide('create-motion')">
+                            <!-- 修改：更新為單個三角形 -->
                             <svg class="tri-icon" viewBox="0 0 24 24"><path d="M10,8 L16,12 L10,16 Z"/></svg>
                         </button>
                     </div>
@@ -755,10 +753,12 @@ function parseCSVLines(text) {
                     </div>
                 </div>
 
+                <!-- GRAPHIC -->
                 <div class="mb-20 creation-group" id="create-graphic">
                     <div class="flex items-center justify-between mb-6 flex-row-reverse">
                         <h3 class="text-3xl md:text-4xl font-bold text-gray-700">GRAPHIC</h3>
                         <button class="tri-btn" onclick="nextSlide('create-graphic')">
+                            <!-- 修改：只保留一個三角形 -->
                             <svg class="tri-icon" viewBox="0 0 24 24"><path d="M10,8 L16,12 L10,16 Z"/></svg>
                         </button>
                     </div>
@@ -779,10 +779,6 @@ function parseCSVLines(text) {
 
     </div>
 
-    <!-- 引入 Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-    <!-- 主程式邏輯 -->
     <script>
         const slider = document.getElementById('app-slider');
         const popup = document.getElementById('img-popup');
@@ -809,15 +805,19 @@ function parseCSVLines(text) {
             const el = document.getElementById(id);
             const pageEl = document.getElementById('page-' + page);
             if (el && pageEl) {
+                // Use getBoundingClientRect for absolute precision relative to viewport
                 const elRect = el.getBoundingClientRect();
                 const pageRect = pageEl.getBoundingClientRect();
+                
+                // Calculate offset relative to the scroll container
                 const absoluteTop = pageEl.scrollTop + (elRect.top - pageRect.top);
-                const offset = 120;
+                const offset = 120; // Safety offset
+                
                 pageEl.scrollTo({ top: absoluteTop - offset, behavior: 'smooth' });
             }
         }
 
-        // === 2. Internal Content Carousel ===
+        // === 2. Internal Content Carousel (Tri-Button Logic) ===
         const groupIndices = {}; 
 
         function nextSlide(groupId) {
@@ -834,6 +834,7 @@ function parseCSVLines(text) {
             const currentIdx = groupIndices[groupId];
             const nextIdx = (currentIdx + 1) % total;
 
+            // Animate transition
             if (group.closest('#page-left')) {
                 slides[currentIdx].style.opacity = '0';
                 slides[currentIdx].style.pointerEvents = 'none';
@@ -841,7 +842,9 @@ function parseCSVLines(text) {
                 slides[nextIdx].style.opacity = '1';
                 slides[nextIdx].style.pointerEvents = 'auto';
 
-                const psTitle = document.getElementById('ps-title'); 
+                // Update title based on data-title attribute if exists
+                const titleEl = group.querySelector('h3'); // Assuming h3 is title inside group, or use specific ID
+                const psTitle = document.getElementById('ps-title'); // Specific for PS tool
                 if (groupId === 'tool-ps' && psTitle) {
                     const newTitle = slides[nextIdx].getAttribute('data-title');
                     if (newTitle) psTitle.textContent = newTitle;
@@ -896,171 +899,8 @@ function parseCSVLines(text) {
                     }
                 });
             });
-            
-            initFluidBackground();
         });
 
-        // === 5. WebGL Fluid Background Effect (Grainy Matte Flow) ===
-        function initFluidBackground() {
-            const container = document.getElementById('webgl-container');
-            const scene = new THREE.Scene();
-            const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-            
-            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            container.appendChild(renderer.domElement);
-
-            const vertexShader = `
-                varying vec2 vUv;
-                void main() {
-                    vUv = uv;
-                    gl_Position = vec4(position, 1.0);
-                }
-            `;
-
-            // Fragment Shader - 調整為「霧面顆粒質感流動」 (Matte Grainy Flow)
-            const fragmentShader = `
-                uniform float uTime;
-                uniform vec2 uResolution;
-                varying vec2 vUv;
-
-                // --- 雜訊生成 ---
-                vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-                vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-                vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
-                vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
-
-                float snoise(vec3 v) {
-                    const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
-                    const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
-                    vec3 i  = floor(v + dot(v, C.yyy) );
-                    vec3 x0 = v - i + dot(i, C.xxx) ;
-                    vec3 g = step(x0.yzx, x0.xyz);
-                    vec3 l = 1.0 - g;
-                    vec3 i1 = min( g.xyz, l.zxy );
-                    vec3 i2 = max( g.xyz, l.zxy );
-                    vec3 x1 = x0 - i1 + C.xxx;
-                    vec3 x2 = x0 - i2 + C.yyy;
-                    vec3 x3 = x0 - D.yyy;
-                    i = mod289(i); 
-                    vec4 p = permute( permute( permute( 
-                                i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
-                            + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) 
-                            + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
-                    float n_ = 0.142857142857;
-                    vec3  ns = n_ * D.wyz - D.xzx;
-                    vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
-                    vec4 x_ = floor(j * ns.z);
-                    vec4 y_ = floor(j - 7.0 * x_ );
-                    vec4 x = x_ *ns.x + ns.yyyy;
-                    vec4 y = y_ *ns.x + ns.yyyy;
-                    vec4 h = 1.0 - abs(x) - abs(y);
-                    vec4 b0 = vec4( x.xy, y.xy );
-                    vec4 b1 = vec4( x.zw, y.zw );
-                    vec4 s0 = floor(b0)*2.0 + 1.0;
-                    vec4 s1 = floor(b1)*2.0 + 1.0;
-                    vec4 sh = -step(h, vec4(0.0));
-                    vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
-                    vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
-                    vec3 p0 = vec3(a0.xy,h.x);
-                    vec3 p1 = vec3(a0.zw,h.y);
-                    vec3 p2 = vec3(a1.xy,h.z);
-                    vec3 p3 = vec3(a1.zw,h.w);
-                    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
-                    p0 *= norm.x;
-                    p1 *= norm.y;
-                    p2 *= norm.z;
-                    p3 *= norm.w;
-                    vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-                    m = m * m;
-                    return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) );
-                }
-
-                // --- 隨機顆粒生成函數 (Grain Noise) ---
-                float random(vec2 st) {
-                    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
-                }
-
-                float fbm(vec3 p) {
-                    float value = 0.0;
-                    float amplitude = 0.5;
-                    for (int i = 0; i < 3; i++) {
-                        value += amplitude * snoise(p);
-                        p *= 2.0; 
-                        amplitude *= 0.5;
-                    }
-                    return value;
-                }
-
-                void main() {
-                    vec2 st = gl_FragCoord.xy / uResolution.xy;
-                    st.x *= uResolution.x / uResolution.y;
-                    
-                    // 大範圍流動 (0.12 scale)
-                    st *= 0.12; 
-
-                    // Domain Warping (流體扭曲) - 速度減半 (0.05 -> 0.025 等)
-                    vec3 q = vec3(0.0);
-                    q.x = fbm(vec3(st, uTime * 0.025)); 
-                    q.y = fbm(vec3(st + vec2(1.0), uTime * 0.03));
-
-                    vec3 r = vec3(0.0);
-                    r.x = fbm(vec3(st + 3.0 * q.xy, uTime * 0.04));
-                    r.y = fbm(vec3(st + 3.0 * q.xy + vec2(5.2), uTime * 0.04));
-
-                    float f = fbm(vec3(st + 3.0 * r.xy, uTime * 0.05));
-
-                    // --- 關鍵修改：去除高光，改為霧面顆粒質感 ---
-                    
-                    // 1. 生成高頻噪點 (Grain) - 速度減半
-                    float grain = random(gl_FragCoord.xy * 0.01 + uTime * 0.05);
-                    
-                    // 2. 混合流動 (Flow) 與 噪點 (Grain)
-                    // 使用 mix 讓流動紋理看起來粗糙一點
-                    float texture = mix(f, grain, 0.15); 
-
-                    // 3. 調整透明度與對比
-                    // 不再使用 smoothstep 切出亮部，而是保留整體的紋理變化
-                    // 讓數值保持在 0.3 ~ 0.7 之間，避免極亮或極暗
-                    float alpha = 0.3 + 0.4 * texture;
-                    
-                    // 最終顏色輸出
-                    // 使用 vec4(1.0) 白色，但配合 CSS 的 mix-blend-mode: overlay
-                    // 這樣白色顆粒會讓背景色變亮/變淡，產生類似紙張紋理的效果
-                    gl_FragColor = vec4(1.0, 1.0, 1.0, alpha * 0.5);
-                }
-            `;
-
-            const uniforms = {
-                uTime: { value: 0.0 },
-                uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
-            };
-
-            const material = new THREE.ShaderMaterial({
-                vertexShader: vertexShader,
-                fragmentShader: fragmentShader,
-                uniforms: uniforms,
-                transparent: true
-            });
-
-            const plane = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-            scene.add(plane);
-
-            window.addEventListener('resize', () => {
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                uniforms.uResolution.value.x = window.innerWidth;
-                uniforms.uResolution.value.y = window.innerHeight;
-            });
-
-            const clock = new THREE.Clock();
-            function animate() {
-                requestAnimationFrame(animate);
-                uniforms.uTime.value = clock.getElapsedTime();
-                renderer.render(scene, camera);
-            }
-            animate();
-        }
     </script>
 </body>
 </html>
