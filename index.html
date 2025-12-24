@@ -389,19 +389,12 @@
 </head>
 <body data-state="center">
 
-    <!-- 
-        SVG Filter 修改：
-        大幅降低 scale (50 -> 25) 讓邊緣變形變小，保留圓形感。
-        降低 baseFrequency (0.015 -> 0.01) 讓波紋更平緩。
-        減少 numOctaves (2 -> 1) 減少細節，避免邊緣破碎。
-        (NEW) 減慢動畫速度：dur 20s -> 40s
-    -->
     <svg style="position: absolute; width: 0; height: 0; pointer-events: none;">
         <defs>
             <filter id="liquid-distortion">
                 <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="1" result="warp">
-                    <!-- 減慢邊緣蠕動速度：20s -> 40s -->
-                    <animate attributeName="baseFrequency" dur="40s" values="0.01;0.015;0.01" repeatCount="indefinite" />
+                    <!-- 減慢邊緣蠕動速度：100s -->
+                    <animate attributeName="baseFrequency" dur="100s" values="0.01;0.015;0.01" repeatCount="indefinite" />
                 </feTurbulence>
                 <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="25" in="SourceGraphic" in2="warp" />
             </filter>
@@ -715,6 +708,7 @@ function parseCSVLines(text) {
                     </div>
                 </div>
 
+                <!-- Web Section: Modified to Single Item Layout -->
                 <div class="mb-20 creation-group" id="create-web">
                     <div class="flex items-center justify-between mb-6 flex-row-reverse">
                         <h3 class="text-3xl md:text-4xl font-bold text-gray-700">WEB</h3>
@@ -722,20 +716,60 @@ function parseCSVLines(text) {
                             <svg class="tri-icon" viewBox="0 0 24 24"><path d="M10,8 L16,12 L10,16 Z"/></svg>
                         </button>
                     </div>
-                    <div class="relative h-[300px] overflow-hidden slider-content">
-                        <div class="absolute inset-0 transition-all duration-700 ease-in-out opacity-100 translate-x-0 slide-item w-full flex gap-4" data-index="0">
-                            <div class="flex-1 bg-gray-200 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all" onclick="openPopup(this)" style="background-image: url('eva/img/look_06_01.avif')"></div>
-                            <div class="flex-1 bg-gray-200 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all hidden md:block" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=600&q=80')"></div>
-                            <div class="flex-1 bg-gray-200 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all hidden lg:block" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=600&q=80')"></div>
+                    
+                    <div class="relative min-h-[500px] overflow-hidden slider-content">
+                        <!-- WEB Slide 1 -->
+                        <div class="absolute inset-0 transition-all duration-700 ease-in-out opacity-100 translate-x-0 slide-item w-full flex flex-col lg:flex-row gap-8 items-center bg-white/50 p-6 rounded-3xl backdrop-blur-sm" data-index="0">
+                             <!-- Image Area -->
+                             <div class="w-full lg:w-3/5 h-[300px] lg:h-[450px] bg-gray-200 rounded-2xl bg-cover bg-center shadow-lg cursor-pointer hover:scale-[1.02] transition-transform duration-500" 
+                                  onclick="openPopup(this)" 
+                                  style="background-image: url('eva/index_preview.jpg')">
+                             </div>
+                             
+                             <!-- Content Area -->
+                             <div class="w-full lg:w-2/5 flex flex-col justify-center space-y-6">
+                                 <div>
+                                     <h3 class="text-4xl font-bold text-gray-800 leading-tight">BRAND<br><span class="text-blue-500">WEBSITE</span></h3>
+                                     <div class="w-16 h-1 bg-blue-500 mt-4 rounded-full"></div>
+                                 </div>
+                                 <p class="text-gray-600 leading-relaxed">
+                                     A minimalist design approach for a modern fashion brand. Focusing on clean typography and large imagery to showcase the product details.
+                                 </p>
+                                 <div class="pt-4">
+                                     <a href="eva/index.html" target="_blank" class="px-8 py-3 bg-gray-900 text-white rounded-full hover:bg-blue-600 transition-colors duration-300 shadow-lg font-bold tracking-wider text-sm flex items-center gap-2 group w-max no-underline">
+                                         VIEW PROJECT 
+                                         <span class="group-hover:translate-x-1 transition-transform">→</span>
+                                     </a>
+                                 </div>
+                             </div>
                         </div>
-                        <div class="absolute inset-0 transition-all duration-700 ease-in-out opacity-0 translate-x-full pointer-events-none slide-item w-full flex gap-4" data-index="1">
-                            <div class="flex-1 bg-gray-200 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=600&q=80')"></div>
-                            <div class="flex-1 bg-gray-200 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all hidden md:block" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1555421689-d68471e18963?auto=format&fit=crop&w=600&q=80')"></div>
-                            <div class="flex-1 bg-gray-200 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all hidden lg:block" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=600&q=80')"></div>
+
+                        <!-- WEB Slide 2 -->
+                        <div class="absolute inset-0 transition-all duration-700 ease-in-out opacity-0 translate-x-full pointer-events-none slide-item w-full flex flex-col lg:flex-row gap-8 items-center bg-white/50 p-6 rounded-3xl backdrop-blur-sm" data-index="1">
+                             <div class="w-full lg:w-3/5 h-[300px] lg:h-[450px] bg-gray-200 rounded-2xl bg-cover bg-center shadow-lg cursor-pointer hover:scale-[1.02] transition-transform duration-500" 
+                                  onclick="openPopup(this)" 
+                                  style="background-image: url('https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=800&q=80')">
+                             </div>
+                             <div class="w-full lg:w-2/5 flex flex-col justify-center space-y-6">
+                                 <div>
+                                     <h3 class="text-4xl font-bold text-gray-800 leading-tight">CAMPAIGN<br><span class="text-indigo-500">LANDING</span></h3>
+                                     <div class="w-16 h-1 bg-indigo-500 mt-4 rounded-full"></div>
+                                 </div>
+                                 <p class="text-gray-600 leading-relaxed">
+                                     High conversion landing page for a seasonal marketing campaign. Utilizes scroll-triggered animations to engage users.
+                                 </p>
+                                 <div class="pt-4">
+                                     <button class="px-8 py-3 bg-gray-900 text-white rounded-full hover:bg-indigo-600 transition-colors duration-300 shadow-lg font-bold tracking-wider text-sm flex items-center gap-2 group">
+                                         VIEW PROJECT 
+                                         <span class="group-hover:translate-x-1 transition-transform">→</span>
+                                     </button>
+                                 </div>
+                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- MOTION Section (Original Layout Preserved) -->
                 <div class="mb-20 creation-group" id="create-motion">
                     <div class="flex items-center justify-between mb-6 flex-row-reverse">
                         <h3 class="text-3xl md:text-4xl font-bold text-gray-700">MOTION</h3>
@@ -755,6 +789,7 @@ function parseCSVLines(text) {
                     </div>
                 </div>
 
+                <!-- GRAPHIC Section (Original Layout Preserved) -->
                 <div class="mb-20 creation-group" id="create-graphic">
                     <div class="flex items-center justify-between mb-6 flex-row-reverse">
                         <h3 class="text-3xl md:text-4xl font-bold text-gray-700">GRAPHIC</h3>
@@ -872,7 +907,7 @@ function parseCSVLines(text) {
         // === 3. Popup Logic ===
         function openPopup(element) {
             const bgStyle = element.style.backgroundImage;
-            const src = bgStyle.slice(5, -2);
+            const src = bgStyle.slice(5, -2).replace(/['"]/g, ""); // Clean quotes just in case
             popupImg.src = src;
             popup.classList.add('open');
             popupImg.classList.remove('scale-95');
@@ -1000,34 +1035,29 @@ function parseCSVLines(text) {
                     // 大範圍流動 (0.12 scale)
                     st *= 0.12; 
 
-                    // Domain Warping (流體扭曲) - 速度減半 (0.05 -> 0.025 等)
+                    // Domain Warping (流體扭曲) - 極慢速 (原速 1/5)
+                    // 原本係數約 0.05，現在降至 0.01 左右
                     vec3 q = vec3(0.0);
-                    q.x = fbm(vec3(st, uTime * 0.025)); 
-                    q.y = fbm(vec3(st + vec2(1.0), uTime * 0.03));
+                    q.x = fbm(vec3(st, uTime * 0.01)); 
+                    q.y = fbm(vec3(st + vec2(1.0), uTime * 0.012));
 
                     vec3 r = vec3(0.0);
-                    r.x = fbm(vec3(st + 3.0 * q.xy, uTime * 0.04));
-                    r.y = fbm(vec3(st + 3.0 * q.xy + vec2(5.2), uTime * 0.04));
+                    r.x = fbm(vec3(st + 3.0 * q.xy, uTime * 0.016));
+                    r.y = fbm(vec3(st + 3.0 * q.xy + vec2(5.2), uTime * 0.016));
 
-                    float f = fbm(vec3(st + 3.0 * r.xy, uTime * 0.05));
+                    float f = fbm(vec3(st + 3.0 * r.xy, uTime * 0.02));
 
-                    // --- 關鍵修改：去除高光，改為霧面顆粒質感 ---
+                    // --- 霧面顆粒質感 ---
                     
-                    // 1. 生成高頻噪點 (Grain) - 速度減半
-                    float grain = random(gl_FragCoord.xy * 0.01 + uTime * 0.05);
+                    // 1. 生成高頻噪點 (Grain) - 閃爍速度也同步變慢
+                    float grain = random(gl_FragCoord.xy * 0.01 + uTime * 0.02);
                     
                     // 2. 混合流動 (Flow) 與 噪點 (Grain)
-                    // 使用 mix 讓流動紋理看起來粗糙一點
                     float texture = mix(f, grain, 0.15); 
 
                     // 3. 調整透明度與對比
-                    // 不再使用 smoothstep 切出亮部，而是保留整體的紋理變化
-                    // 讓數值保持在 0.3 ~ 0.7 之間，避免極亮或極暗
                     float alpha = 0.3 + 0.4 * texture;
                     
-                    // 最終顏色輸出
-                    // 使用 vec4(1.0) 白色，但配合 CSS 的 mix-blend-mode: overlay
-                    // 這樣白色顆粒會讓背景色變亮/變淡，產生類似紙張紋理的效果
                     gl_FragColor = vec4(1.0, 1.0, 1.0, alpha * 0.5);
                 }
             `;
