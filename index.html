@@ -129,7 +129,7 @@
         /* Back Buttons */
         .btn-back {
             position: absolute;
-            bottom: 2rem;
+            bottom: 3.5rem; /* 稍微往上移，避免跟 footer 重疊 */
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -580,6 +580,13 @@
             <button onclick="scrollToSection('right', 'create-motion')" class="menu-btn">MOTION</button>
             <button onclick="scrollToSection('right', 'create-graphic')" class="menu-btn">GRAPHIC</button>
         </nav>
+
+        <!-- Footer / Legal Disclaimer (新增區域) -->
+        <footer class="fixed bottom-0 left-0 w-full text-center p-1 z-[45] pointer-events-auto bg-gray-200">
+            <p class="text-[9px] md:text-[10px] text-gray-400 cursor-default select-none">
+                © 2025 Go Faster. For portfolio and academic demonstration only. Non-commercial use. Third-party IP rights remain with their respective owners. AI tools were utilized in the creation of some content.
+            </p>
+        </footer>
 
     </div>
 
