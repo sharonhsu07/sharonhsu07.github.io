@@ -254,6 +254,17 @@
         }
 
         .brush-path-right { fill: #f9a8d4; opacity: 0.8; }
+        
+        /* 新增右側頁面專用的筆刷樣式 (不帶透明度動畫) */
+        .brush-stroke-right {
+            position: absolute;
+            top: 60%; 
+            left: 50%;
+            width: 120%; 
+            height: 130%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
 
         .title-text {
             background: linear-gradient(120deg, #1a202c 0%, #4a5568 50%, #1a202c 100%);
@@ -840,7 +851,8 @@ function parseCSVLines(text) {
             <div class="container mx-auto px-6 py-10 min-h-full flex flex-col pt-24 md:pt-32 pb-32">
                 <div class="text-right">
                     <div class="hero-title-wrapper mb-12 relative inline-block">
-                        <svg class="brush-stroke" viewBox="0 0 360 80" preserveAspectRatio="none">
+                        <!-- class 改為 brush-stroke-right 以避免繼承首頁的隱藏動畫 -->
+                        <svg class="brush-stroke-right" viewBox="0 0 360 80" preserveAspectRatio="none">
                             <path class="brush-path-right" d="M15,38 Q30,35 45,32 L320,25 Q335,24 345,28 Q355,32 355,42 L358,52 Q360,65 345,70 L40,78 Q20,78 15,70 L5,65 L8,55 L2,45 Q5,40 15,38 Z" />
                         </svg>
                         <h2 class="font-script title-text sub-page-title relative z-10 select-none pb-2">
