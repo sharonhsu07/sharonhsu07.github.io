@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Go Faster - New Version</title>
+    <title>Go Faster</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -217,6 +217,8 @@
             transition: all 0.5s ease;
             background-color: rgba(255, 255, 255, 0.0);
             border: none;
+            /* Animation Base State */
+            opacity: 0; 
         }
         .hero-split-btn:hover {
             background-color: rgba(255, 255, 255, 0.4);
@@ -225,14 +227,19 @@
 
         /* 標題樣式 */
         .hero-title-wrapper { position: relative; display: inline-block; }
+        
         .brush-stroke {
             position: absolute;
             top: 60%; 
             left: 50%;
             width: 120%; height: 130%;
+            /* Animation Base State handles transform now */
             transform: translate(-50%, -50%);
             z-index: -1;
+            /* Animation Base State */
+            opacity: 0;
         }
+        
         .brush-path { fill: #7cb3fc; opacity: 0.9; }
 
         .brush-path-left { fill: #86efac; opacity: 0.8; }
@@ -253,18 +260,23 @@
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: shine 5s linear infinite;
+            /* Original Shine Animation */
+            animation: shine 5s linear infinite; 
             padding-bottom: 0.8em; 
             margin-bottom: -0.8em;
             line-height: 1.6; 
             display: block;
+            /* Animation Base State */
+            opacity: 0;
         }
+
         .sub-page-title {
             font-size: 4.5rem; 
             line-height: 1.4;
             padding-bottom: 0.6em;
             margin-bottom: -0.6em;
             padding-left: 0.2em; 
+            opacity: 1; /* Sub pages don't need the intro anims */
         }
         @media (min-width: 768px) {
             .sub-page-title {
@@ -349,6 +361,85 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+        /* =========================================
+           FRESH ENTRANCE ANIMATIONS (NEW)
+           ========================================= */
+        
+        /* 1. 向上淡入（帶模糊） */
+        @keyframes fadeInUpSmooth {
+            0% { 
+                opacity: 0; 
+                transform: translateY(40px); 
+                filter: blur(10px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0); 
+                filter: blur(0);
+            }
+        }
+
+        /* 2. 縮放淡入 */
+        @keyframes scaleInSmooth {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.92) translateY(10px); 
+                filter: blur(5px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) translateY(0); 
+                filter: blur(0);
+            }
+        }
+
+        /* 3. 筆刷專用進場 (因為筆刷原本就有 transform 置中，需特別處理) */
+        @keyframes brushEnter {
+            0% { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(0.8) skewX(-10deg); 
+                filter: blur(8px);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1) skewX(0); 
+                filter: blur(0);
+            }
+        }
+
+        /* 當 Body 處於 'center' 狀態時，觸發動畫 */
+        /* 筆刷 */
+        body[data-state="center"] .brush-stroke {
+            animation: brushEnter 1.4s 0.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* 主標題 */
+        body[data-state="center"] .hero-title-wrapper h1 {
+            animation: scaleInSmooth 1.2s 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards, 
+                       shine 5s linear infinite; 
+        }
+
+        /* 副標題 1 */
+        body[data-state="center"] .hero-desc-1 {
+            animation: fadeInUpSmooth 1s 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* 副標題 2 */
+        body[data-state="center"] .hero-desc-2 {
+            animation: fadeInUpSmooth 1s 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* 左下方按鈕區 */
+        body[data-state="center"] .hero-split-btn:nth-child(1) {
+            animation: fadeInUpSmooth 1s 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* 右下方按鈕區 */
+        body[data-state="center"] .hero-split-btn:nth-child(2) {
+            animation: fadeInUpSmooth 1s 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+
         @media (max-width: 768px) {
             .hero-bottom-area { flex-direction: column; }
             .hero-split-btn { 
@@ -384,6 +475,49 @@
             .menu-btn::after { display: none; }
             
             .btn-back { bottom: 2rem; z-index: 70; }
+        }
+
+        /* --- 新增 Graphic 風琴效果樣式 --- */
+        .accordion-container {
+            display: flex;
+            width: 100%;
+            height: 400px;
+            gap: 0.75rem;
+        }
+
+        .accordion-item {
+            flex: 1;
+            transition: flex 0.6s cubic-bezier(0.25, 1, 0.5, 1), filter 0.4s ease;
+            background-size: cover;
+            background-position: center;
+            border-radius: 1rem;
+            cursor: pointer;
+            filter: grayscale(100%) brightness(0.9);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .accordion-item:hover {
+            flex: 3; /* Hover 時展開寬度 */
+            filter: grayscale(0%) brightness(1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 讓第一張圖預設有一點點顏色，或保持全灰也可，這邊設定全灰統一 */
+        
+        @media (max-width: 768px) {
+            .accordion-container {
+                flex-direction: column;
+                height: 500px; /* 手機版總高度拉長 */
+            }
+            .accordion-item {
+                width: 100%;
+                filter: grayscale(0%); /* 手機版不使用灰階，直接顯示彩色 */
+            }
+            .accordion-item:hover {
+                flex: 2; /* 手機版展開比例小一點，避免過度推擠 */
+            }
         }
     </style>
 </head>
@@ -438,9 +572,16 @@
 
     </div>
 
-    <!-- 圖片 Popup -->
+    <!-- 圖片/影片 Popup -->
     <div id="img-popup" class="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center cursor-pointer p-4" onclick="closePopup()">
-        <img id="popup-img" src="" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl transform transition-transform duration-300 scale-95" alt="Zoomed Image">
+        <!-- Image Container -->
+        <img id="popup-img" src="" class="hidden max-w-full max-h-[90vh] rounded-lg shadow-2xl transform transition-transform duration-300 scale-95" alt="Zoomed Image">
+        
+        <!-- Video Container (新增) -->
+        <video id="popup-video" controls class="hidden max-w-full max-h-[90vh] rounded-lg shadow-2xl transform transition-transform duration-300 scale-95" onclick="event.stopPropagation()">
+            <source id="popup-video-src" src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     </div>
 
     <!-- 滑動容器 -->
@@ -664,16 +805,16 @@ function parseCSVLines(text) {
                     <svg class="brush-stroke" viewBox="0 0 360 80" preserveAspectRatio="none">
                         <path class="brush-path" d="M15,38 Q30,35 45,32 L320,25 Q335,24 345,28 Q355,32 355,42 L358,52 Q360,65 345,70 L40,78 Q20,78 15,70 L5,65 L8,55 L2,45 Q5,40 15,38 Z" />
                     </svg>
-                    <h1 class="text-8xl md:text-9xl font-script title-text relative z-10 select-none pb-2" style="margin: -20px 0px -70px 0px; line-height: 1.3em;" >
+                    <h1 class="text-8xl md:text-9xl font-script title-text relative z-10 select-none pb-2" style="margin: -20px 0px -70px 0px; line-height: 1.3em; opacity: 0;" >
                         Go Faster
                     </h1>
                 </div>
                 
                 <div class="text-center space-y-6 px-4 mt-8">
-                    <p class="text-xl md:text-2xl tracking-[0.2em] text-gray-600 font-light"style="margin-top: 20px;">
+                    <p class="hero-desc-1 text-xl md:text-2xl tracking-[0.2em] text-gray-600 font-light opacity-0" style="margin-top: 20px;">
                         もっと早く、もっと楽しく
                     </p>
-                    <p class="text-xs md:text-sm text-gray-500 font-light max-w-lg mx-auto leading-relaxed uppercase tracking-wide" >
+                    <p class="hero-desc-2 text-xs md:text-sm text-gray-500 font-light max-w-lg mx-auto leading-relaxed uppercase tracking-wide opacity-0" >
                         Efficiently complete the design and apply it to products through collaboration between AI and designers
                     </p>
                 </div>
@@ -769,42 +910,64 @@ function parseCSVLines(text) {
                     </div>
                 </div>
 
-                <!-- MOTION Section (Original Layout Preserved) -->
+                <!-- MOTION Section (Fixed Structure & Restored) -->
                 <div class="mb-20 creation-group" id="create-motion">
                     <div class="flex items-center justify-between mb-6 flex-row-reverse">
                         <h3 class="text-3xl md:text-4xl font-bold text-gray-700">MOTION</h3>
-                        <button class="tri-btn" onclick="nextSlide('create-motion')">
-                            <svg class="tri-icon" viewBox="0 0 24 24"><path d="M10,8 L16,12 L10,16 Z"/></svg>
-                        </button>
+                        <!-- Button removed since only 1 slide remains -->
                     </div>
                     <div class="relative h-[300px] overflow-hidden slider-content">
+                        <!-- Video Slide 1 (Only slide remaining) -->
                         <div class="absolute inset-0 transition-all duration-700 ease-in-out opacity-100 translate-x-0 slide-item w-full flex gap-4" data-index="0">
-                            <div class="flex-1 bg-gray-800 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80')"></div>
-                            <div class="flex-1 bg-gray-800 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all hidden md:block" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80')"></div>
-                        </div>
-                        <div class="absolute inset-0 transition-all duration-700 ease-in-out opacity-0 translate-x-full pointer-events-none slide-item w-full flex gap-4" data-index="1">
-                            <div class="flex-1 bg-gray-800 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1533174072545-e8d4aa97edf9?auto=format&fit=crop&w=600&q=80')"></div>
-                            <div class="flex-1 bg-gray-800 rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all hidden md:block" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&q=80')"></div>
+                            
+                            <!-- Video 1: Pop -->
+                            <div class="flex-1 bg-white rounded-xl overflow-hidden cursor-pointer hover:brightness-110 transition-all relative group shadow-md" onclick="openVideoPopup('motion/pop.mp4')">
+                                <video class="w-full h-full object-contain" autoplay loop muted playsinline>
+                                    <source src="motion/pop.mp4" type="video/mp4">
+                                </video>
+                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 pointer-events-none">
+                                    <svg class="w-12 h-12 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+
+                            <!-- Video 2: Surges -->
+                            <div class="flex-1 bg-white rounded-xl overflow-hidden cursor-pointer hover:brightness-110 transition-all relative group shadow-md" onclick="openVideoPopup('motion/surges.mp4')">
+                                <video class="w-full h-full object-contain" autoplay loop muted playsinline>
+                                    <source src="motion/surges.mp4" type="video/mp4">
+                                </video>
+                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 pointer-events-none">
+                                    <svg class="w-12 h-12 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
 
-                <!-- GRAPHIC Section (Original Layout Preserved) -->
+                <!-- GRAPHIC Section (Accordion Style) -->
                 <div class="mb-20 creation-group" id="create-graphic">
                     <div class="flex items-center justify-between mb-6 flex-row-reverse">
                         <h3 class="text-3xl md:text-4xl font-bold text-gray-700">GRAPHIC</h3>
-                        <button class="tri-btn" onclick="nextSlide('create-graphic')">
-                            <svg class="tri-icon" viewBox="0 0 24 24"><path d="M10,8 L16,12 L10,16 Z"/></svg>
-                        </button>
+                        <!-- No navigation button needed for accordion -->
                     </div>
-                    <div class="relative h-[300px] overflow-hidden slider-content">
-                        <div class="absolute inset-0 transition-all duration-700 ease-in-out opacity-100 translate-x-0 slide-item w-full flex gap-4" data-index="0">
-                            <div class="flex-1 bg-white rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all shadow-md" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1626785774573-4b7993143a26?auto=format&fit=crop&w=600&q=80')"></div>
-                            <div class="flex-1 bg-white rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all shadow-md hidden md:block" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=600&q=80')"></div>
+                    
+                    <div class="accordion-container">
+                        <!-- Image 1 -->
+                        <div class="accordion-item" 
+                             onclick="openPopup(this)" 
+                             style="background-image: url('graphic/miya1000_1.jpg')">
                         </div>
-                        <div class="absolute inset-0 transition-all duration-700 ease-in-out opacity-0 translate-x-full pointer-events-none slide-item w-full flex gap-4" data-index="1">
-                            <div class="flex-1 bg-white rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all shadow-md" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=600&q=80')"></div>
-                            <div class="flex-1 bg-white rounded-xl bg-cover bg-center cursor-pointer hover:brightness-110 transition-all shadow-md hidden md:block" onclick="openPopup(this)" style="background-image: url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=600&q=80')"></div>
+
+                        <!-- Image 2 -->
+                        <div class="accordion-item" 
+                             onclick="openPopup(this)" 
+                             style="background-image: url('graphic/2-2.png')">
+                        </div>
+
+                        <!-- Image 3 -->
+                        <div class="accordion-item" 
+                             onclick="openPopup(this)" 
+                             style="background-image: url('graphic/2-1.png')">
                         </div>
                     </div>
                 </div>
@@ -822,6 +985,7 @@ function parseCSVLines(text) {
         const slider = document.getElementById('app-slider');
         const popup = document.getElementById('img-popup');
         const popupImg = document.getElementById('popup-img');
+        const popupVideo = document.getElementById('popup-video');
         const body = document.body;
 
         // === 1. Page Navigation ===
@@ -904,20 +1068,59 @@ function parseCSVLines(text) {
             groupIndices[groupId] = nextIdx;
         }
 
-        // === 3. Popup Logic ===
+        // === 3. Popup Logic (Updated for Video) ===
+        
+        // Open Image
         function openPopup(element) {
             const bgStyle = element.style.backgroundImage;
-            const src = bgStyle.slice(5, -2).replace(/['"]/g, ""); // Clean quotes just in case
+            if (!bgStyle) return;
+            const src = bgStyle.slice(5, -2).replace(/['"]/g, ""); // Clean quotes
+            
+            // UI Toggle
             popupImg.src = src;
+            popupImg.classList.remove('hidden');
+            popupVideo.classList.add('hidden');
+            popupVideo.pause(); // Ensure video is stopped
+
             popup.classList.add('open');
-            popupImg.classList.remove('scale-95');
-            popupImg.classList.add('scale-100');
+            // Animation
+            setTimeout(() => {
+                popupImg.classList.remove('scale-95');
+                popupImg.classList.add('scale-100');
+            }, 10);
+        }
+
+        // Open Video
+        function openVideoPopup(videoSrc) {
+            // UI Toggle
+            popupVideo.src = videoSrc;
+            popupImg.classList.add('hidden');
+            popupVideo.classList.remove('hidden');
+
+            popup.classList.add('open');
+            // Animation & Play
+            setTimeout(() => {
+                popupVideo.classList.remove('scale-95');
+                popupVideo.classList.add('scale-100');
+                popupVideo.play();
+            }, 10);
         }
 
         function closePopup() {
             popup.classList.remove('open');
+            
+            // Reset scales
             popupImg.classList.remove('scale-100');
             popupImg.classList.add('scale-95');
+            popupVideo.classList.remove('scale-100');
+            popupVideo.classList.add('scale-95');
+
+            // Stop video
+            setTimeout(() => {
+                popupVideo.pause();
+                popupVideo.currentTime = 0;
+                popupVideo.src = ""; // Clear source to stop buffering
+            }, 300);
         }
 
         // === 4. Init Logic ===
@@ -935,7 +1138,7 @@ function parseCSVLines(text) {
             initFluidBackground();
         });
 
-        // === 5. WebGL Fluid Background Effect (Grainy Matte Flow) ===
+        // === 5. WebGL Fluid Background Effect ===
         function initFluidBackground() {
             const container = document.getElementById('webgl-container');
             const scene = new THREE.Scene();
@@ -1035,8 +1238,7 @@ function parseCSVLines(text) {
                     // 大範圍流動 (0.12 scale)
                     st *= 0.12; 
 
-                    // Domain Warping (流體扭曲) - 極慢速 (原速 1/5)
-                    // 原本係數約 0.05，現在降至 0.01 左右
+                    // Domain Warping (流體扭曲) - 極慢速
                     vec3 q = vec3(0.0);
                     q.x = fbm(vec3(st, uTime * 0.01)); 
                     q.y = fbm(vec3(st + vec2(1.0), uTime * 0.012));
@@ -1048,14 +1250,8 @@ function parseCSVLines(text) {
                     float f = fbm(vec3(st + 3.0 * r.xy, uTime * 0.02));
 
                     // --- 霧面顆粒質感 ---
-                    
-                    // 1. 生成高頻噪點 (Grain) - 閃爍速度也同步變慢
                     float grain = random(gl_FragCoord.xy * 0.01 + uTime * 0.02);
-                    
-                    // 2. 混合流動 (Flow) 與 噪點 (Grain)
                     float texture = mix(f, grain, 0.15); 
-
-                    // 3. 調整透明度與對比
                     float alpha = 0.3 + 0.4 * texture;
                     
                     gl_FragColor = vec4(1.0, 1.0, 1.0, alpha * 0.5);
