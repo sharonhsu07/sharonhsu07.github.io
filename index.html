@@ -404,50 +404,55 @@
             }
         }
 
-        /* 3. 筆刷專用進場 (因為筆刷原本就有 transform 置中，需特別處理) */
-        @keyframes brushEnter {
+        /* 3. 手寫/塗抹感進場 (左至右) */
+        @keyframes wipeInLeft {
             0% { 
-                opacity: 0; 
-                transform: translate(-50%, -50%) scale(0.8) skewX(-10deg); 
-                filter: blur(8px);
+                /* 使用 clip-path 進行裁切，模擬從左到右的書寫/塗抹過程 */
+                clip-path: inset(0 100% 0 0);
+                opacity: 1; /* 開始時設為不透明，但被 clip-path 遮住 */
+                filter: blur(2px); /* 輕微模糊增加動態感 */
             }
             100% { 
+                /* 負值 inset 是為了確保傾斜字體(Italic)的尾巴不會被切掉 */
+                clip-path: inset(0 -20% 0 0); 
                 opacity: 1; 
-                transform: translate(-50%, -50%) scale(1) skewX(0); 
                 filter: blur(0);
             }
         }
 
         /* 當 Body 處於 'center' 狀態時，觸發動畫 */
-        /* 筆刷 */
+        
+        /* 筆刷：改為左至右塗抹 - 速度加快 */
         body[data-state="center"] .brush-stroke {
-            animation: brushEnter 1.4s 0.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            /* 延遲 0.1s 開始，持續由 1.4s 加快至 0.8s */
+            animation: wipeInLeft 0.8s 0.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
-        /* 主標題 */
+        /* 主標題：改為左至右書寫浮現 - 速度加快 */
         body[data-state="center"] .hero-title-wrapper h1 {
-            animation: scaleInSmooth 1.2s 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards, 
+            /* 延遲 0.3s (比筆刷稍晚)，持續由 1.4s 加快至 0.9s */
+            animation: wipeInLeft 0.9s 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards, 
                        shine 5s linear infinite; 
         }
 
         /* 副標題 1 */
         body[data-state="center"] .hero-desc-1 {
-            animation: fadeInUpSmooth 1s 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation: fadeInUpSmooth 1s 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
         /* 副標題 2 */
         body[data-state="center"] .hero-desc-2 {
-            animation: fadeInUpSmooth 1s 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation: fadeInUpSmooth 1s 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
         /* 左下方按鈕區 */
         body[data-state="center"] .hero-split-btn:nth-child(1) {
-            animation: fadeInUpSmooth 1s 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation: fadeInUpSmooth 1s 1.0s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
         /* 右下方按鈕區 */
         body[data-state="center"] .hero-split-btn:nth-child(2) {
-            animation: fadeInUpSmooth 1s 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation: fadeInUpSmooth 1s 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
 
@@ -566,8 +571,8 @@
         </button>
         
         <nav class="ui-element show-on-left side-menu left-8 items-start">
-            <button onclick="scrollToSection('left', 'tool-ps')" class="menu-btn">Photoshop JSX</button>
-            <button onclick="scrollToSection('left', 'tool-ae')" class="menu-btn">AE Auto Layout</button>
+            <button onclick="scrollToSection('left', 'tool-ps')" class="menu-btn">Photoshop</button>
+            <button onclick="scrollToSection('left', 'tool-ae')" class="menu-btn">After Effect</button>
         </nav>
 
         <!-- Right Page UI -->
@@ -619,7 +624,7 @@
                 
                 <div class="mb-24 tool-group" id="tool-ps">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-3xl md:text-4xl font-bold text-gray-700" id="ps-title">Photoshop JSX</h3>
+                        <h3 class="text-3xl md:text-4xl font-bold text-gray-700" id="ps-title">Photoshop</h3>
                         
                         <button class="tri-btn" onclick="nextSlide('tool-ps')">
                             <svg class="tri-icon" viewBox="0 0 24 24"><path d="M10,8 L16,12 L10,16 Z"/></svg>
@@ -628,7 +633,7 @@
                     
                     <div class="relative min-h-[550px] bg-white/60 rounded-2xl p-8 shadow-sm overflow-hidden slider-content">
                         
-                        <div class="absolute inset-0 p-8 transition-opacity duration-500 opacity-100 slide-item overflow-y-auto custom-scrollbar" data-index="0" data-title="Photoshop JSX">
+                        <div class="absolute inset-0 p-8 transition-opacity duration-500 opacity-100 slide-item overflow-y-auto custom-scrollbar" data-index="0" data-title="Photoshop">
                             <div class="mb-10">
                                 <h4 class="text-2xl font-bold text-blue-600 mb-2">Automated Localization Tool</h4>
                                 <h4 class="text-1.5xl font-bold text-blue-400 mb-2">Efficiency Solution for Multilingual Game Assets （多語言資產的效率解決方案）</h4>
@@ -767,7 +772,7 @@ function parseCSVLines(text) {
                             
                         </div>
 
-                        <div class="absolute inset-0 p-8 transition-opacity duration-500 opacity-0 pointer-events-none slide-item overflow-y-auto custom-scrollbar" data-index="1" data-title="Photoshop JSX">
+                        <div class="absolute inset-0 p-8 transition-opacity duration-500 opacity-0 pointer-events-none slide-item overflow-y-auto custom-scrollbar" data-index="1" data-title="Photoshop">
                             <h4 class="text-2xl font-bold text-red-500 mb-2">Auto-Slice Exporter</h4>
                             <p class="text-gray-600 mb-6">
                                 自動將長條漫畫切割成適合 Webtoon 或 Instagram 的分鏡圖片。支援自定義切割高度與格式輸出。<br>
@@ -796,7 +801,7 @@ function parseCSVLines(text) {
 
                 <div class="mb-24 tool-group" id="tool-ae">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-3xl md:text-4xl font-bold text-gray-700">AE Auto Layout</h3>
+                        <h3 class="text-3xl md:text-4xl font-bold text-gray-700">After Effect</h3>
                         <button class="tri-btn" onclick="nextSlide('tool-ae')">
                             <svg class="tri-icon" viewBox="0 0 24 24"><path d="M10,8 L16,12 L10,16 Z"/></svg>
                         </button>
