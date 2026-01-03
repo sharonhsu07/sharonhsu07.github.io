@@ -654,7 +654,8 @@
                                 <div class="md:w-3/4 mx-auto">
                                     <!-- Video Container -->
                                     <div class="w-full aspect-video bg-black rounded-lg flex items-center justify-center overflow-hidden shadow-md relative">
-                                        <video class="w-full h-full object-cover content-video" loop muted playsinline data-src="ps/TextExporter_preview.mp4">
+                                        <!-- Modified Video: Removed 'content-video', removed 'loop'/'muted', added 'controls' -->
+                                        <video class="w-full h-full object-cover rounded-lg shadow-sm" controls playsinline preload="metadata">
                                             <source src="ps/TextExporter_preview.mp4" type="video/mp4">
                                             Your browser does not support the video tag.
                                         </video>
@@ -717,9 +718,10 @@
                                 <h5 class="text-lg font-bold text-gray-700 mb-4 border-l-4 border-indigo-400 pl-3">Workflow Demo & Resources</h5>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div>
-                                        <!-- Video Container: Removed Autoplay for Performance -->
+                                        <!-- Video Container: Removed Autoplay for Performance, added controls -->
                                         <div class="w-full aspect-video bg-black rounded-lg flex items-center justify-center overflow-hidden shadow-md relative">
-                                            <video class="w-full h-full object-cover content-video" loop muted playsinline data-src="ps/ps_tool1_preview.mp4">
+                                            <!-- Modified Video: Removed 'content-video', removed 'loop'/'muted', added 'controls' -->
+                                            <video class="w-full h-full object-cover rounded-lg shadow-sm" controls playsinline preload="metadata">
                                                 <source src="ps/ps_tool1_preview.mp4" type="video/mp4">
                                                 Your browser does not support the video tag.
                                             </video>
