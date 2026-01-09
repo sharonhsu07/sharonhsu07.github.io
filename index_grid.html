@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Faster - Technical Elegance</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'silver-blue': '#94a3b8', 
+                        'silver-light': '#cbd5e1',
+                        'silver-dark': '#475569',
+                        'tech-accent': '#7dd3fc', /* 微微發光的藍 */
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans JP', 'Noto Sans TC', 'Poppins', 'sans-serif'],
+                        script: ['Ephesis', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 全局設置 */
+        body {
+            font-family: 'Poppins', 'Noto Sans JP', 'Noto Sans TC', sans-serif;
+            overflow: hidden; 
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- 優雅的動態背景 (Technical Elegance) --- */
+        #bg-wrapper {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+
+        /* 1. 噪點層 (Noise) - 增加質感 */
+        .noise-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            opacity: 0.04;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* 2. 技術網格 (Tech Grid) - 隱喻技術力 */
+        .grid-overlay {
+            position: absolute;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            z-index: 1;
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(203, 213, 225, 0.3) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(203, 213, 225, 0.3) 1px, transparent 1px);
+            opacity: 0.5;
+            animation: grid-move 120s linear infinite;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-50px, -50px); }
+        }
+
+        /* 3. 銀灰流體光暈 (Silver Flow) */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.5;
+            animation: float-slow 25s infinite ease-in-out alternate;
+            will-change: transform, opacity;
+        }
+
+        .orb-1 {
+            width: 70vw; height: 70vw;
+            background: radial-gradient(circle, #e2e8f0 0%, transparent 70%);
+            top: -20%; left: -10%;
+            animation-duration: 30s;
+        }
+        
+        .orb-2 {
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle, #f1f5f9 0%, transparent 70%);
+            bottom: -20%; right: -10%;
+            animation-duration: 35s;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 40vw; height: 40vw;
+            background: radial-gradient(circle, #cbd5e1 0%, transparent 70%); /* 銀藍色調 */
+            top: 40%; left: 40%;
+            opacity: 0.3;
+            animation-duration: 40s;
+            animation-delay: -10s;
+        }
+
+        @keyframes float-slow {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+            50% { transform: translate(20px, -30px) scale(1.05); opacity: 0.6; }
+            100% { transform: translate(-20px, 20px) scale(0.95); opacity: 0.4; }
+        }
+
+        /* --- 滑動容器架構 --- */
+        #app-slider {
+            display: flex;
+            flex-direction: column;
+            width: 100vw;
+            height: 300vh;
+            transform: translateY(0);
+            transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); /* 更優雅的緩動曲線 */
+            position: relative;
+            z-index: 10;
+        }
+
+        .page-section {
+            width: 100vw;
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+            flex-shrink: 0;
+            padding-top: 0; 
+        }
+        .page-section::-webkit-scrollbar { display: none; }
+        .page-section { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- UI Layer --- */
+        #ui-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            pointer-events: none;
+        }
+        
+        .ui-element {
+            pointer-events: none;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            opacity: 0;
+        }
+
+        body[data-state="design"] .show-on-design { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        body[data-state="home"] .show-on-home { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        body[data-state="creation"] .show-on-creation { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+        /* Back Buttons - Tech Style */
+        .btn-back {
+            position: absolute;
+            bottom: 3.5rem;
+            right: 2rem; 
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            z-index: 60;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 24px;
+            border-radius: 2px; /* 稍微方一點，更有科技感 */
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            text-transform: uppercase;
+        }
+        .btn-back:hover { 
+            color: #0f172a; 
+            background: rgba(255, 255, 255, 0.95); 
+            border-color: #94a3b8;
+            box-shadow: 0 4px 15px rgba(148, 163, 184, 0.15);
+        }
+
+        /* Side Menus - Minimalist */
+        .side-menu {
+            position: absolute;
+            top: 35%; 
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 60;
+            align-items: flex-start;
+            padding-left: 2rem; 
+            border-left: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        
+        .menu-btn {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            position: relative;
+            padding: 5px 0;
+            background: none;
+            border: none;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        .menu-btn::before {
+            content: '';
+            width: 0px;
+            height: 1px;
+            background: #94a3b8;
+            margin-right: 0px;
+            transition: all 0.4s;
+            opacity: 0;
+        }
+        .menu-btn.active, .menu-btn:hover {
+            color: #334155;
+            padding-left: 10px;
+        }
+        .menu-btn.active::before, .menu-btn:hover::before {
+            width: 15px;
+            margin-right: 10px;
+            opacity: 1;
+        }
+
+        /* --- 新的簡潔標題裝飾 --- */
+        .section-header {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 3rem;
+        }
+        .section-header h2 {
+            font-size: 4rem;
+            font-weight: 300;
+            color: #1e293b;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 2;
+        }
+        /* 銀藍色裝飾線 */
+        .section-header::after {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #cbd5e1 0%, #94a3b8 50%, #cbd5e1 100%);
+            border-radius: 2px;
+            opacity: 0.8;
+        }
+        /* 裝飾性背景字 (Faded Text) */
+        .section-header::before {
+            content: attr(data-title);
+            position: absolute;
+            top: -40px;
+            left: -10px;
+            font-size: 6rem;
+            font-weight: 700;
+            color: #f1f5f9; /* 非常淡的灰 */
+            z-index: 1;
+            white-space: nowrap;
+            font-family: 'Ephesis', cursive;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        @media (min-width: 768px) {
+            .section-header h2 { font-size: 5rem; }
+            .section-header::before { font-size: 8rem; top: -60px; }
+        }
+
+        /* --- 首頁排版 (Home) --- */
+        #page-center {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-top-area {
+            height: 60%; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 20;
+        }
+
+        .main-title {
+            font-size: 6rem;
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            color: #0f172a;
+            position: relative;
+            background: linear-gradient(135deg, #0f172a 0%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* 裝飾圓點 */
+        .title-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background-color: #94a3b8; /* 銀藍 */
+            border-radius: 50%;
+            margin-left: 5px;
+            box-shadow: 0 0 15px rgba(148, 163, 184, 0.6);
+        }
+
+        @media (min-width: 768px) {
+            .main-title { font-size: 9rem; }
+        }
+
+        .hero-bottom-area {
+            height: 40%; 
+            display: flex;
+            width: 100%;
+            border-top: 1px solid rgba(226, 232, 240, 0.5); /* 細緻分隔線 */
+        }
+
+        .hero-split-btn {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 5rem;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: transparent;
+            border-left: 1px solid transparent;
+            border-right: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-split-btn:hover {
+            background-color: rgba(255, 255, 255, 0.6);
+            border-color: rgba(226, 232, 240, 0.8);
+        }
+        
+        /* 懸停時的銀藍色光暈 */
+        .hero-split-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 0%;
+            background: linear-gradient(to bottom, rgba(148, 163, 184, 0.05), transparent);
+            transition: height 0.5s ease;
+        }
+        .hero-split-btn:hover::after { height: 100%; }
+
+        .btn-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+        .btn-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #334155;
+            transition: color 0.3s;
+        }
+        .hero-split-btn:hover .btn-title { color: #0f172a; }
+
+        /* --- Tab Navigation (Clean Tech Style) --- */
+        .tool-tab-btn, .web-tab-btn {
+            font-size: 0.9rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid transparent;
+            color: #94a3b8;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            transition: all 0.3s;
+        }
+        .tool-tab-btn:hover, .web-tab-btn:hover {
+            color: #64748b;
+        }
+        /* Active State */
+        .tool-tab-btn.active-tab, .web-tab-btn.active-tab {
+            color: #334155;
+            border-bottom: 1px solid #334155;
+        }
+
+        /* --- Content Cards (Monochrome) --- */
+        .slider-content {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03); /* 極淡的陰影 */
+        }
+        
+        .content-card-bg {
+            background-color: #f1f5f9; /* Slate 100 */
+            border: 1px solid #e2e8f0;
+            transition: all 0.4s ease;
+        }
+        .content-card-bg:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Tags - Clean Style */
+        .tech-tag {
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            background: transparent;
+            border-radius: 99px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Links */
+        .project-link {
+            background: #1e293b;
+            color: white;
+            transition: background 0.3s;
+        }
+        .project-link:hover {
+            background: #94a3b8; /* Hover to Silver Blue */
+        }
+
+        /* --- Accordion (Graphic) --- */
+        .accordion-item {
+            filter: grayscale(100%) brightness(0.95);
+            border: 1px solid white;
+        }
+        .accordion-item:hover {
+            filter: grayscale(0%);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- Popup --- */
+        #img-popup {
+            background: rgba(248, 250, 252, 0.95); /* Light background for popup */
+        }
+
+        /* =========================================
+           ANIMATIONS
+           ========================================= */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        body[data-state="home"] .hero-top-area > * {
+            animation: fadeUp 1s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+        }
+        body[data-state="home"] .hero-split-btn {
+            animation: fadeUp 1s 0.2s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+            opacity: 0; /* init */
+        }
+
+        @media (max-width: 768px) {
+            .hero-bottom-area { flex-direction: column; }
+            .hero-split-btn { 
+                width: 100%; 
+                border: none;
+                border-top: 1px solid rgba(226, 232, 240, 0.5);
+                padding-top: 2rem;
+                justify-content: center;
+            }
+            .section-header h2 { font-size: 3rem; }
+            .side-menu {
+                top: auto; bottom: 7rem;
+                border-left: none; padding-left: 0;
+                flex-direction: row; width: 100%; justify-content: center;
+                background: rgba(255,255,255,0.8);
+                backdrop-filter: blur(10px);
+                padding: 10px;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            }
+        }
+    </style>
+</head>
+<body data-state="home">
+
+    <!-- 背景質感層 -->
+    <div id="bg-wrapper">
+        <div class="grid-overlay"></div> <!-- 網格層 -->
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="noise-overlay"></div>
+    </div>
+
+    <!-- UI Layer: Fixed Controls -->
+    <div id="ui-layer">
+        
+        <!-- Design Page UI -->
+        <button onclick="goToHome()" class="ui-element show-on-design btn-back" aria-label="Go back to Home">
+            BACK TO TOP
+        </button>
+        
+        <nav class="ui-element show-on-design side-menu left-8">
+            <button onclick="scrollToSection('page-design', 'tool-ps')" class="menu-btn">Photoshop</button>
+            <button onclick="scrollToSection('page-design', 'tool-ae')" class="menu-btn">After Effects</button>
+        </nav>
+
+        <!-- Creation Page UI -->
+        <button onclick="goToHome()" class="ui-element show-on-creation btn-back" aria-label="Go back to Home">
+            BACK TO TOP
+        </button>
+
+        <nav class="ui-element show-on-creation side-menu left-8">
+            <button onclick="scrollToSection('page-creation', 'create-web')" class="menu-btn">WEB DEV</button>
+            <button onclick="scrollToSection('page-creation', 'create-motion')" class="menu-btn">MOTION</button>
+            <button onclick="scrollToSection('page-creation', 'create-graphic')" class="menu-btn">GRAPHIC</button>
+        </nav>
+
+        <!-- Footer -->
+        <footer class="fixed bottom-0 left-0 w-full text-center p-2 z-[45] pointer-events-auto">
+            <p class="text-[10px] text-slate-400 font-medium tracking-widest cursor-default select-none uppercase">
+                © 2025 Go Faster / AI x Design Collaboration
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- 圖片/影片 Popup -->
+    <div id="img-popup" class="fixed inset-0 z-[100] flex flex-col items-center justify-center cursor-pointer p-4 transition-all duration-300 opacity-0 invisible" onclick="closePopup()">
+        <div class="relative flex flex-col items-center justify-center max-w-full">
+            <img id="popup-img" src="" class="hidden max-w-full max-h-[80vh] shadow-2xl transform transition-transform duration-500 scale-95 border border-slate-200" alt="Zoomed Image">
+            <video id="popup-video" controls class="hidden max-w-full max-h-[80vh] shadow-2xl transform transition-transform duration-500 scale-95 border border-slate-200" onclick="event.stopPropagation()">
+                <source id="popup-video-src" src="" type="video/mp4">
+            </video>
+            <div id="popup-tags" class="mt-6 flex flex-wrap gap-2 justify-center opacity-0 transition-opacity duration-300"></div>
+        </div>
+    </div>
+
+    <!-- 滑動容器 -->
+    <div id="app-slider">
+
+        <!-- ================= PAGE 1 (TOP): HOME ================= -->
+        <section id="page-center" class="page-section">
+            <div class="hero-top-area">
+                <h1 class="main-title font-sans">
+                    Go Faster<span class="title-dot"></span>
+                </h1>
+                
+                <div class="text-center space-y-4 px-4 mt-8 opacity-0 animate-[fadeUp_1s_0.4s_forwards]">
+                    <p class="text-xl md:text-2xl tracking-[0.3em] text-slate-500 font-light">
+                        もっと早く、もっと楽しく
+                    </p>
+                    <p class="text-xs md:text-sm text-silver-blue font-medium max-w-lg mx-auto leading-relaxed uppercase tracking-widest mt-4">
+                        Seamless Collaboration between AI & Designers
+                    </p>
+                </div>
+            </div>
+
+            <div class="hero-bottom-area">
+                <div onclick="goToDesign()" class="hero-split-btn group">
+                    <span class="btn-label">SECTION 01</span>
+                    <h2 class="btn-title">DESIGN TOOLS</h2>
+                    <div class="mt-6 w-px h-12 bg-slate-300 group-hover:bg-silver-blue transition-colors"></div>
+                    <span class="mt-4 text-sm text-slate-400 group-hover:text-silver-blue transition-colors tracking-widest">ENTER</span>
+                </div>
+
+                <div onclick="goToCreation()" class="hero-split-btn group">
+                    <span class="btn-label">SECTION 02</span>
+                    <h2 class="btn-title">CREATION</h2>
+                    <div class="mt-6 w-px h-12 bg-slate-300 group-hover:bg-silver-blue transition-colors"></div>
+                    <span class="mt-4 text-sm text-slate-400 group-hover:text-silver-blue transition-colors tracking-widest">ENTER</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 2 (MIDDLE): DESIGN TOOLS ================= -->
+        <section id="page-design" class="page-section backdrop-blur-[2px]">
+            <div class="container mx-auto px-6 py-10 min-h-full flex flex-col pt-24 md:pt-32 pb-32">
+                <!-- 優化後的標題 -->
+                <div class="section-header" data-title="Tools">
+                    <h2>Design Tools</h2>
+                </div>
+                
+                <!-- Photoshop Tool Group -->
+                <div class="mb-24 tool-group" id="tool-ps">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-slate-200 pb-2">
+                        <h3 class="text-3xl font-light text-slate-700">Photoshop</h3>
+                        
+                        <!-- Tool Tabs -->
+                        <div class="flex gap-8 relative z-10">
+                            <button onclick="switchToolTab('tool-ps', 0, this)" class="tool-tab-btn active-tab">Text Exporter</button>
+                            <button onclick="switchToolTab('tool-ps', 1, this)" class="tool-tab-btn">Localization Tool</button>
+                        </div>
+                    </div>
+                    
+                    <div class="relative min-h-[600px] rounded-sm p-0 md:p-8 slider-content">
+                        
+                        <!-- Text Exporter -->
+                        <div class="absolute inset-0 p-6 md:p-8 transition-all duration-500 opacity-100 translate-x-0 slide-item overflow-y-auto" data-index="0">
+                            <h4 class="text-xl font-semibold text-slate-800 mb-3 flex items-center">
+                                <span class="w-2 h-2 bg-silver-blue rounded-full mr-3"></span>Text Exporter
+                            </h4>
+                            <p class="text-slate-500 mb-6 font-light leading-relaxed max-w-2xl">
+                                UXP Developer Tools を使用して作成された Photoshop プラグイン。PSD内のすべてのテキストコンテンツを一括で抽出し、翻訳作業を効率化します。
+                            </p>
+                            
+                             <div class="flex flex-wrap gap-2 mb-8">
+                                 <span class="tech-tag">Photoshop API</span>
+                                 <span class="tech-tag">UXP</span>
+                                 <span class="tech-tag">JavaScript</span>
+                            </div>
+
+                            <div class="mb-10">
+                                <h5 class="text-xs font-bold text-silver-blue uppercase tracking-widest mb-4">Outcome Preview</h5>
+                                <div class="md:w-3/4 mx-auto content-card-bg rounded p-2 cursor-pointer" onclick="openPopup(this)" 
+                                     style="background-image: url('ps/ps2_preview.png')" data-tags="Text Exporter, Outcome">
+                                     <div class="w-full h-64 md:h-80 bg-slate-50 bg-contain bg-no-repeat bg-center" style="background-image: url('ps/ps2_preview.png')"></div>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <h5 class="text-xs font-bold text-silver-blue uppercase tracking-widest mb-4">Workflow</h5>
+                                <div class="md:w-3/4 mx-auto content-card-bg rounded p-2">
+                                    <div class="w-full aspect-video bg-black rounded flex items-center justify-center overflow-hidden relative">
+                                        <video class="w-full h-full object-cover content-video" controls playsinline>
+                                            <source src="ps/TextExporter_preview.mp4" type="video/mp4">
+                                        </video>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Localization Tool -->
+                        <div class="absolute inset-0 p-6 md:p-8 transition-all duration-500 opacity-0 translate-x-10 pointer-events-none slide-item overflow-y-auto" data-index="1">
+                            <h4 class="text-xl font-semibold text-slate-800 mb-3 flex items-center">
+                                <span class="w-2 h-2 bg-silver-blue rounded-full mr-3"></span>Localization Tool
+                            </h4>
+                            <p class="text-slate-500 mb-6 font-light leading-relaxed max-w-2xl">
+                                JSXスクリプトによるテキスト自動置換ツール。CSVデータを読み込み、言語ごとのフォントスタイルを適用しながら一括で翻訳を反映させます。
+                            </p>
+                            <div class="flex flex-wrap gap-2 mb-8">
+                                 <span class="tech-tag">ExtendScript</span>
+                                 <span class="tech-tag">Automation</span>
+                                 <span class="tech-tag">Gemini API</span>
+                            </div>
+
+                            <div class="mb-10">
+                                <h5 class="text-xs font-bold text-silver-blue uppercase tracking-widest mb-4">Comparison</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="content-card-bg p-2 rounded cursor-pointer group" onclick="openPopup(this)" style="background-image: url('ps/ps1_jp.jpg')" data-tags="Original JP">
+                                        <span class="block text-[10px] text-slate-400 uppercase mb-2 group-hover:text-silver-blue">Original (JP)</span>
+                                        <div class="h-48 bg-slate-50 bg-contain bg-no-repeat bg-center" style="background-image: url('ps/ps1_jp.jpg')"></div>
+                                    </div>
+                                    <div class="content-card-bg p-2 rounded cursor-pointer group" onclick="openPopup(this)" style="background-image: url('ps/ps1_en.jpg')" data-tags="English Output">
+                                        <span class="block text-[10px] text-slate-400 uppercase mb-2 group-hover:text-silver-blue">English</span>
+                                        <div class="h-48 bg-slate-50 bg-contain bg-no-repeat bg-center" style="background-image: url('ps/ps1_en.jpg')"></div>
+                                    </div>
+                                    <div class="content-card-bg p-2 rounded cursor-pointer group" onclick="openPopup(this)" style="background-image: url('ps/ps1_zh.jpg')" data-tags="Chinese Output">
+                                        <span class="block text-[10px] text-slate-400 uppercase mb-2 group-hover:text-silver-blue">Chinese</span>
+                                        <div class="h-48 bg-slate-50 bg-contain bg-no-repeat bg-center" style="background-image: url('ps/ps1_zh.jpg')"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-10">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div>
+                                        <h5 class="text-xs font-bold text-silver-blue uppercase tracking-widest mb-4">Demo</h5>
+                                        <div class="content-card-bg p-2 rounded">
+                                            <div class="w-full aspect-video bg-black rounded flex items-center justify-center overflow-hidden">
+                                                <video class="w-full h-full object-cover content-video" controls playsinline>
+                                                    <source src="ps/ps_tool1_preview.mp4" type="video/mp4">
+                                                </video>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col justify-center space-y-4">
+                                        <h5 class="text-xs font-bold text-silver-blue uppercase tracking-widest mb-0">Data Structure</h5>
+                                        <div class="bg-white p-4 rounded border border-slate-200">
+                                            <div class="flex items-center gap-2 mb-2 text-slate-700 font-medium text-xs">
+                                                <div class="w-2 h-2 bg-green-400 rounded-full"></div> translation.csv
+                                            </div>
+                                            <pre class="text-[10px] text-slate-500 font-mono bg-slate-50 p-2 rounded border border-slate-100 overflow-x-auto">Japanese,Chinese,Korean,English
+カチャ,咔嚓,철컥,Click 
+帰った…,我回來了…,다녀왔어…,I'm back…</pre>
+                                        </div>
+                                        <div class="bg-white p-4 rounded border border-slate-200">
+                                            <div class="flex items-center gap-2 mb-2 text-slate-700 font-medium text-xs">
+                                                <div class="w-2 h-2 bg-blue-400 rounded-full"></div> font_map.csv
+                                            </div>
+                                            <pre class="text-[10px] text-slate-500 font-mono bg-slate-50 p-2 rounded border border-slate-100 overflow-x-auto">ja_font,en_font,zhtw_font
+KozGoPr6N,CCMeanwhile,NotoSansTC</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- After Effects Tool Group -->
+                <div class="mb-24 tool-group" id="tool-ae">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-slate-200 pb-2">
+                        <h3 class="text-3xl font-light text-slate-700">After Effects</h3>
+                        <div class="flex gap-8 relative z-10">
+                            <button onclick="switchToolTab('tool-ae', 0, this)" class="tool-tab-btn active-tab">Text Box</button>
+                            <button onclick="switchToolTab('tool-ae', 1, this)" class="tool-tab-btn">Grid Aligner</button>
+                        </div>
+                    </div>
+
+                    <div class="relative h-[400px] rounded-sm p-0 md:p-8 slider-content">
+                        <div class="absolute inset-0 p-6 md:p-8 transition-all duration-500 opacity-100 translate-x-0 slide-item" data-index="0">
+                            <h4 class="text-xl font-semibold text-slate-800 mb-3 flex items-center">
+                                <span class="w-2 h-2 bg-silver-blue rounded-full mr-3"></span>Responsive Text Box
+                            </h4>
+                            <p class="text-slate-500 mb-6 font-light">テキストの長さに応じて背景ボックスのサイズを自動調整するエクスプレッション。</p>
+                             <div class="flex flex-wrap gap-2 mb-6">
+                                 <span class="tech-tag">Expressions</span>
+                                 <span class="tech-tag">JavaScript</span>
+                            </div>
+                            <div class="h-48 bg-slate-100 rounded border border-slate-200 flex items-center justify-center text-slate-300">
+                                [Preview Image Placeholder]
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 p-6 md:p-8 transition-all duration-500 opacity-0 translate-x-10 pointer-events-none slide-item" data-index="1">
+                            <h4 class="text-xl font-semibold text-slate-800 mb-3 flex items-center">
+                                <span class="w-2 h-2 bg-silver-blue rounded-full mr-3"></span>Grid Aligner
+                            </h4>
+                            <p class="text-slate-500 mb-6 font-light">選択したレイヤーをグリッドまたは円形に瞬時に配置するスクリプト。</p>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                 <span class="tech-tag">ScriptUI</span>
+                                 <span class="tech-tag">Layout</span>
+                            </div>
+                            <div class="h-48 bg-slate-100 rounded border border-slate-200 flex items-center justify-center text-slate-300">
+                                [Preview Image Placeholder]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3 (BOTTOM): CREATION ================= -->
+        <section id="page-creation" class="page-section backdrop-blur-[2px]">
+            <div class="container mx-auto px-6 py-10 min-h-full flex flex-col pt-24 md:pt-32 pb-32">
+                <div class="text-left section-header" data-title="Works">
+                    <h2>Creation</h2>
+                </div>
+
+                <!-- Web Section -->
+                <div class="mb-24 creation-group" id="create-web">
+                    <div class="flex items-center justify-between mb-8 border-b border-slate-200 pb-2">
+                        <h3 class="text-3xl font-light text-slate-700">Web Development</h3>
+                        <div class="flex gap-8 relative z-10">
+                            <button onclick="switchWebTab(0, this)" class="web-tab-btn active-tab">Eva x niko and...</button>
+                            <button onclick="switchWebTab(1, this)" class="web-tab-btn">Chiikawa park</button>
+                        </div>
+                    </div>
+
+                    <div class="relative min-h-[500px] overflow-hidden slider-content rounded-sm">
+                        <!-- WEB Slide 1 -->
+                        <div class="absolute inset-0 transition-all duration-500 opacity-100 translate-x-0 slide-item w-full flex flex-col lg:flex-row gap-8 items-center p-6 md:p-10" data-index="0">
+                             <div class="w-full lg:w-3/5 h-[300px] lg:h-[400px] content-card-bg rounded p-1 cursor-pointer" 
+                                  onclick="openPopup(this)"
+                                  style="background-image: url('eva/index_preview.jpg')" data-tags="HTML5, CSS3, Gemini">
+                                  <div class="w-full h-full bg-slate-50 bg-cover bg-center" style="background-image: url('eva/index_preview.jpg')"></div>
+                             </div>
+                             
+                             <div class="w-full lg:w-2/5 flex flex-col justify-center space-y-6">
+                                 <div>
+                                     <h3 class="text-3xl font-bold text-slate-800 leading-tight">Evangelion <span class="font-light text-slate-400">x</span> niko and...</h3>
+                                     <span class="inline-block mt-2 text-[10px] bg-slate-100 text-slate-500 px-2 py-1 tracking-widest uppercase">Demo Project</span>
+                                 </div>
+                                 <p class="text-slate-500 leading-relaxed font-light">
+                                     Gemini が生成したデザインラフをベースに、レスポンシブコーディングとマイクロインタラクションを実装。
+                                 </p>
+                                 <div class="flex flex-wrap gap-2">
+                                     <span class="tech-tag">Sublime Text</span>
+                                     <span class="tech-tag">Gemini-Assisted</span>
+                                 </div>
+                                 <div class="pt-4">
+                                     <a href="eva/index.html" target="_blank" class="project-link px-8 py-3 rounded-full shadow-lg font-bold tracking-widest text-xs flex items-center gap-2 w-max no-underline">
+                                         VIEW PROJECT 
+                                         <span>→</span>
+                                     </a>
+                                 </div>
+                             </div>
+                        </div>
+
+                        <!-- WEB Slide 2 -->
+                        <div class="absolute inset-0 transition-all duration-500 opacity-0 translate-x-10 pointer-events-none slide-item w-full flex flex-col lg:flex-row gap-8 items-center p-6 md:p-10" data-index="1">
+                             <div class="w-full lg:w-3/5 h-[300px] lg:h-[400px] content-card-bg rounded p-1 cursor-pointer" 
+                                  onclick="openPopup(this)" 
+                                  style="background-image: url('chiikawa/index_preview.png')" data-tags="Front-end, IP Design">
+                                  <div class="w-full h-full bg-slate-50 bg-cover bg-center" style="background-image: url('chiikawa/index_preview.png')"></div>
+                             </div>
+                             <div class="w-full lg:w-2/5 flex flex-col justify-center space-y-6">
+                                 <div>
+                                     <h3 class="text-3xl font-bold text-slate-800 leading-tight">Chiikawa park</h3>
+                                     <span class="inline-block mt-2 text-[10px] bg-slate-100 text-slate-500 px-2 py-1 tracking-widest uppercase">Demo Project</span>
+                                 </div>
+                                 <p class="text-slate-500 leading-relaxed font-light">
+                                     IPの世界観を分析し、Geminiと協力して配色とUIコンポーネントを設計・実装。
+                                 </p>
+                                 <div class="flex flex-wrap gap-2">
+                                     <span class="tech-tag">CSS Animation</span>
+                                     <span class="tech-tag">Gemini-Assisted</span>
+                                 </div>
+                                 <div class="pt-4">
+                                     <a href="chiikawa/index.html" target="_blank" class="project-link px-8 py-3 rounded-full shadow-lg font-bold tracking-widest text-xs flex items-center gap-2 w-max no-underline">
+                                         VIEW PROJECT 
+                                         <span>→</span>
+                                     </a>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MOTION Section -->
+                <div class="mb-24 creation-group" id="create-motion">
+                    <div class="flex items-center justify-between mb-8 border-b border-slate-200 pb-2">
+                        <h3 class="text-3xl font-light text-slate-700">Motion Graphics</h3>
+                        <div class="flex gap-2">
+                             <button class="w-8 h-8 rounded-full border border-slate-300 flex items-center justify-center hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition-colors" onclick="nextSlide('create-motion')">
+                                 <span class="text-lg">→</span>
+                             </button>
+                        </div>
+                    </div>
+                    
+                    <div class="relative h-[420px] overflow-hidden slider-content rounded-sm">
+                        <!-- Video Slide 1 -->
+                        <div class="absolute inset-0 transition-all duration-700 ease-out opacity-100 translate-x-0 slide-item w-full flex gap-6 p-6 md:p-8" data-index="0">
+                            
+                            <!-- Video 1 -->
+                            <div class="flex-1 flex flex-col content-card-bg p-1 rounded group">
+                                <div class="relative flex-grow bg-black cursor-pointer overflow-hidden rounded-sm" onclick="openVideoPopup(this, 'motion/lightbox.mp4')" data-tags="Blender, AE">
+                                    <video class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity content-video" loop muted playsinline>
+                                        <source src="motion/lightbox.mp4" type="video/mp4">
+                                    </video>
+                                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 group-hover:scale-110 transition-transform">
+                                            <div class="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="h-12 flex items-center justify-between px-2 mt-2">
+                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">3D Lightbox</span>
+                                     <span class="tech-tag">Blender</span>
+                                </div>
+                            </div>
+
+                            <!-- Video 2 -->
+                            <div class="flex-1 flex flex-col content-card-bg p-1 rounded group">
+                                <div class="relative flex-grow bg-black cursor-pointer overflow-hidden rounded-sm" onclick="openVideoPopup(this, 'motion/surges.mp4')" data-tags="AE, Camera">
+                                    <video class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity content-video" loop muted playsinline>
+                                        <source src="motion/surges.mp4" type="video/mp4">
+                                    </video>
+                                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 group-hover:scale-110 transition-transform">
+                                            <div class="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="h-12 flex items-center justify-between px-2 mt-2">
+                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Surges</span>
+                                     <span class="tech-tag">After Effects</span>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Video Slide 2 -->
+                         <div class="absolute inset-0 transition-all duration-700 ease-out opacity-0 translate-x-10 pointer-events-none slide-item w-full flex gap-6 p-6 md:p-8" data-index="1">
+                            <!-- Video 3 -->
+                            <div class="flex-1 flex flex-col content-card-bg p-1 rounded group">
+                                <div class="relative flex-grow bg-black cursor-pointer overflow-hidden rounded-sm" onclick="openVideoPopup(this, 'motion/disco_flo.mp4')" data-tags="AE, Kinetic">
+                                    <video class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity content-video" loop muted playsinline>
+                                        <source src="motion/disco_flo.mp4" type="video/mp4">
+                                    </video>
+                                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 group-hover:scale-110 transition-transform">
+                                            <div class="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="h-12 flex items-center justify-between px-2 mt-2">
+                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Disco Flo</span>
+                                     <span class="tech-tag">Typography</span>
+                                </div>
+                            </div>
+
+                            <!-- Video 4 -->
+                            <div class="flex-1 flex flex-col content-card-bg p-1 rounded group">
+                                <div class="relative flex-grow bg-black cursor-pointer overflow-hidden rounded-sm" onclick="openVideoPopup(this, 'motion/pop.mp4')" data-tags="AE, Character">
+                                    <video class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity content-video" loop muted playsinline>
+                                        <source src="motion/pop.mp4" type="video/mp4">
+                                    </video>
+                                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/40 group-hover:scale-110 transition-transform">
+                                            <div class="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="h-12 flex items-center justify-between px-2 mt-2">
+                                     <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Pop Transition</span>
+                                     <span class="tech-tag">Character</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRAPHIC Section -->
+                <div class="mb-20 creation-group" id="create-graphic">
+                    <div class="flex items-center justify-between mb-8 border-b border-slate-200 pb-2">
+                        <h3 class="text-3xl font-light text-slate-700">Graphic Design</h3>
+                    </div>
+                    
+                    <div class="accordion-container">
+                        <div class="accordion-item group" 
+                             onclick="openPopup(this)" 
+                             data-tags="Photoshop, Composite"
+                             style="background-image: url('graphic/miya1000_1.jpg')">
+                        </div>
+
+                        <div class="accordion-item group" 
+                             onclick="openPopup(this)" 
+                             data-tags="Photoshop, Retouch"
+                             style="background-image: url('graphic/2-2.png')">
+                        </div>
+
+                        <div class="accordion-item group" 
+                             onclick="openPopup(this)" 
+                             data-tags="Photoshop, Layout"
+                             style="background-image: url('graphic/2-1.png')">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        const slider = document.getElementById('app-slider');
+        const popup = document.getElementById('img-popup');
+        const popupImg = document.getElementById('popup-img');
+        const popupVideo = document.getElementById('popup-video');
+        const popupTags = document.getElementById('popup-tags');
+        const body = document.body;
+
+        // Video Optimization
+        function manageVideoPlayback() {
+            const currentState = body.getAttribute('data-state'); 
+            const videos = document.querySelectorAll('video.content-video');
+
+            videos.forEach(video => {
+                const slideItem = video.closest('.slide-item');
+                const pageSection = video.closest('.page-section');
+                
+                let isVisiblePage = false;
+                if (currentState === 'design' && pageSection.id === 'page-design') isVisiblePage = true;
+                if (currentState === 'creation' && pageSection.id === 'page-creation') isVisiblePage = true;
+
+                const isVisibleSlide = slideItem && window.getComputedStyle(slideItem).opacity !== '0';
+
+                if (isVisiblePage && isVisibleSlide) {
+                    if (video.paused) {
+                        video.play().catch(e => { });
+                    }
+                } else {
+                    if (!video.paused) {
+                        video.pause();
+                    }
+                }
+            });
+        }
+
+        // === Navigation ===
+        function goToDesign() {
+            slider.style.transform = 'translateY(-100vh)';
+            body.setAttribute('data-state', 'design');
+            setTimeout(manageVideoPlayback, 900);
+        }
+
+        function goToCreation() {
+            slider.style.transform = 'translateY(-200vh)';
+            body.setAttribute('data-state', 'creation');
+            setTimeout(manageVideoPlayback, 900);
+        }
+
+        function goToHome() {
+            slider.style.transform = 'translateY(0)';
+            body.setAttribute('data-state', 'home');
+            manageVideoPlayback();
+        }
+
+        function scrollToSection(pageId, id) {
+            const el = document.getElementById(id);
+            const pageEl = document.getElementById(pageId);
+            if (el && pageEl) {
+                const elRect = el.getBoundingClientRect();
+                const pageRect = pageEl.getBoundingClientRect();
+                const absoluteTop = pageEl.scrollTop + (elRect.top - pageRect.top);
+                const offset = 120;
+                pageEl.scrollTo({ top: absoluteTop - offset, behavior: 'smooth' });
+            }
+        }
+
+        // === Tab/Slide Logic (Consolidated) ===
+        const groupIndices = {}; 
+
+        function updateSlideState(group, index) {
+             const slides = group.querySelectorAll('.slide-item');
+             slides.forEach((s, i) => {
+                if (i === index) {
+                    s.style.transform = 'translateX(0)';
+                    s.style.opacity = '1';
+                    s.style.pointerEvents = 'auto';
+                } else {
+                    // Slight parallax offset for hidden slides
+                    s.style.transform = i < index ? 'translateX(-20px)' : 'translateX(20px)';
+                    s.style.opacity = '0';
+                    s.style.pointerEvents = 'none';
+                }
+            });
+            setTimeout(manageVideoPlayback, 600);
+        }
+
+        function nextSlide(groupId) {
+            const group = document.getElementById(groupId);
+            if (!group) return;
+            const slides = group.querySelectorAll('.slide-item');
+            
+            if (groupIndices[groupId] === undefined) groupIndices[groupId] = 0;
+            const nextIdx = (groupIndices[groupId] + 1) % slides.length;
+            
+            groupIndices[groupId] = nextIdx;
+            updateSlideState(group, nextIdx);
+        }
+
+        function switchToolTab(groupId, index, btn) {
+            const group = document.getElementById(groupId);
+            if (!group) return;
+            
+            // Visual Update for Tabs
+            const btns = btn.parentElement.querySelectorAll('.tool-tab-btn');
+            btns.forEach(b => b.classList.remove('active-tab'));
+            btn.classList.add('active-tab');
+
+            groupIndices[groupId] = index;
+            updateSlideState(group.querySelector('.slider-content'), index);
+        }
+
+        function switchWebTab(index, btn) {
+            const groupId = 'create-web';
+            const group = document.getElementById(groupId);
+            if (!group) return;
+
+            const btns = btn.parentElement.querySelectorAll('.web-tab-btn');
+            btns.forEach(b => b.classList.remove('active-tab'));
+            btn.classList.add('active-tab');
+
+            groupIndices[groupId] = index;
+            updateSlideState(group.querySelector('.slider-content'), index);
+        }
+
+        // === Popup Logic ===
+        function renderTags(tagsString) {
+            popupTags.innerHTML = ''; 
+            if (!tagsString) {
+                popupTags.style.opacity = '0';
+                return;
+            }
+            const tags = tagsString.split(',').map(t => t.trim());
+            tags.forEach(tag => {
+                const span = document.createElement('span');
+                span.className = 'tech-tag text-xs bg-white border-slate-300';
+                span.textContent = tag;
+                popupTags.appendChild(span);
+            });
+            popupTags.style.opacity = '1';
+        }
+
+        function openPopup(element) {
+            const bgStyle = element.style.backgroundImage;
+            if (!bgStyle) return;
+            const src = bgStyle.slice(5, -2).replace(/['"]/g, ""); 
+            const tags = element.getAttribute('data-tags');
+
+            popupImg.src = src;
+            popupImg.classList.remove('hidden');
+            popupVideo.classList.add('hidden');
+            popupVideo.pause(); 
+
+            renderTags(tags);
+            
+            popup.classList.remove('invisible');
+            popup.classList.remove('opacity-0');
+            
+            setTimeout(() => {
+                popupImg.classList.remove('scale-95');
+                popupImg.classList.add('scale-100');
+            }, 10);
+        }
+
+        function openVideoPopup(element, videoSrc) {
+            const tags = element ? element.getAttribute('data-tags') : '';
+            popupVideo.src = videoSrc;
+            popupImg.classList.add('hidden');
+            popupVideo.classList.remove('hidden');
+
+            renderTags(tags);
+            
+            popup.classList.remove('invisible');
+            popup.classList.remove('opacity-0');
+
+            setTimeout(() => {
+                popupVideo.classList.remove('scale-95');
+                popupVideo.classList.add('scale-100');
+                popupVideo.play();
+            }, 10);
+        }
+
+        function closePopup() {
+            popup.classList.add('opacity-0');
+            popupImg.classList.remove('scale-100');
+            popupImg.classList.add('scale-95');
+            popupVideo.classList.remove('scale-100');
+            popupVideo.classList.add('scale-95');
+            popupTags.style.opacity = '0';
+
+            setTimeout(() => {
+                popup.classList.add('invisible');
+                popupVideo.pause();
+                popupVideo.currentTime = 0;
+                popupVideo.src = ""; 
+            }, 300);
+        }
+
+        // === Init ===
+        document.addEventListener('DOMContentLoaded', () => {
+            // Force initial state
+            document.querySelectorAll('.slider-content').forEach(group => {
+                updateSlideState(group, 0);
+            });
+            manageVideoPlayback();
+        });
+    </script>
+</body>
+</html>
