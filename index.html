@@ -64,8 +64,20 @@
             100% { transform: translate(-40px, -40px) rotate(2deg); }
         }
 
-        .orb {
+        /* --- Orb CSS --- */
+        .orb-wrapper {
             position: absolute;
+            z-index: 1; 
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        .orb-pos-1 { top: -15%; left: -10%; }
+        .orb-pos-2 { bottom: -15%; right: -5%; }
+        .orb-pos-3 { top: 35%; left: 35%; }
+
+        .orb {
+            position: relative;
             border-radius: 50%;
             filter: blur(90px);
             opacity: 0.5;
@@ -76,14 +88,12 @@
         .orb-1 {
             width: 60vw; height: 60vw;
             background: linear-gradient(120deg, #dbeafe, #e0e7ff);
-            top: -15%; left: -10%;
             animation-duration: 25s;
         }
         
         .orb-2 {
             width: 50vw; height: 50vw;
             background: linear-gradient(120deg, #fce7f3, #fae8ff);
-            bottom: -15%; right: -5%;
             animation-duration: 30s;
             animation-delay: -5s;
         }
@@ -91,22 +101,21 @@
         .orb-3 {
             width: 45vw; height: 45vw;
             background: linear-gradient(120deg, #fef3c7, #fff7ed);
-            top: 35%; left: 35%;
             animation-duration: 28s;
             animation-delay: -10s;
         }
 
         @keyframes morph-float {
             0% { 
-                transform: translate(0, 0) scale(1);
+                transform: scale(1) rotate(0deg);
                 border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
             }
             50% { 
-                transform: translate(20px, 10px) scale(1.05);
+                transform: scale(1.05) rotate(10deg);
                 border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
             }
             100% { 
-                transform: translate(-20px, -20px) scale(0.95);
+                transform: scale(0.95) rotate(-10deg);
                 border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
             }
         }
@@ -152,7 +161,6 @@
         body[data-state="home"] .show-on-home { opacity: 1; transform: translateY(0); pointer-events: auto; }
         body[data-state="creation"] .show-on-creation { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
-        /* Back Buttons */
         .btn-back {
             position: absolute;
             bottom: 3.5rem;
@@ -174,13 +182,11 @@
             border: 1px solid rgba(255,255,255,0.5);
         }
         .btn-back:hover { 
-            /* 修改：Hover 改為深灰色，降低彩度 */
             color: #4b5563; 
             background: rgba(255,255,255,0.8); 
             transform: translateY(-2px);
         }
 
-        /* Side Menus */
         .side-menu {
             position: absolute;
             top: 35%; 
@@ -216,7 +222,6 @@
             bottom: 0;
             width: 0;
             height: 2px;
-            /* 修改：底線改為冷灰色 */
             background: #94a3b8;
             transition: width 0.3s;
         }
@@ -243,7 +248,6 @@
             width: 100%;
         }
 
-        /* === 首頁按鈕裝飾 (Home Button Deco) === */
         .hero-split-btn {
             flex: 1;
             height: 100%;
@@ -264,7 +268,6 @@
             flex-grow: 1.2;
         }
 
-        /* 裝飾線條與十字 */
         .hero-btn-deco {
             display: flex;
             align-items: center;
@@ -276,7 +279,7 @@
         }
         .hero-split-btn:hover .hero-btn-deco {
             opacity: 1;
-            gap: 16px; /* 懸停時展開 */
+            gap: 16px; 
             transform: scale(1.1);
         }
         
@@ -288,7 +291,6 @@
         }
         .hero-split-btn:hover .deco-line {
             width: 40px;
-            /* 修改：Hover 線條改為 Slate 灰色 */
             background-color: #64748b;
         }
 
@@ -300,16 +302,26 @@
         }
         .hero-split-btn:hover .deco-cross {
             transform: rotate(90deg) scale(1.2);
-            /* 修改：Hover 十字改為 Slate 灰色 */
             color: #64748b;
         }
 
-        /* 標題樣式 */
+        /* --- 標題樣式調整 (Frame + Resized Font) --- */
+        
+        /* 1. 外框容器設定 */
         .hero-title-wrapper { 
             position: relative; 
             display: inline-block;
             text-align: center; 
+            
+            /* 新增外框裝飾 */
+            border: 1px solid rgba(148, 163, 184, 0.4); /* 邊框顏色 (Slate-400, 透明度) */
+            padding: 0.5rem 3rem; /* 增加內距，讓字不要貼邊 */
+            border-radius: 4px; /* 稍微導圓角，符合科技感 */
+            background: rgba(255, 255, 255, 0.25); /* 淡淡的半透明背景 */
+            backdrop-filter: blur(4px); /* 毛玻璃效果 */
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1); /* 第二層淡淡的外光暈 */
         }
+
         .title-text {
             background: linear-gradient(120deg, #1a202c 0%, #4a5568 50%, #1a202c 100%);
             background-size: 200% auto;
@@ -322,23 +334,26 @@
             display: block;
             opacity: 0;
         }
+
+        /* 2. 分頁標題字體縮小 */
         .sub-page-title {
-            font-size: 4.5rem; 
+            /* 原本 4.5rem -> 改為 3.5rem (Mobile) */
+            font-size: 3.5rem; 
             line-height: 1.2;
-            padding-bottom: 0.2em;
+            padding-bottom: 0.1em;
             margin-bottom: 0;
             padding-left: 0; 
             opacity: 1; 
         }
         @media (min-width: 768px) {
             .sub-page-title {
-                font-size: 6rem; 
+                /* 原本 6rem -> 改為 5rem (Desktop) */
+                font-size: 5rem; 
             }
         }
         @keyframes shine { to { background-position: 200% center; } }
 
-        /* === 內頁標題裝飾 (Inner Title Deco) === */
-        /* 雙斜線裝飾 // */
+        /* --- 內頁標題裝飾 --- */
         .title-deco {
             display: flex;
             align-items: center;
@@ -346,21 +361,19 @@
         }
         .title-deco::before {
             content: '//';
-            font-family: 'Poppins', sans-serif; /* 使用非襯線字體確保斜線乾淨 */
+            font-family: 'Poppins', sans-serif; 
             font-weight: 300;
             font-size: 0.9em;
-            letter-spacing: -2px; /* 讓斜線靠得更近 */
+            letter-spacing: -2px; 
             background: linear-gradient(135deg, #cbd5e1 0%, #64748b 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-right: 0.2rem;
             opacity: 0.7;
-            transform: skewX(-10deg); /* 稍微更斜一點增加速度感 */
+            transform: skewX(-10deg); 
         }
-        /* 懸停時斜線變色 (如果父容器被懸停) */
         .tool-group:hover .title-deco::before,
         .creation-group:hover .title-deco::before {
-            /* 修改：Hover 漸層改為更深的冷灰色，而非亮藍色 */
             background: linear-gradient(135deg, #94a3b8 0%, #475569 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -368,7 +381,6 @@
             transition: all 0.5s ease;
         }
 
-        /* Tri-Button */
         .tri-btn {
             width: 50px;
             height: 50px;
@@ -385,7 +397,6 @@
         }
         .tri-btn:hover {
             transform: translateX(5px);
-            /* 修改：按鈕 Hover 邊框改為冷灰色 */
             border-color: #94a3b8;
             background: #f8fafc;
         }
@@ -395,10 +406,8 @@
             fill: #6b7280; 
             transition: fill 0.3s ease; 
         }
-        /* 修改：圖標 Hover 顏色改為深灰 */
         .tri-btn:hover .tri-icon { fill: #334155; }
         
-        /* Popup */
         #img-popup {
             opacity: 0;
             visibility: hidden;
@@ -413,7 +422,6 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Animations */
         @keyframes fadeInUpSmooth {
             0% { opacity: 0; transform: translateY(40px); filter: blur(10px); }
             100% { opacity: 1; transform: translateY(0); filter: blur(0); }
@@ -461,7 +469,6 @@
             .btn-back { bottom: 2rem; z-index: 70; }
         }
 
-        /* Accordion */
         .accordion-container { display: flex; width: 100%; height: 400px; gap: 0.75rem; }
         .accordion-item {
             flex: 1; transition: flex 0.6s cubic-bezier(0.25, 1, 0.5, 1), filter 0.4s ease;
@@ -481,9 +488,17 @@
 
     <div id="bg-wrapper">
         <div class="tech-grid"></div>
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
+        
+        <div class="orb-wrapper orb-pos-1">
+            <div class="orb orb-1"></div>
+        </div>
+        <div class="orb-wrapper orb-pos-2">
+            <div class="orb orb-2"></div>
+        </div>
+        <div class="orb-wrapper orb-pos-3">
+            <div class="orb orb-3"></div>
+        </div>
+
         <div class="noise-overlay"></div>
     </div>
 
@@ -528,7 +543,7 @@
         <section id="page-center" class="page-section">
             <div class="hero-top-area">
                 <div class="hero-title-wrapper mb-10 relative">
-                    <h1 class="text-8xl md:text-9xl font-script title-text relative z-10 select-none pb-2" style="margin: 0; line-height: 1.3em; opacity: 0;" >
+                    <h1 class="text-6xl md:text-8xl font-script title-text relative z-10 select-none pb-2" style="margin: 0; line-height: 1.3em; opacity: 0;" >
                         Go Faster
                     </h1>
                 </div>
@@ -976,7 +991,6 @@ SicHandicH,LintMcCree,HannotateTC</pre>
         const popupTags = document.getElementById('popup-tags');
         const body = document.body;
 
-        // Video Optimization
         function manageVideoPlayback() {
             const currentState = body.getAttribute('data-state'); 
             const videos = document.querySelectorAll('video.content-video');
@@ -1003,7 +1017,6 @@ SicHandicH,LintMcCree,HannotateTC</pre>
             });
         }
 
-        // === 1. Page Navigation ===
         function goToDesign() {
             slider.style.transform = 'translateY(-100vh)';
             body.setAttribute('data-state', 'design');
@@ -1034,7 +1047,6 @@ SicHandicH,LintMcCree,HannotateTC</pre>
             }
         }
 
-        // === 2. Internal Content Carousel ===
         const groupIndices = {}; 
 
         function nextSlide(groupId) {
@@ -1072,7 +1084,6 @@ SicHandicH,LintMcCree,HannotateTC</pre>
             setTimeout(manageVideoPlayback, 700);
         }
 
-        // Web Tab Switching
         function switchWebTab(index) {
             const groupId = 'create-web';
             const group = document.getElementById(groupId);
@@ -1106,7 +1117,6 @@ SicHandicH,LintMcCree,HannotateTC</pre>
             setTimeout(manageVideoPlayback, 700);
         }
 
-        // Tool Tab Switching
         function switchToolTab(groupId, index) {
             const group = document.getElementById(groupId);
             if (!group) return;
@@ -1139,7 +1149,6 @@ SicHandicH,LintMcCree,HannotateTC</pre>
             setTimeout(manageVideoPlayback, 700);
         }
 
-        // === 3. Popup Logic ===
         function renderTags(tagsString) {
             popupTags.innerHTML = ''; 
             if (!tagsString) {
@@ -1205,7 +1214,6 @@ SicHandicH,LintMcCree,HannotateTC</pre>
             }, 300);
         }
 
-        // === 4. Init Logic ===
         document.addEventListener('DOMContentLoaded', () => {
             const groups = document.querySelectorAll('.slider-content');
             groups.forEach(group => {
@@ -1224,6 +1232,54 @@ SicHandicH,LintMcCree,HannotateTC</pre>
             });
             
             manageVideoPlayback();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const wrappers = document.querySelectorAll('.orb-wrapper');
+            let mouseX = window.innerWidth / 2;
+            let mouseY = window.innerHeight / 2;
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            const orbsData = Array.from(wrappers).map(() => ({ x: 0, y: 0 }));
+
+            function animateOrbs() {
+                wrappers.forEach((wrapper, index) => {
+                    const rect = wrapper.getBoundingClientRect();
+                    if (rect.width === 0 || rect.height === 0) return;
+
+                    const orbCenterX = rect.left + rect.width / 2;
+                    const orbCenterY = rect.top + rect.height / 2;
+
+                    const distX = mouseX - orbCenterX;
+                    const distY = mouseY - orbCenterY;
+                    const distance = Math.sqrt(distX * distX + distY * distY);
+
+                    const interactionRadius = 800; 
+                    let targetX = 0;
+                    let targetY = 0;
+
+                    if (distance < interactionRadius) {
+                        const force = (interactionRadius - distance) / interactionRadius;
+                        const moveStrength = 300; 
+
+                        targetX = -(distX / distance) * force * moveStrength;
+                        targetY = -(distY / distance) * force * moveStrength;
+                    }
+
+                    orbsData[index].x += (targetX - orbsData[index].x) * 0.08;
+                    orbsData[index].y += (targetY - orbsData[index].y) * 0.08;
+
+                    wrapper.style.transform = `translate3d(${orbsData[index].x}px, ${orbsData[index].y}px, 0)`;
+                });
+
+                requestAnimationFrame(animateOrbs);
+            }
+
+            animateOrbs();
         });
     </script>
 </body>
