@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,9 +11,13 @@
     
     <style>
         /* 全局設置 */
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             font-family: 'Poppins', 'Noto Sans JP', 'Noto Sans TC', sans-serif;
-            overflow: hidden; 
+            overflow-x: hidden; /* 防止水平滾動 */
+            overflow-y: auto;   /* 允許垂直滾動 */
             background-color: #f3f4f6;
             margin: 0;
             padding: 0;
@@ -120,29 +124,27 @@
             }
         }
 
-        /* --- 滑動容器架構 --- */
+        /* --- 滑動容器架構 (Modified for Scrolling) --- */
         #app-slider {
             display: flex;
             flex-direction: column;
             width: 100vw;
-            height: 300vh;
-            transform: translateY(0);
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            /* 移除固定高度和 Transform，改為自然流動 */
+            height: auto;
             position: relative;
             z-index: 10;
         }
 
         .page-section {
             width: 100vw;
-            height: 100vh;
-            overflow-y: auto;
-            overflow-x: hidden;
+            /* 改為 min-height，讓內容可以自然撐開 */
+            min-height: 100vh;
+            /* 移除內部的 overflow，改由 body 統一滾動 */
+            overflow: visible;
             position: relative;
             flex-shrink: 0;
             padding-top: 0; 
         }
-        .page-section::-webkit-scrollbar { display: none; }
-        .page-section { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* --- UI Layer --- */
         #ui-layer {
@@ -157,6 +159,8 @@
             transition: opacity 0.5s ease, transform 0.5s ease;
             opacity: 0;
         }
+        
+        /* 透過 JS 滾動偵測來切換 data-state */
         body[data-state="design"] .show-on-design { opacity: 1; transform: translateY(0); pointer-events: auto; }
         body[data-state="home"] .show-on-home { opacity: 1; transform: translateY(0); pointer-events: auto; }
         body[data-state="creation"] .show-on-creation { opacity: 1; transform: translateY(0); pointer-events: auto; }
@@ -189,7 +193,7 @@
 
         .side-menu {
             position: absolute;
-            top: 35%; 
+            top: 50%; /* 修正位置以配合長滾動 */
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
@@ -231,6 +235,7 @@
         #page-center {
             display: flex;
             flex-direction: column;
+            height: 100vh; /* 首頁保持全螢幕高度 */
         }
         .hero-top-area {
             height: 65%; 
@@ -305,21 +310,17 @@
             color: #64748b;
         }
 
-        /* --- 標題樣式調整 (Frame + Resized Font) --- */
-        
-        /* 1. 外框容器設定 */
+        /* --- 標題樣式調整 --- */
         .hero-title-wrapper { 
             position: relative; 
             display: inline-block;
             text-align: center; 
-            
-            /* 新增外框裝飾 */
-            border: 1px solid rgba(148, 163, 184, 0.4); /* 邊框顏色 (Slate-400, 透明度) */
-            padding: 0.5rem 3rem; /* 增加內距，讓字不要貼邊 */
-            border-radius: 4px; /* 稍微導圓角，符合科技感 */
-            background: rgba(255, 255, 255, 0.25); /* 淡淡的半透明背景 */
-            backdrop-filter: blur(4px); /* 毛玻璃效果 */
-            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1); /* 第二層淡淡的外光暈 */
+            border: 1px solid rgba(148, 163, 184, 0.4); 
+            padding: 0.5rem 3rem; 
+            border-radius: 4px; 
+            background: rgba(255, 255, 255, 0.25); 
+            backdrop-filter: blur(4px); 
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1); 
         }
 
         .title-text {
@@ -335,9 +336,7 @@
             opacity: 0;
         }
 
-        /* 2. 分頁標題字體縮小 */
         .sub-page-title {
-            /* 原本 4.5rem -> 改為 3.5rem (Mobile) */
             font-size: 3.5rem; 
             line-height: 1.2;
             padding-bottom: 0.1em;
@@ -347,13 +346,11 @@
         }
         @media (min-width: 768px) {
             .sub-page-title {
-                /* 原本 6rem -> 改為 5rem (Desktop) */
                 font-size: 5rem; 
             }
         }
         @keyframes shine { to { background-position: 200% center; } }
 
-        /* --- 內頁標題裝飾 --- */
         .title-deco {
             display: flex;
             align-items: center;
@@ -488,17 +485,9 @@
 
     <div id="bg-wrapper">
         <div class="tech-grid"></div>
-        
-        <div class="orb-wrapper orb-pos-1">
-            <div class="orb orb-1"></div>
-        </div>
-        <div class="orb-wrapper orb-pos-2">
-            <div class="orb orb-2"></div>
-        </div>
-        <div class="orb-wrapper orb-pos-3">
-            <div class="orb orb-3"></div>
-        </div>
-
+        <div class="orb-wrapper orb-pos-1"><div class="orb orb-1"></div></div>
+        <div class="orb-wrapper orb-pos-2"><div class="orb orb-2"></div></div>
+        <div class="orb-wrapper orb-pos-3"><div class="orb orb-3"></div></div>
         <div class="noise-overlay"></div>
     </div>
 
@@ -507,17 +496,17 @@
             BACK HOME
         </button>
         <nav class="ui-element show-on-design side-menu left-8">
-            <button onclick="scrollToSection('page-design', 'tool-ps')" class="menu-btn">Ps</button>
-            <button onclick="scrollToSection('page-design', 'tool-ae')" class="menu-btn">Ae</button>
+            <button onclick="scrollToElement('tool-ps')" class="menu-btn">Ps</button>
+            <button onclick="scrollToElement('tool-ae')" class="menu-btn">Ae</button>
         </nav>
 
         <button onclick="goToHome()" class="ui-element show-on-creation btn-back" aria-label="Go back to Home">
             BACK HOME
         </button>
         <nav class="ui-element show-on-creation side-menu left-8">
-            <button onclick="scrollToSection('page-creation', 'create-web')" class="menu-btn">WEB</button>
-            <button onclick="scrollToSection('page-creation', 'create-motion')" class="menu-btn">MOTION</button>
-            <button onclick="scrollToSection('page-creation', 'create-graphic')" class="menu-btn">GRAPHIC</button>
+            <button onclick="scrollToElement('create-web')" class="menu-btn">WEB</button>
+            <button onclick="scrollToElement('create-motion')" class="menu-btn">MOTION</button>
+            <button onclick="scrollToElement('create-graphic')" class="menu-btn">GRAPHIC</button>
         </nav>
 
         <footer class="fixed bottom-0 left-0 w-full text-center p-1 z-[45] pointer-events-auto bg-gray-200">
@@ -984,13 +973,45 @@ SicHandicH,LintMcCree,HannotateTC</pre>
     </div>
 
     <script>
-        const slider = document.getElementById('app-slider');
         const popup = document.getElementById('img-popup');
         const popupImg = document.getElementById('popup-img');
         const popupVideo = document.getElementById('popup-video');
         const popupTags = document.getElementById('popup-tags');
         const body = document.body;
 
+        // --- 狀態監聽器：當滾動時更新當前頁面狀態 ---
+        function updateActiveState() {
+            const sections = [
+                { id: 'page-center', state: 'home' },
+                { id: 'page-design', state: 'design' },
+                { id: 'page-creation', state: 'creation' }
+            ];
+
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const triggerPoint = windowHeight * 0.4; // 視窗 40% 處為觸發點
+
+            let currentState = 'home'; // 預設
+
+            // 簡單的反向查找，看目前滾動位置落在哪個區塊
+            for (let i = sections.length - 1; i >= 0; i--) {
+                const section = document.getElementById(sections[i].id);
+                if (section && section.offsetTop - triggerPoint <= scrollY) {
+                    currentState = sections[i].state;
+                    break;
+                }
+            }
+            
+            if (body.getAttribute('data-state') !== currentState) {
+                body.setAttribute('data-state', currentState);
+                manageVideoPlayback();
+            }
+        }
+
+        // 添加滾動監聽
+        window.addEventListener('scroll', updateActiveState);
+        
+        // --- 影片播放管理 ---
         function manageVideoPlayback() {
             const currentState = body.getAttribute('data-state'); 
             const videos = document.querySelectorAll('video.content-video');
@@ -1003,11 +1024,12 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                 if (currentState === 'design' && pageSection.id === 'page-design') isVisiblePage = true;
                 if (currentState === 'creation' && pageSection.id === 'page-creation') isVisiblePage = true;
 
+                // 檢查是否在當前幻燈片中
                 const isVisibleSlide = slideItem && window.getComputedStyle(slideItem).opacity !== '0';
 
                 if (isVisiblePage && isVisibleSlide) {
                     if (video.paused) {
-                        video.play().catch(e => { });
+                        video.play().catch(e => { console.log('Autoplay prevented'); });
                     }
                 } else {
                     if (!video.paused) {
@@ -1017,35 +1039,36 @@ SicHandicH,LintMcCree,HannotateTC</pre>
             });
         }
 
+        // --- 導航功能 (改為 ScrollIntoView) ---
+
         function goToDesign() {
-            slider.style.transform = 'translateY(-100vh)';
-            body.setAttribute('data-state', 'design');
-            setTimeout(manageVideoPlayback, 800);
+            document.getElementById('page-design').scrollIntoView({ behavior: 'smooth' });
         }
 
         function goToCreation() {
-            slider.style.transform = 'translateY(-200vh)';
-            body.setAttribute('data-state', 'creation');
-            setTimeout(manageVideoPlayback, 800);
+            document.getElementById('page-creation').scrollIntoView({ behavior: 'smooth' });
         }
 
         function goToHome() {
-            slider.style.transform = 'translateY(0)';
-            body.setAttribute('data-state', 'home');
-            manageVideoPlayback();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function scrollToSection(pageId, id) {
-            const el = document.getElementById(id);
-            const pageEl = document.getElementById(pageId);
-            if (el && pageEl) {
-                const elRect = el.getBoundingClientRect();
-                const pageRect = pageEl.getBoundingClientRect();
-                const absoluteTop = pageEl.scrollTop + (elRect.top - pageRect.top);
-                const offset = 120;
-                pageEl.scrollTo({ top: absoluteTop - offset, behavior: 'smooth' });
+        // 滾動到特定元素 (用於側邊選單)
+        function scrollToElement(elementId) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                const offset = 100; // 上方保留空間
+                const elementPosition = el.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
             }
         }
+        
+        // --- 以下為保留的原有邏輯 (幻燈片切換、彈出視窗等) ---
 
         const groupIndices = {}; 
 
@@ -1231,7 +1254,8 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                 });
             });
             
-            manageVideoPlayback();
+            // 初始化狀態
+            updateActiveState();
         });
 
         document.addEventListener('DOMContentLoaded', () => {
