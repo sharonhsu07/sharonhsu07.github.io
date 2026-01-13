@@ -493,7 +493,7 @@
         </button>
         <nav class="ui-element show-on-design side-menu left-8">
             <button onclick="scrollToElement('tool-ps')" class="menu-btn">Ps</button>
-            <button onclick="scrollToElement('tool-ae')" class="menu-btn">Ae</button>
+            <button onclick="scrollToElement('tool-ae')" class="menu-btn">Web</button>
         </nav>
 
         <button onclick="goToHome()" class="ui-element show-on-creation btn-back" aria-label="Go back to Home">
@@ -710,30 +710,42 @@ SicHandicH,LintMcCree,HannotateTC</pre>
 
                 <div class="mb-24 tool-group" id="tool-ae">
                     <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
-                        <h3 class="text-3xl md:text-4xl font-bold text-gray-700 title-deco">After Effect</h3>
+                        <h3 class="text-3xl md:text-4xl font-bold text-gray-700 title-deco">Web Tool</h3>
                         
-                        <div class="flex gap-6 relative z-10">
-                            <button onclick="switchToolTab('tool-ae', 0)" class="tool-tab-btn text-base pb-1 border-b-2 border-gray-800 font-bold text-gray-800 transition-all duration-300">Text Box</button>
-                            <button onclick="switchToolTab('tool-ae', 1)" class="tool-tab-btn text-base pb-1 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition-all duration-300">Grid Aligner</button>
                         </div>
-                    </div>
 
-                    <div class="relative h-[350px] bg-white/60 rounded-2xl p-8 shadow-sm overflow-hidden slider-content">
-                        <div class="absolute inset-0 p-8 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] opacity-100 translate-x-0 slide-item" data-index="0">
-                            <h4 class="text-2xl font-bold text-slate-700 mb-2">Responsive Text Box</h4>
-                            <p class="text-gray-600 mb-4">Expressions that automatically resize background boxes based on text content length.</p>
-                             <div class="flex flex-wrap gap-2 mb-4">
-                                 <span class="px-3 py-1 text-xs font-semibold text-slate-600 bg-slate-100 rounded-full border border-slate-200"># AE Expressions</span>
-                            </div>
-                            <div class="h-48 bg-gray-200 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80')" role="img" aria-label="Preview"></div>
-                        </div>
-                        <div class="absolute inset-0 p-8 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] opacity-0 translate-x-full pointer-events-none slide-item" data-index="1">
-                            <h4 class="text-2xl font-bold text-slate-700 mb-2">Grid Aligner</h4>
-                            <p class="text-gray-600 mb-4">Instantly arrange selected layers into a customizable grid or circle layout.</p>
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                 <span class="px-3 py-1 text-xs font-semibold text-slate-600 bg-slate-100 rounded-full border border-slate-200"># AE Scripts</span>
-                            </div>
-                            <div class="h-48 bg-gray-200 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=600&q=80')" role="img" aria-label="Preview"></div>
+                    <div class="relative min-h-[450px] bg-white/60 rounded-2xl p-8 shadow-sm overflow-hidden slider-content">
+                        <div class="absolute inset-0 p-6 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] opacity-100 translate-x-0 slide-item w-full flex flex-col lg:flex-row gap-8 items-center" data-index="0">
+                             <div class="w-full lg:w-3/5 h-auto aspect-[4/3] min-h-[300px] lg:h-[400px] bg-gray-200 rounded-2xl bg-cover bg-center shadow-lg cursor-pointer hover:scale-[1.02] transition-transform duration-500" 
+                                  onclick="openPopup(this)"
+                                  data-tags="# Gemini, # UI Design"
+                                  style="background-image: url('colorpick/preview.jpg')"
+                                  role="img" aria-label="Color Picker Project Preview">
+                             </div>
+                             
+                             <div class="w-full lg:w-2/5 flex flex-col justify-center space-y-6">
+                                 <div>
+                                     <h3 class="text-4xl font-bold text-gray-800 leading-tight">Gemini Color Picker<br><span class="text-slate-400">DEMO</span></h3>
+                                     <div class="w-16 h-1 bg-slate-400 mt-4 rounded-full"></div>
+                                 </div>
+                                 <p class="text-gray-600 leading-relaxed">
+                                     提供一個顏色後，產出多個配色提案協助設計師配色。<br>
+                                     利用 Gemini 生成功能完整的色彩組合推薦器，並以此程式碼為基底，進行 UI 介面與操作體驗的優化設計。
+                                 </p>
+                                 <div class="flex flex-wrap gap-2 mt-2">
+                                     <span class="px-3 py-1 text-xs font-semibold tracking-wide text-slate-600 bg-slate-100 rounded-full border border-slate-200"># Gemini</span>
+                                     <span class="px-3 py-1 text-xs font-semibold tracking-wide text-slate-600 bg-slate-100 rounded-full border border-slate-200"># UI Design</span>
+                                 </div>
+                                 <div class="pt-4 flex flex-col sm:flex-row gap-4">
+                                     <a href="colorpick/color_base.html" target="_blank" class="px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors duration-300 shadow-sm font-bold tracking-wider text-xs flex items-center justify-center gap-2 w-full sm:w-auto no-underline">
+                                         GEMINI RAW (V1)
+                                     </a>
+                                     <a href="colorpick/color.html" target="_blank" class="px-8 py-3 bg-gray-900 text-white rounded-full hover:bg-slate-600 transition-colors duration-300 shadow-lg font-bold tracking-wider text-sm flex items-center justify-center gap-2 group w-full sm:w-auto no-underline">
+                                         UI OPTIMIZED (V2)
+                                         <span class="group-hover:translate-x-1 transition-transform">→</span>
+                                     </a>
+                                 </div>
+                             </div>
                         </div>
                     </div>
                 </div>
@@ -756,53 +768,14 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                         <h3 class="text-3xl md:text-4xl font-bold text-gray-700 title-deco">WEB</h3>
                     </div>
                     
-                    <!-- Tab 按鈕區：新增 Color Picker 在最前，並設為激活樣式，其他改為非激活 -->
                     <div class="flex justify-start gap-8 mb-8 relative z-10 overflow-x-auto custom-scrollbar pb-2">
-                        <button onclick="switchWebTab(0)" class="web-tab-btn text-lg pb-2 border-b-2 border-gray-800 font-bold text-gray-800 transition-all duration-300 whitespace-nowrap">Color Picker</button>
-                        <button onclick="switchWebTab(1)" class="web-tab-btn text-lg pb-2 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition-all duration-300 whitespace-nowrap">Eva x niko and...</button>
-                        <button onclick="switchWebTab(2)" class="web-tab-btn text-lg pb-2 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition-all duration-300 whitespace-nowrap">Chiikawa park</button>
+                        <button onclick="switchWebTab(0)" class="web-tab-btn text-lg pb-2 border-b-2 border-gray-800 font-bold text-gray-800 transition-all duration-300 whitespace-nowrap">Eva x niko and...</button>
+                        <button onclick="switchWebTab(1)" class="web-tab-btn text-lg pb-2 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition-all duration-300 whitespace-nowrap">Chiikawa park</button>
                     </div>
 
-                    <!-- 內容區 -->
                     <div class="grid relative overflow-hidden slider-content">
                         
-                        <!-- NEW ITEM: Color Picker (Index 0) - 預設顯示 -->
                         <div class="col-start-1 row-start-1 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] opacity-100 translate-x-0 slide-item w-full flex flex-col lg:flex-row gap-8 items-center bg-white/50 p-6 rounded-3xl backdrop-blur-sm" data-index="0">
-                             <div class="w-full lg:w-3/5 h-auto aspect-[4/3] min-h-[300px] lg:h-[450px] bg-gray-200 rounded-2xl bg-cover bg-center shadow-lg cursor-pointer hover:scale-[1.02] transition-transform duration-500" 
-                                  onclick="openPopup(this)"
-                                  data-tags="# Gemini, # UI Optimization"
-                                  style="background-image: url('colorpick/preview.jpg')"
-                                  role="img" aria-label="Color Picker Project Preview">
-                             </div>
-                             
-                             <div class="w-full lg:w-2/5 flex flex-col justify-center space-y-6">
-                                 <div>
-                                     <h3 class="text-4xl font-bold text-gray-800 leading-tight">Gemini Color Picker<br><span class="text-slate-400">DEMO</span></h3>
-                                     <div class="w-16 h-1 bg-slate-400 mt-4 rounded-full"></div>
-                                 </div>
-                                 <p class="text-gray-600 leading-relaxed">
-                                     利用 Gemini 生成功能完整的色彩組合推薦器，並以此程式碼為基底，進行 UI 介面與操作體驗的優化設計。
-                                 </p>
-                                 <div class="flex flex-wrap gap-2 mt-2">
-                                     <span class="px-3 py-1 text-xs font-semibold tracking-wide text-slate-600 bg-slate-100 rounded-full border border-slate-200"># Gemini</span>
-                                     <span class="px-3 py-1 text-xs font-semibold tracking-wide text-slate-600 bg-slate-100 rounded-full border border-slate-200"># UI Design</span>
-                                 </div>
-                                 <div class="pt-4 flex flex-col sm:flex-row gap-4">
-                                     <!-- 按鈕 A: 原始生成版 -->
-                                     <a href="colorpick/color_base.html" target="_blank" class="px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors duration-300 shadow-sm font-bold tracking-wider text-xs flex items-center justify-center gap-2 w-full sm:w-auto no-underline">
-                                         GEMINI RAW (V1)
-                                     </a>
-                                     <!-- 按鈕 B: 優化版 -->
-                                     <a href="colorpick/color.html" target="_blank" class="px-8 py-3 bg-gray-900 text-white rounded-full hover:bg-slate-600 transition-colors duration-300 shadow-lg font-bold tracking-wider text-sm flex items-center justify-center gap-2 group w-full sm:w-auto no-underline">
-                                         UI OPTIMIZED (V2)
-                                         <span class="group-hover:translate-x-1 transition-transform">→</span>
-                                     </a>
-                                 </div>
-                             </div>
-                        </div>
-
-                        <!-- OLD ITEM: Eva (Index 1) - 改為隱藏狀態 -->
-                        <div class="col-start-1 row-start-1 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] opacity-0 translate-x-full pointer-events-none slide-item w-full flex flex-col lg:flex-row gap-8 items-center bg-white/50 p-6 rounded-3xl backdrop-blur-sm" data-index="1">
                              <div class="w-full lg:w-3/5 h-auto aspect-[4/3] min-h-[300px] lg:h-[450px] bg-gray-200 rounded-2xl bg-cover bg-center shadow-lg cursor-pointer hover:scale-[1.02] transition-transform duration-500" 
                                   onclick="openPopup(this)"
                                   data-tags="# Sublime Text, # Gemini"
@@ -831,8 +804,7 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                              </div>
                         </div>
 
-                        <!-- OLD ITEM: Chiikawa (Index 2) - 維持隱藏狀態 -->
-                        <div class="col-start-1 row-start-1 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] opacity-0 translate-x-full pointer-events-none slide-item w-full flex flex-col lg:flex-row gap-8 items-center bg-white/50 p-6 rounded-3xl backdrop-blur-sm" data-index="2">
+                        <div class="col-start-1 row-start-1 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] opacity-0 translate-x-full pointer-events-none slide-item w-full flex flex-col lg:flex-row gap-8 items-center bg-white/50 p-6 rounded-3xl backdrop-blur-sm" data-index="1">
                              <div class="w-full lg:w-3/5 h-auto aspect-[4/3] min-h-[300px] lg:h-[450px] bg-gray-200 rounded-2xl bg-cover bg-center shadow-lg cursor-pointer hover:scale-[1.02] transition-transform duration-500" 
                                   onclick="openPopup(this)" 
                                   data-tags="# Sublime Text, # Gemini"
@@ -869,14 +841,10 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                             <svg class="tri-icon" viewBox="0 0 24 24"><path d="M10,8 L16,12 L10,16 Z"/></svg>
                         </button>
                     </div>
-                    <!-- Modified: Grid layout for auto height -->
                     <div class="grid relative overflow-hidden slider-content">
-                        <!-- Modified: flex-col on mobile, flex-row on desktop. Grid placement. -->
                         <div class="col-start-1 row-start-1 transition-all duration-700 ease-in-out opacity-100 translate-x-0 slide-item w-full flex flex-col md:flex-row gap-6" data-index="0">
                             
-                            <!-- Modified: w-full on mobile -->
                             <div class="w-full md:flex-1 flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100">
-                                <!-- Modified: Added aspect-video -->
                                 <div class="relative w-full aspect-video bg-gray-50 cursor-pointer overflow-hidden" onclick="openVideoPopup(this, 'motion/lightbox.mp4')" data-tags="# AE, # Blender">
                                     <video class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 content-video" loop muted playsinline>
                                         <source src="motion/lightbox.mp4" type="video/mp4">
@@ -887,7 +855,6 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Modified: h-auto py-3 for text wrapper, text-xs on mobile -->
                                 <div class="h-auto py-3 min-h-[4rem] bg-gray-100/80 backdrop-blur-sm border-t border-gray-200 flex items-center justify-between px-6">
                                      <span class="text-xs md:text-sm font-bold text-gray-500 tracking-wider">3D effect</span>
                                      <div class="flex gap-2">
