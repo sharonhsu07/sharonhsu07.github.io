@@ -164,15 +164,34 @@
             </div>
         </div>
 
-        <!-- STEP 2: Results -->
+        <!-- STEP 2: Results (UPDATED: Added Base Color Edit) -->
         <div id="step2" class="page-container page-hidden w-full max-w-7xl">
-            <div class="flex justify-between items-end mb-20 px-2 border-b border-gray-100 pb-6">
-                <div>
-                    <h2 class="text-4xl font-light text-black tracking-tight">Curated Palettes</h2>
-                    <!-- Added helper text -->
-                    <p class="text-[10px] md:text-xs text-gray-400 mt-2 uppercase tracking-wider font-medium">Click EXPLORE to discover more color combinations</p>
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-gray-100 pb-6 gap-6">
+                <div class="flex flex-col gap-6 items-start">
+                    <div>
+                        <h2 class="text-4xl font-light text-black tracking-tight">Curated Palettes</h2>
+                        <p class="text-[10px] md:text-xs text-gray-400 mt-2 uppercase tracking-wider font-medium">Click EXPLORE to discover more color combinations</p>
+                    </div>
+
+                    <!-- NEW: Based On Control for Step 2 -->
+                    <div class="flex items-center gap-4 pl-1 flex-wrap">
+                        <span class="text-[10px] font-bold text-gray-300 uppercase tracking-widest">BASED ON</span>
+                        
+                        <!-- Wrapper for Color Input and Visual Box -->
+                        <div class="relative w-8 h-8 overflow-hidden border border-gray-200 transition-transform group-hover:scale-105 shadow-sm">
+                            <div id="step2BaseColorBox" class="w-full h-full bg-gray-200 pointer-events-none"></div>
+                            <!-- Hidden Input overlay -->
+                            <input type="color" id="step2ColorInput" class="absolute top-0 left-0 w-[150%] h-[150%] -top-[25%] -left-[25%] opacity-0 cursor-pointer" title="Change Base Color">
+                        </div>
+                        
+                        <!-- Change Button -->
+                        <button onclick="applyStep2Changes()" class="ml-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-black border border-gray-200 hover:bg-black hover:text-white transition-all active:scale-95">
+                            CHANGE
+                        </button>
+                    </div>
                 </div>
-                <button onclick="regenerateStep2()" class="btn-line flex items-center gap-2 group" title="Shuffle">
+                
+                <button onclick="regenerateStep2()" class="btn-line flex items-center gap-2 group mb-1" title="Shuffle">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter" class="group-hover:rotate-180 transition-transform duration-500"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
                     Shuffle
                 </button>
@@ -183,32 +202,28 @@
             </div>
         </div>
 
-        <!-- STEP 3: Details & Explore (UPDATED: 3 Columns Layout) -->
+        <!-- STEP 3: Details & Explore (Editable Palette + Change Button) -->
         <div id="step3" class="page-container page-hidden w-full max-w-7xl">
             <!-- Header with Controls -->
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-gray-100 pb-6 gap-6">
                 <div class="flex flex-col gap-6 items-start">
                     <div>
                         <h2 class="text-4xl font-light text-black tracking-tight">Variations</h2>
-                        <!-- Added helper text -->
                         <p class="text-[10px] md:text-xs text-gray-400 mt-2 uppercase tracking-wider font-medium">Click EXPLORE to discover more color combinations</p>
                     </div>
 
-                    <!-- Seed Color Indicator (EDITABLE) -->
-                    <div class="flex items-center gap-4 pl-1">
+                    <!-- Seed Color Indicator (Editable & Change Button) -->
+                    <div class="flex items-center gap-4 pl-1 flex-wrap">
                         <span class="text-[10px] font-bold text-gray-300 uppercase tracking-widest">BASED ON</span>
-                        <div class="flex items-center gap-3 group relative">
-                            <!-- Wrapper for Color Input and Visual Box -->
-                            <div class="relative w-8 h-8 overflow-hidden border border-gray-200 transition-transform group-hover:scale-105 shadow-sm">
-                                <div id="detailSeedColorBox" class="w-full h-full bg-gray-200 pointer-events-none"></div>
-                                <!-- Hidden Input overlay -->
-                                <input type="color" id="detailColorInput" class="absolute top-0 left-0 w-[150%] h-[150%] -top-[25%] -left-[25%] opacity-0 cursor-pointer" title="Change Base Color">
-                            </div>
-                            
-                            <label for="detailColorInput" id="detailSeedColorHex" class="text-sm font-mono text-gray-400 group-hover:text-black transition-colors cursor-pointer select-none">
-                                #------
-                            </label>
+                        <!-- Editable Palette Container -->
+                        <div id="detailBasePaletteDisplay" class="flex items-center gap-1 border border-gray-100 p-1 bg-white shadow-sm">
+                            <!-- JS will inject the 5 editable color boxes here -->
                         </div>
+                        
+                        <!-- Change Button -->
+                        <button onclick="applyBaseChanges()" class="ml-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-black border border-gray-200 hover:bg-black hover:text-white transition-all active:scale-95">
+                            CHANGE
+                        </button>
                     </div>
                 </div>
                 
@@ -226,7 +241,7 @@
                 </div>
             </div>
             
-            <!-- Modified grid columns to match Step 2 (lg:grid-cols-3) -->
+            <!-- Grid columns match Step 2 (lg:grid-cols-3) -->
             <div id="detailContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
                 <!-- Detail cards injected here -->
             </div>
@@ -241,7 +256,7 @@
         </p>
     </footer>
 
-    <!-- Toast (Modified: Top Center Position) -->
+    <!-- Toast (Top Center) -->
     <div id="toast" class="fixed top-0 left-1/2 -translate-x-1/2 mt-10 bg-black text-white px-8 py-4 transition-all duration-300 opacity-0 -translate-y-4 pointer-events-none flex items-center gap-4 z-50 text-sm font-medium tracking-wide shadow-2xl">
         <span class="w-2 h-2 bg-white"></span>
         <span id="toastMsg">COPIED</span>
@@ -251,7 +266,7 @@
         // --- State ---
         let currentStep = 1;
         let baseColorHex = "#5778A2";
-        let currentDetailSeed = null;
+        let currentBasePalette = []; // Array of Hex strings
         let currentDetailStyle = null;
         let exploreMode = 'same'; 
         let globalSeed = 0; 
@@ -265,8 +280,10 @@
         const navSpacer = document.getElementById('navSpacer');
         const colorInput = document.getElementById('baseColorInput');
         const hexInput = document.getElementById('hexInput');
-        const detailColorInput = document.getElementById('detailColorInput');
-
+        // Step 2 new elements
+        const step2ColorInput = document.getElementById('step2ColorInput');
+        const step2BaseColorBox = document.getElementById('step2BaseColorBox');
+        
         // Set Copyright Year
         document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -294,17 +311,14 @@
             }
         });
 
-        // 3. Detail/Variations Page Input Change
-        detailColorInput.addEventListener('input', (e) => {
+        // 3. Step 2 Color Input Change
+        step2ColorInput.addEventListener('input', (e) => {
             const hex = e.target.value;
-            currentDetailSeed = hex;
-            
-            // Update Visuals immediately
-            document.getElementById('detailSeedColorBox').style.backgroundColor = hex;
-            document.getElementById('detailSeedColorHex').textContent = hex.toUpperCase();
-            
-            // Regenerate
-            generateDetailPalettes();
+            baseColorHex = hex; // Update global state immediately
+            step2BaseColorBox.style.backgroundColor = hex;
+            // Sync with Step 1 inputs too, just in case
+            colorInput.value = hex;
+            hexInput.value = hex.substring(1).toUpperCase();
         });
 
         function focusHexInput() {
@@ -328,7 +342,16 @@
             }
             transitionTo(2);
             showNavbar(true);
+            
+            // Sync Step 2 UI
+            updateStep2BaseColorUI(baseColorHex);
+            
             generateMainPalettes(baseColorHex);
+        }
+
+        function updateStep2BaseColorUI(hex) {
+            step2BaseColorBox.style.backgroundColor = hex;
+            step2ColorInput.value = hex;
         }
 
         function regenerateStep2() {
@@ -341,17 +364,51 @@
             }, 300);
         }
 
-        function viewDetails(styleType, seedColor) {
-            currentDetailSeed = seedColor;
+        function applyStep2Changes() {
+            // User clicked Change in Step 2
+            regenerateStep2();
+        }
+
+        function viewDetails(styleType, colors) {
+            // Store the full palette array copy to avoid reference issues
+            currentBasePalette = [...colors];
             currentDetailStyle = styleType;
             exploreMode = 'same'; 
             
             updateExploreButtons();
 
-            // UPDATE SEED COLOR UI & SYNC INPUT
-            document.getElementById('detailSeedColorBox').style.backgroundColor = seedColor;
-            document.getElementById('detailSeedColorHex').textContent = seedColor.toUpperCase();
-            detailColorInput.value = seedColor; // Sync the hidden picker
+            // RENDER THE BASE PALETTE IN HEADER (EDITABLE)
+            const baseContainer = document.getElementById('detailBasePaletteDisplay');
+            baseContainer.innerHTML = '';
+            
+            currentBasePalette.forEach((c, index) => {
+                // Wrapper for Input + Visual
+                const wrapper = document.createElement('div');
+                wrapper.className = "relative w-6 h-6 border border-gray-100 overflow-hidden cursor-pointer hover:scale-105 transition-transform";
+                
+                // Visual Color Box
+                const visual = document.createElement('div');
+                visual.className = "w-full h-full pointer-events-none";
+                visual.style.backgroundColor = c;
+                
+                // Hidden Color Input
+                const input = document.createElement('input');
+                input.type = "color";
+                input.value = c;
+                // Reuse the 'input[type="color"]' style from CSS but ensure it covers container
+                input.className = "absolute top-0 left-0 w-[150%] h-[150%] -top-[25%] -left-[25%] opacity-0 cursor-pointer";
+                
+                // Listener: Update visual & state on change
+                input.addEventListener('input', (e) => {
+                    const newColor = e.target.value;
+                    visual.style.backgroundColor = newColor;
+                    currentBasePalette[index] = newColor;
+                });
+
+                wrapper.appendChild(visual);
+                wrapper.appendChild(input);
+                baseContainer.appendChild(wrapper);
+            });
             
             if (currentStep === 3) {
                 const container = document.getElementById('detailContainer');
@@ -367,6 +424,12 @@
                 navSpacer.classList.add('hidden');
                 generateDetailPalettes();
             }
+        }
+
+        // NEW: Function to apply changes from the top editable palette
+        function applyBaseChanges() {
+            // Simply trigger regeneration using the updated currentBasePalette
+            regenerateStep3();
         }
 
         function regenerateStep3() {
@@ -445,14 +508,13 @@
             const container = document.getElementById('paletteContainer');
             container.innerHTML = '';
 
-            // Updated items list with 6th palette
             const items = [
                 {style: 'fresh', variant: 'A', title: 'Clean & Soft', sub: 'Airy, Minimalist'},
                 {style: 'fresh', variant: 'B', title: 'Natural & Warm', sub: 'Organic, Cozy'},
                 {style: 'dark', variant: 'A', title: 'Modern Dark', sub: 'Sleek, High Contrast'},
                 {style: 'dark', variant: 'B', title: 'Deep & Muted', sub: 'Elegant, Professional'},
                 {style: 'vibrant', variant: 'A', title: 'Vibrant Pop', sub: 'Energetic, Bold'},
-                {style: 'vibrant', variant: 'B', title: 'Electric Dream', sub: 'Neon, Futuristic'} // New 6th item
+                {style: 'vibrant', variant: 'B', title: 'Electric Dream', sub: 'Neon, Futuristic'} 
             ];
 
             items.forEach((item, index) => {
@@ -462,99 +524,77 @@
         }
 
         function generateDetailPalettes() {
-            const hsl = hexToHSL(currentDetailSeed);
+            // currentBasePalette is now an Array of Hex strings
             const container = document.getElementById('detailContainer');
             container.innerHTML = '';
 
             for(let i=0; i<6; i++) {
                 const randomOffset = i + globalSeed * 7; 
-                const colors = generateExplorePalette(hsl, currentDetailStyle, exploreMode, i, randomOffset);
-                const keywords = getKeywordDescription(currentDetailStyle, i);
+                // Pass the whole palette array to the new function
+                const colors = generateExplorePalette(currentBasePalette, currentDetailStyle, exploreMode, i, randomOffset);
+                const keywords = getKeywordDescription(currentDetailStyle, exploreMode, i);
                 renderPaletteCard(container, colors, currentDetailStyle, `Variation ${i+1}`, keywords, true, i);
             }
         }
         
-        function getKeywordDescription(style, index) {
-            const freshKeywords = ["Airy & Light", "Soft Pastel", "Cool Breeze", "Natural Calm", "Morning Mist", "Clean Slate"];
-            const darkKeywords = ["Midnight Tone", "Neon Glow", "Deep & Rich", "Cyber Punk", "Elegant Noir", "Shadow Realm"];
-            const vibrantKeywords = ["Electric Pop", "Bold Energy", "Summer Vibes", "High Contrast", "Playful Hue", "Vivid Dream"];
-            let list = [];
-            if(style === 'fresh') list = freshKeywords;
-            else if(style === 'dark') list = darkKeywords;
-            else list = vibrantKeywords;
-            return list[index % list.length];
+        function getKeywordDescription(style, mode, index) {
+            // Dynamic titles based on logic
+            if (mode === 'shift') {
+                const shifts = ["Analogous", "Complementary", "Split Comp", "Triadic Shift", "Hue Rotation", "Cool/Warm Flip"];
+                return shifts[index % shifts.length];
+            } else {
+                const vars = ["More Vivid", "Softer / Muted", "Brighter", "Darker / Deep", "Warmer Tone", "Cooler Tone"];
+                return vars[index % vars.length];
+            }
         }
 
-        function generateExplorePalette(baseHSL, style, mode, cardIndex, seedOffset) {
-            let colors = [];
-            const count = 5;
-            let h = baseHSL.h;
-            let currentBaseHue = h;
+        // NEW: Generates variation based on an entire input palette
+        function generateExplorePalette(baseColorsHex, style, mode, cardIndex, seedOffset) {
+            // Convert all base colors to HSL first
+            let baseHSL = baseColorsHex.map(hex => hexToHSL(hex));
+            let newColors = [];
+
+            // Define adjustment parameters based on cardIndex
+            let hAdj = 0;
+            let sAdj = 0;
+            let lAdj = 0;
+            
             if (mode === 'shift') {
-                const shifts = [30, -30, 150, 210, 180, 120, 90, -90]; 
-                currentBaseHue = (h + shifts[seedOffset % shifts.length] + (Math.random()*40-20)) % 360;
+                // SHIFT MODE: Rotate the hue of the entire palette
+                // 30, 180 (comp), 150 (split), 90, 60, -30
+                const shifts = [30, 180, 150, 90, 60, -30];
+                hAdj = shifts[cardIndex % shifts.length] + (Math.random() * 10 - 5);
             } else {
-                const microShifts = [0, 15, -15, 30, -30, 45, -45, 10]; 
-                currentBaseHue = (h + microShifts[seedOffset % microShifts.length] + (Math.random()*20-10)) % 360;
+                // SAME MODE: Keep Hue, tweak S and L (Vibe change)
+                // 0: Vivid (+S)
+                // 1: Muted (-S)
+                // 2: Brighter (+L)
+                // 3: Darker (-L)
+                // 4: Warmer (+H small)
+                // 5: Cooler (-H small)
+                
+                if (cardIndex % 6 === 0) { sAdj = 15; lAdj = 0; } // Vivid
+                else if (cardIndex % 6 === 1) { sAdj = -20; lAdj = 5; } // Muted
+                else if (cardIndex % 6 === 2) { lAdj = 10; sAdj = 5; } // Brighter
+                else if (cardIndex % 6 === 3) { lAdj = -15; sAdj = 5; } // Darker
+                else if (cardIndex % 6 === 4) { hAdj = 15; } // Warmer (approx)
+                else if (cardIndex % 6 === 5) { hAdj = -15; } // Cooler
+                
+                // Add a tiny bit of random noise so they aren't static
+                hAdj += (Math.random() * 6 - 3); 
             }
-            let sBias = 0;
-            let lBias = 0;
-            if (mode === 'same') {
-                const profile = cardIndex % 4; 
-                if (profile === 0) { sBias = 20; lBias = -10; } 
-                else if (profile === 1) { sBias = -25; lBias = 15; } 
-                else if (profile === 2) { sBias = 10; lBias = -20; } 
-                else { sBias = 0; lBias = 0; }
-            }
 
-            for (let i = 0; i < count; i++) {
-                let newH, newS, newL;
-                let randomS = Math.random() * 25;
-                let randomL = Math.random() * 20;
+            // Apply logic to each color in the palette
+            newColors = baseHSL.map(c => {
+                let newH = (c.h + hAdj) % 360;
+                // Clamp S and L
+                let newS = Math.max(5, Math.min(100, c.s + sAdj + (Math.random() * 5 - 2.5)));
+                let newL = Math.max(5, Math.min(98, c.l + lAdj + (Math.random() * 5 - 2.5)));
+                
+                return HSLToHex(newH, newS, newL);
+            });
 
-                // Spread logic for explore mode as well
-                let spread = (i * 15) - 30; // Spread hues within the card
-
-                if (style === 'fresh') {
-                    newH = (currentBaseHue + spread + (Math.random() * 20 - 10)) % 360; 
-                    newS = Math.floor(20 + randomS + sBias); 
-                    newL = Math.floor(75 + randomL + lBias);
-                    
-                    // Alternating L for contrast
-                    if (i % 2 === 0) newL += 10; else newL -= 10;
-
-                    if (newS < 5) newS = 5; if (newS > 100) newS = 100;
-                    if (newL < 10) newL = 10; if (newL > 98) newL = 98;
-                    if (i === count - 1) { newL = Math.floor(30 + Math.random()*20); newS = Math.floor(30 + Math.random()*20); }
-                } 
-                else if (style === 'dark') {
-                    if (i === 0) {
-                        newH = currentBaseHue; newS = Math.floor(60 + randomS + sBias); newL = Math.floor(60 + randomL);
-                        if(newL > 90) newL = 90;
-                    } else {
-                        // Spread backgrounds
-                        newH = (currentBaseHue + (i * 10)) % 360;
-                        newS = Math.floor(15 + Math.random()*20 + (sBias/2)); 
-                        newL = Math.floor(10 + Math.random()*15);
-                        if(newL < 5) newL = 5;
-                    }
-                } 
-                else { 
-                    let spread = mode === 'shift' ? 120 : 60;
-                    newH = (currentBaseHue + (Math.random() * spread - (spread/2))) % 360;
-                    newS = Math.floor(60 + randomS + sBias); 
-                    
-                    // L map for vibrancy
-                    let lMap = [50, 65, 40, 60, 45];
-                    newL = lMap[i%5] + (lBias/2);
-
-                    if (newS > 100) newS = 100; if(newS < 40) newS = 40;
-                    if (newL > 90) newL = 90; if(newL < 20) newL = 20;
-                }
-                colors.push(HSLToHex(newH, newS, newL));
-            }
-            if (style !== 'dark') colors.sort((a,b) => hexToHSL(b).l - hexToHSL(a).l);
-            return colors;
+            return newColors;
         }
 
         function generatePalette(baseHSL, style, variant, forceColor = null) {
@@ -562,83 +602,53 @@
             let h = baseHSL.h;
             const count = forceColor ? 4 : 5;
             
-            // NEW: Add a global random shift for this specific generation call
-            // This ensures every "Shuffle" produces a noticeably different set
-            let shiftH = (Math.random() * 40 - 20); // +/- 20 degrees shift
+            let shiftH = (Math.random() * 40 - 20); 
             let shiftS = (Math.random() * 20 - 10);
             
             for (let i = 0; i < count; i++) {
                 let newH, newS, newL;
-                
-                // Increased random noise range for distinctness
                 let rndHue = (Math.random() * 40 - 20); 
                 let rndSat = (Math.random() * 30);      
                 let rndLit = (Math.random() * 20);      
 
                 if (style === 'fresh') {
-                    // Spread hues: Analogous range
-                    let hueOffset = (i * 15) - 30; // -30, -15, 0, 15...
-                    
-                    if (variant === 'A') { // Cool/Clean
+                    let hueOffset = (i * 15) - 30; 
+                    if (variant === 'A') { 
                         newH = (h + hueOffset + rndHue + shiftH) % 360;
-                        newS = 5 + rndSat + (i * 5) + shiftS; // Vary saturation
-                        // Alternating Lightness for contrast: High, Mid, High, Mid
+                        newS = 5 + rndSat + (i * 5) + shiftS; 
                         newL = 85 + (i % 2 === 0 ? 5 : -10) + rndLit;
-                    } else { // Warm/Natural
+                    } else { 
                         newH = (h + hueOffset + rndHue + shiftH) % 360;
                         newS = 20 + rndSat + (i * 5) + shiftS;
                         newL = 80 + (i % 2 === 0 ? 5 : -10) + rndLit;
                     }
                 } 
                 else if (style === 'dark') {
-                    if (variant === 'A') { // High Contrast
-                        if (i === 0) { 
-                            // Main Accent
-                            newH = (h + 180 + rndHue + shiftH) % 360; newS = 90 + shiftS; newL = 60 + (rndLit/2); 
-                        } else if (i === 1) { 
-                            // Secondary Accent
-                            newH = (h + rndHue + shiftH) % 360; newS = 80 + shiftS; newL = 70 + (rndLit/2); 
-                        } else { 
-                            // Backgrounds: Vary the dark shades hue and lightness
-                            newH = (h + (i * 10) + shiftH) % 360; 
-                            newS = 15 + (shiftS/2); 
-                            newL = 10 + (i * 3) + (rndLit/3); // 10, 13, 16... gradient effect
-                        }
-                    } else { // Muted
-                         if (i === 0) { 
-                            newH = h + rndHue + shiftH; newS = 40 + shiftS; newL = 50 + rndLit; 
-                         } else {
-                            newH = (h + (i * 15) + shiftH) % 360; // Shift hues for darks
-                            newS = 20 + (shiftS/2); 
-                            newL = 15 + (i * 4) + (rndLit/3); // Distinct dark shades
-                         }
+                    if (variant === 'A') { 
+                        if (i === 0) { newH = (h + 180 + rndHue + shiftH) % 360; newS = 90 + shiftS; newL = 60 + (rndLit/2); } 
+                        else if (i === 1) { newH = (h + rndHue + shiftH) % 360; newS = 80 + shiftS; newL = 70 + (rndLit/2); } 
+                        else { newH = (h + (i * 10) + shiftH) % 360; newS = 15 + (shiftS/2); newL = 10 + (i * 3) + (rndLit/3); }
+                    } else { 
+                         if (i === 0) { newH = h + rndHue + shiftH; newS = 40 + shiftS; newL = 50 + rndLit; } 
+                         else { newH = (h + (i * 15) + shiftH) % 360; newS = 20 + (shiftS/2); newL = 15 + (i * 4) + (rndLit/3); }
                     }
                 } 
-                else { // Vibrant
-                    
+                else { 
                     if (variant === 'B') { 
-                        // VARIANT B: Electric/Neon (New Logic)
-                        // Split Complementary / Square with Extreme Saturation
-                        let hueMap = [0, 180, 180, 90, 270]; // Complementary + Squares
+                        let hueMap = [0, 180, 180, 90, 270];
                         newH = (h + hueMap[i] + rndHue + shiftH) % 360;
-                        newS = 85 + (Math.random() * 15) + shiftS; // Very saturated (85-100)
-                        
-                        // Lightness: mix of very bright and dark for neon effect
+                        newS = 85 + (Math.random() * 15) + shiftS;
                         let lMap = [50, 90, 10, 80, 20];
                         newL = lMap[i % 5] + rndLit;
-                    } 
-                    else {
-                        // VARIANT A: Vibrant Pop (Original)
+                    } else {
                         let hueMap = [0, 30, -30, 180, 210]; 
                         newH = (h + hueMap[i] + rndHue + shiftH) % 360;
                         newS = 70 + (Math.random() * 20) + shiftS;
-                        
                         let lMap = [50, 65, 40, 60, 45];
                         newL = lMap[i % 5] + rndLit;
                     }
                 }
                 
-                // Safety clamp
                 if (newS > 100) newS = 100; if (newS < 0) newS = 0;
                 if (newL > 100) newL = 100; if (newL < 0) newL = 0;
                 
@@ -658,6 +668,9 @@
             const grid = document.createElement('div');
             grid.className = "flex h-32 w-full mb-4 border border-gray-100";
             
+            // To pass array correctly in onclick string, we need to serialize it
+            const colorsString = JSON.stringify(colors).replace(/"/g, "&quot;");
+
             colors.forEach(color => {
                 const block = document.createElement('div');
                 block.className = "flex-1 color-chip relative group/chip flex items-end justify-center pb-3 border-r border-white/10 last:border-0";
@@ -670,14 +683,14 @@
             });
 
             grid.style.cursor = "pointer";
-            grid.onclick = () => viewDetails(styleType, colors[0]);
+            // Pass the whole colors array to viewDetails
+            grid.onclick = () => viewDetails(styleType, colors);
 
             const header = document.createElement('div');
             header.className = "flex justify-between items-end px-1"; 
             let headerContent = `<div><h3 class="font-medium text-black text-sm tracking-widest uppercase">${title}</h3><p class="text-[10px] text-gray-400 mt-1 uppercase tracking-wide">${subtitle}</p></div>`;
             
-            // Modified: Default opacity 30% (opacity-30), hover 100%, remove "..."
-            headerContent += `<div class="flex flex-col items-end opacity-30 group-hover:opacity-100 transition-opacity cursor-pointer duration-300" onclick="viewDetails('${styleType}', '${colors[0]}')">
+            headerContent += `<div class="flex flex-col items-end opacity-30 group-hover:opacity-100 transition-opacity cursor-pointer duration-300" onclick="viewDetails('${styleType}', ${colorsString})">
                                 <span class="text-[9px] text-gray-500 uppercase tracking-widest font-semibold border-b border-transparent hover:border-gray-400 hover:text-black transition-colors">EXPLORE</span>
                               </div>`;
             
@@ -686,7 +699,6 @@
         }
 
         function copyColor(hex) {
-            // Attempt to copy using Clipboard API, fallback to execCommand if it fails
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(hex)
                     .then(() => showToast(`COPIED: ${hex.toUpperCase()}`))
@@ -722,10 +734,8 @@
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMsg');
             toastMsg.textContent = msg;
-            // Modified: Remove negative translate Y to slide down into view
             toast.classList.remove('opacity-0', '-translate-y-4', 'pointer-events-none');
             setTimeout(() => { 
-                // Modified: Add negative translate Y to slide up and fade out
                 toast.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none'); 
             }, 1500);
         }
