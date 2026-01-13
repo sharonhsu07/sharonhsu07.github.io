@@ -183,8 +183,8 @@
             </div>
         </div>
 
-        <!-- STEP 3: Details & Explore (UPDATED: Editable Seed) -->
-        <div id="step3" class="page-container page-hidden w-full max-w-6xl">
+        <!-- STEP 3: Details & Explore (UPDATED: 3 Columns Layout) -->
+        <div id="step3" class="page-container page-hidden w-full max-w-7xl">
             <!-- Header with Controls -->
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-gray-100 pb-6 gap-6">
                 <div class="flex flex-col gap-6 items-start">
@@ -226,7 +226,8 @@
                 </div>
             </div>
             
-            <div id="detailContainer" class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-20">
+            <!-- Modified grid columns to match Step 2 (lg:grid-cols-3) -->
+            <div id="detailContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
                 <!-- Detail cards injected here -->
             </div>
         </div>
@@ -240,8 +241,8 @@
         </p>
     </footer>
 
-    <!-- Toast -->
-    <div id="toast" class="fixed bottom-0 right-0 m-8 bg-black text-white px-8 py-4 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none flex items-center gap-4 z-50 text-sm font-medium tracking-wide">
+    <!-- Toast (Modified: Top Center Position) -->
+    <div id="toast" class="fixed top-0 left-1/2 -translate-x-1/2 mt-10 bg-black text-white px-8 py-4 transition-all duration-300 opacity-0 -translate-y-4 pointer-events-none flex items-center gap-4 z-50 text-sm font-medium tracking-wide shadow-2xl">
         <span class="w-2 h-2 bg-white"></span>
         <span id="toastMsg">COPIED</span>
     </div>
@@ -685,14 +686,48 @@
         }
 
         function copyColor(hex) {
-            navigator.clipboard.writeText(hex).then(() => { showToast(hex.toUpperCase()); });
+            // Attempt to copy using Clipboard API, fallback to execCommand if it fails
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(hex)
+                    .then(() => showToast(`COPIED: ${hex.toUpperCase()}`))
+                    .catch(() => fallbackCopy(hex));
+            } else {
+                fallbackCopy(hex);
+            }
         }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast(`COPIED: ${text.toUpperCase()}`);
+                }
+            } catch (err) {
+                console.error('Fallback copy failed', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
         function showToast(msg) {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMsg');
             toastMsg.textContent = msg;
-            toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
-            setTimeout(() => { toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none'); }, 1500);
+            // Modified: Remove negative translate Y to slide down into view
+            toast.classList.remove('opacity-0', '-translate-y-4', 'pointer-events-none');
+            setTimeout(() => { 
+                // Modified: Add negative translate Y to slide up and fade out
+                toast.classList.add('opacity-0', '-translate-y-4', 'pointer-events-none'); 
+            }, 1500);
         }
         function hexToHSL(H) {
             let r = 0, g = 0, b = 0;
