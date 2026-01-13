@@ -124,12 +124,11 @@
             }
         }
 
-        /* --- 滑動容器架構 (Modified for Scrolling) --- */
+        /* --- 滑動容器架構 --- */
         #app-slider {
             display: flex;
             flex-direction: column;
             width: 100vw;
-            /* 移除固定高度和 Transform，改為自然流動 */
             height: auto;
             position: relative;
             z-index: 10;
@@ -137,9 +136,7 @@
 
         .page-section {
             width: 100vw;
-            /* 改為 min-height，讓內容可以自然撐開 */
             min-height: 100vh;
-            /* 移除內部的 overflow，改由 body 統一滾動 */
             overflow: visible;
             position: relative;
             flex-shrink: 0;
@@ -160,7 +157,6 @@
             opacity: 0;
         }
         
-        /* 透過 JS 滾動偵測來切換 data-state */
         body[data-state="design"] .show-on-design { opacity: 1; transform: translateY(0); pointer-events: auto; }
         body[data-state="home"] .show-on-home { opacity: 1; transform: translateY(0); pointer-events: auto; }
         body[data-state="creation"] .show-on-creation { opacity: 1; transform: translateY(0); pointer-events: auto; }
@@ -193,7 +189,7 @@
 
         .side-menu {
             position: absolute;
-            top: 50%; /* 修正位置以配合長滾動 */
+            top: 50%;
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
@@ -235,7 +231,7 @@
         #page-center {
             display: flex;
             flex-direction: column;
-            height: 100vh; /* 首頁保持全螢幕高度 */
+            height: 100vh;
         }
         .hero-top-area {
             height: 65%; 
@@ -310,7 +306,7 @@
             color: #64748b;
         }
 
-        /* --- 標題樣式調整 --- */
+        /* --- 標題樣式 --- */
         .hero-title-wrapper { 
             position: relative; 
             display: inline-block;
@@ -765,9 +761,12 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                         <button onclick="switchWebTab(1)" class="web-tab-btn text-lg pb-2 border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition-all duration-300">Chiikawa park</button>
                     </div>
 
-                    <div class="relative min-h-[500px] overflow-hidden slider-content">
-                        <div class="absolute inset-0 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] opacity-100 translate-x-0 slide-item w-full flex flex-col lg:flex-row gap-8 items-center bg-white/50 p-6 rounded-3xl backdrop-blur-sm" data-index="0">
-                             <div class="w-full lg:w-3/5 h-[300px] lg:h-[450px] bg-gray-200 rounded-2xl bg-cover bg-center shadow-lg cursor-pointer hover:scale-[1.02] transition-transform duration-500" 
+                    <!-- Modified: Grid layout for auto height -->
+                    <div class="grid relative overflow-hidden slider-content">
+                        <!-- Removed absolute inset-0, used grid placement -->
+                        <div class="col-start-1 row-start-1 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] opacity-100 translate-x-0 slide-item w-full flex flex-col lg:flex-row gap-8 items-center bg-white/50 p-6 rounded-3xl backdrop-blur-sm" data-index="0">
+                             <!-- Modified: Taller image on mobile using aspect-[4/3] and min-h -->
+                             <div class="w-full lg:w-3/5 h-auto aspect-[4/3] min-h-[300px] lg:h-[450px] bg-gray-200 rounded-2xl bg-cover bg-center shadow-lg cursor-pointer hover:scale-[1.02] transition-transform duration-500" 
                                   onclick="openPopup(this)"
                                   data-tags="# Sublime Text, # Gemini"
                                   style="background-image: url('eva/index_preview.jpg')"
@@ -795,8 +794,8 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                              </div>
                         </div>
 
-                        <div class="absolute inset-0 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] opacity-0 translate-x-full pointer-events-none slide-item w-full flex flex-col lg:flex-row gap-8 items-center bg-white/50 p-6 rounded-3xl backdrop-blur-sm" data-index="1">
-                             <div class="w-full lg:w-3/5 h-[300px] lg:h-[450px] bg-gray-200 rounded-2xl bg-cover bg-center shadow-lg cursor-pointer hover:scale-[1.02] transition-transform duration-500" 
+                        <div class="col-start-1 row-start-1 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] opacity-0 translate-x-full pointer-events-none slide-item w-full flex flex-col lg:flex-row gap-8 items-center bg-white/50 p-6 rounded-3xl backdrop-blur-sm" data-index="1">
+                             <div class="w-full lg:w-3/5 h-auto aspect-[4/3] min-h-[300px] lg:h-[450px] bg-gray-200 rounded-2xl bg-cover bg-center shadow-lg cursor-pointer hover:scale-[1.02] transition-transform duration-500" 
                                   onclick="openPopup(this)" 
                                   data-tags="# Sublime Text, # Gemini"
                                   style="background-image: url('chiikawa/index_preview.png')"
@@ -832,11 +831,15 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                             <svg class="tri-icon" viewBox="0 0 24 24"><path d="M10,8 L16,12 L10,16 Z"/></svg>
                         </button>
                     </div>
-                    <div class="relative h-[420px] overflow-hidden slider-content">
-                        <div class="absolute inset-0 transition-all duration-700 ease-in-out opacity-100 translate-x-0 slide-item w-full flex gap-6" data-index="0">
+                    <!-- Modified: Grid layout for auto height -->
+                    <div class="grid relative overflow-hidden slider-content">
+                        <!-- Modified: flex-col on mobile, flex-row on desktop. Grid placement. -->
+                        <div class="col-start-1 row-start-1 transition-all duration-700 ease-in-out opacity-100 translate-x-0 slide-item w-full flex flex-col md:flex-row gap-6" data-index="0">
                             
-                            <div class="flex-1 flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100">
-                                <div class="relative flex-grow bg-gray-50 cursor-pointer overflow-hidden" onclick="openVideoPopup(this, 'motion/lightbox.mp4')" data-tags="# AE, # Blender">
+                            <!-- Modified: w-full on mobile -->
+                            <div class="w-full md:flex-1 flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100">
+                                <!-- Modified: Added aspect-video -->
+                                <div class="relative w-full aspect-video bg-gray-50 cursor-pointer overflow-hidden" onclick="openVideoPopup(this, 'motion/lightbox.mp4')" data-tags="# AE, # Blender">
                                     <video class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 content-video" loop muted playsinline>
                                         <source src="motion/lightbox.mp4" type="video/mp4">
                                     </video>
@@ -846,17 +849,18 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="h-16 bg-gray-100/80 backdrop-blur-sm border-t border-gray-200 flex items-center justify-between px-6">
-                                     <span class="text-sm font-bold text-gray-500 tracking-wider">3D effect</span>
+                                <!-- Modified: h-auto py-3 for text wrapper, text-xs on mobile -->
+                                <div class="h-auto py-3 min-h-[4rem] bg-gray-100/80 backdrop-blur-sm border-t border-gray-200 flex items-center justify-between px-6">
+                                     <span class="text-xs md:text-sm font-bold text-gray-500 tracking-wider">3D effect</span>
                                      <div class="flex gap-2">
-                                        <span class="px-3 py-1 text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># AE</span>
-                                        <span class="px-3 py-1 text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># Blender</span>
+                                        <span class="px-3 py-1 text-[10px] md:text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># AE</span>
+                                        <span class="px-3 py-1 text-[10px] md:text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># Blender</span>
                                      </div>
                                 </div>
                             </div>
 
-                            <div class="flex-1 flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100">
-                                <div class="relative flex-grow bg-gray-50 cursor-pointer overflow-hidden" onclick="openVideoPopup(this, 'motion/surges.mp4')" data-tags="# AE, # Gemini">
+                            <div class="w-full md:flex-1 flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100">
+                                <div class="relative w-full aspect-video bg-gray-50 cursor-pointer overflow-hidden" onclick="openVideoPopup(this, 'motion/surges.mp4')" data-tags="# AE, # Gemini">
                                     <video class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 content-video" loop muted playsinline>
                                         <source src="motion/surges.mp4" type="video/mp4">
                                     </video>
@@ -866,21 +870,21 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="h-16 bg-gray-100/80 backdrop-blur-sm border-t border-gray-200 flex items-center justify-between px-6">
-                                     <span class="text-sm font-bold text-gray-500 tracking-wider">text effect & camera transition</span>
+                                <div class="h-auto py-3 min-h-[4rem] bg-gray-100/80 backdrop-blur-sm border-t border-gray-200 flex items-center justify-between px-6">
+                                     <span class="text-xs md:text-sm font-bold text-gray-500 tracking-wider">text effect & camera transition</span>
                                      <div class="flex gap-2">
-                                        <span class="px-3 py-1 text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># AE</span>
-                                        <span class="px-3 py-1 text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># Gemini</span>
+                                        <span class="px-3 py-1 text-[10px] md:text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># AE</span>
+                                        <span class="px-3 py-1 text-[10px] md:text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># Gemini</span>
                                      </div>
                                 </div>
                             </div>
 
                         </div>
 
-                         <div class="absolute inset-0 transition-all duration-700 ease-in-out opacity-0 translate-x-full pointer-events-none slide-item w-full flex gap-6" data-index="1">
+                         <div class="col-start-1 row-start-1 transition-all duration-700 ease-in-out opacity-0 translate-x-full pointer-events-none slide-item w-full flex flex-col md:flex-row gap-6" data-index="1">
                             
-                            <div class="flex-1 flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100">
-                                <div class="relative flex-grow bg-gray-50 cursor-pointer overflow-hidden" onclick="openVideoPopup(this, 'motion/disco_flo.mp4')" data-tags="# AE, # Gemini">
+                            <div class="w-full md:flex-1 flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100">
+                                <div class="relative w-full aspect-video bg-gray-50 cursor-pointer overflow-hidden" onclick="openVideoPopup(this, 'motion/disco_flo.mp4')" data-tags="# AE, # Gemini">
                                     <video class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 content-video" loop muted playsinline>
                                         <source src="motion/disco_flo.mp4" type="video/mp4">
                                     </video>
@@ -890,17 +894,17 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="h-16 bg-gray-100/80 backdrop-blur-sm border-t border-gray-200 flex items-center justify-between px-6">
-                                     <span class="text-sm font-bold text-gray-500 tracking-wider">text effect & camera transition</span>
+                                <div class="h-auto py-3 min-h-[4rem] bg-gray-100/80 backdrop-blur-sm border-t border-gray-200 flex items-center justify-between px-6">
+                                     <span class="text-xs md:text-sm font-bold text-gray-500 tracking-wider">text effect & camera transition</span>
                                      <div class="flex gap-2">
-                                        <span class="px-3 py-1 text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># AE</span>
-                                        <span class="px-3 py-1 text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># Gemini</span>
+                                        <span class="px-3 py-1 text-[10px] md:text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># AE</span>
+                                        <span class="px-3 py-1 text-[10px] md:text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># Gemini</span>
                                      </div>
                                 </div>
                             </div>
 
-                            <div class="flex-1 flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100">
-                                <div class="relative flex-grow bg-gray-50 cursor-pointer overflow-hidden" onclick="openVideoPopup(this, 'motion/pop.mp4')" data-tags="# AE, # Gemini">
+                            <div class="w-full md:flex-1 flex flex-col bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-gray-100">
+                                <div class="relative w-full aspect-video bg-gray-50 cursor-pointer overflow-hidden" onclick="openVideoPopup(this, 'motion/pop.mp4')" data-tags="# AE, # Gemini">
                                     <video class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 content-video" loop muted playsinline>
                                         <source src="motion/pop.mp4" type="video/mp4">
                                     </video>
@@ -910,11 +914,11 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="h-16 bg-gray-100/80 backdrop-blur-sm border-t border-gray-200 flex items-center justify-between px-6">
-                                     <span class="text-sm font-bold text-gray-500 tracking-wider">character transition</span>
+                                <div class="h-auto py-3 min-h-[4rem] bg-gray-100/80 backdrop-blur-sm border-t border-gray-200 flex items-center justify-between px-6">
+                                     <span class="text-xs md:text-sm font-bold text-gray-500 tracking-wider">character transition</span>
                                      <div class="flex gap-2">
-                                        <span class="px-3 py-1 text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># AE</span>
-                                        <span class="px-3 py-1 text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># Gemini</span>
+                                        <span class="px-3 py-1 text-[10px] md:text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># AE</span>
+                                        <span class="px-3 py-1 text-[10px] md:text-xs font-semibold text-slate-600 bg-white rounded-full border border-slate-200 shadow-sm"># Gemini</span>
                                      </div>
                                 </div>
                             </div>
@@ -929,6 +933,30 @@ SicHandicH,LintMcCree,HannotateTC</pre>
                     </div>
                     
                     <div class="accordion-container">
+                        <div class="accordion-item group" 
+                             onclick="openPopup(this)" 
+                             data-tags="# Blender"
+                             style="background-image: url('graphic/1210.png')"
+                             role="img" aria-label="Graphic Work 1210">
+                             <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                                <span class="px-3 py-1.5 text-xs font-bold text-gray-700 bg-white/90 backdrop-blur-md rounded-full shadow-sm border border-gray-100">
+                                    # Blender
+                                </span>
+                             </div>
+                        </div>
+
+                        <div class="accordion-item group" 
+                             onclick="openPopup(this)" 
+                             data-tags="# Blender"
+                             style="background-image: url('graphic/1216.png')"
+                             role="img" aria-label="Graphic Work 1216">
+                             <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                                <span class="px-3 py-1.5 text-xs font-bold text-gray-700 bg-white/90 backdrop-blur-md rounded-full shadow-sm border border-gray-100">
+                                    # Blender
+                                </span>
+                             </div>
+                        </div>
+
                         <div class="accordion-item group" 
                              onclick="openPopup(this)" 
                              data-tags="# Photoshop"
