@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChromaFlow | 靈感配色生成器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+        
+        /* 淡入淡出動畫 */
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-transition {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        .hidden-page {
+            display: none;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 色塊互動 */
+        .color-chip {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+        .color-chip:active {
+            transform: scale(0.95);
+        }
+        .color-chip:hover .copy-hint {
+            opacity: 1;
+        }
+
+        /* 自定義顏色選擇器美化 */
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0; 
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+
+        /* 隱藏滾動條但保持功能 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col fade-in">
+
+    <!-- 頂部導航 (生成結果後顯示) -->
+    <nav id="navbar" class="fixed top-0 w-full bg-white/80 backdrop-blur-md shadow-sm z-50 transition-all duration-300 transform -translate-y-full px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-4">
+            <button onclick="goBack()" id="backBtn" class="text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                返回
+            </button>
+        </div>
+        <div class="font-bold text-xl tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+            ChromaFlow
+        </div>
+        <button onclick="resetApp()" class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2 rounded-full font-medium transition-colors">
+            重新開始
+        </button>
+    </nav>
+
+    <!-- 頁面容器 -->
+    <main class="flex-grow container mx-auto px-4 py-8 relative mt-12">
+        
+        <!-- STEP 1: 首頁/選擇顏色 -->
+        <div id="step1" class="page-transition absolute inset-0 flex flex-col items-center justify-center min-h-[80vh]">
+            <div class="text-center space-y-6 max-w-lg mx-auto">
+                <h1 class="text-4xl md:text-6xl font-bold text-slate-800 leading-tight">
+                    尋找你的<br>
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">專屬配色靈感</span>
+                </h1>
+                <p class="text-slate-500 text-lg">選擇一個主色，讓我們為你施展魔法</p>
+                
+                <div class="py-8 relative group">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-200 to-purple-200 rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                    <div class="relative flex flex-col items-center gap-4">
+                        <input type="color" id="baseColorInput" value="#6366f1" class="transition-transform hover:scale-110 duration-300">
+                        <span id="hexDisplay" class="font-mono text-slate-400 text-sm">#6366F1</span>
+                    </div>
+                </div>
+
+                <button onclick="startGeneration()" class="bg-slate-900 text-white px-8 py-3 rounded-2xl text-lg font-medium shadow-lg hover:bg-slate-800 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-2 mx-auto">
+                    <span>生成配色方案</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.879 1.879a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 2: 生成結果 (5組) -->
+        <div id="step2" class="page-transition hidden-page w-full">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold text-slate-800">為您精選的配色</h2>
+                <p class="text-slate-500 mt-2">點擊色塊複製代碼，或點擊「風格標題」查看更多類似配色</p>
+            </div>
+            
+            <div id="paletteContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 動態生成的卡片將放在這裡 -->
+            </div>
+        </div>
+
+        <!-- STEP 3: 詳細風格 (類似配色) -->
+        <div id="step3" class="page-transition hidden-page w-full">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold text-slate-800" id="detailTitle">延伸風格</h2>
+                <p class="text-slate-500 mt-2">基於您的選擇，這裡有更多變化</p>
+            </div>
+            
+            <div id="detailContainer" class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <!-- 詳細卡片 -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-lg transition-all duration-300 opacity-0 translate-y-10 pointer-events-none flex items-center gap-2 z-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+        <span id="toastMsg">色碼已複製！</span>
+    </div>
+
+    <script>
+        // --- 核心邏輯與變數 ---
+        let currentStep = 1;
+        let baseColorHex = "#6366F1";
+        let historyStack = [];
+
+        // DOM 元素
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const navbar = document.getElementById('navbar');
+        const backBtn = document.getElementById('backBtn');
+        const colorInput = document.getElementById('baseColorInput');
+        const hexDisplay = document.getElementById('hexDisplay');
+
+        // 監聽顏色選擇
+        colorInput.addEventListener('input', (e) => {
+            baseColorHex = e.target.value;
+            hexDisplay.textContent = baseColorHex.toUpperCase();
+        });
+
+        // --- 頁面導航 ---
+
+        function startGeneration() {
+            // 轉場
+            transitionTo(2);
+            showNavbar(true);
+            
+            // 生成數據
+            generateMainPalettes(baseColorHex);
+        }
+
+        function viewDetails(styleType, seedColor) {
+            historyStack.push(2); // 記錄來源
+            transitionTo(3);
+            backBtn.classList.remove('hidden');
+            
+            document.getElementById('detailTitle').textContent = getStyleName(styleType) + " - 延伸探索";
+            generateDetailPalettes(seedColor, styleType);
+        }
+
+        function goBack() {
+            if (currentStep === 3) {
+                transitionTo(2);
+                backBtn.classList.add('hidden');
+            }
+        }
+
+        function resetApp() {
+            transitionTo(1);
+            showNavbar(false);
+            backBtn.classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('paletteContainer').innerHTML = '';
+                document.getElementById('detailContainer').innerHTML = '';
+            }, 300);
+        }
+
+        function transitionTo(step) {
+            // 隱藏所有頁面
+            [step1, step2, step3].forEach(el => {
+                el.classList.add('hidden-page');
+                el.classList.remove('relative'); // remove relative to avoid spacing issues
+                el.style.position = 'absolute'; // reset to absolute for hidden
+            });
+
+            // 顯示目標頁面
+            const target = document.getElementById(`step${step}`);
+            target.classList.remove('hidden-page');
+            
+            // 為了讓內容撐開高度，當顯示時切換為 relative
+            setTimeout(() => {
+                target.style.position = 'relative';
+                // 滾動到頂部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 50);
+
+            currentStep = step;
+        }
+
+        function showNavbar(show) {
+            if (show) {
+                navbar.classList.remove('-translate-y-full');
+            } else {
+                navbar.classList.add('-translate-y-full');
+            }
+        }
+
+        // --- 色彩生成演算法 ---
+
+        function generateMainPalettes(hex) {
+            const hsl = hexToHSL(hex);
+            const container = document.getElementById('paletteContainer');
+            container.innerHTML = '';
+
+            // 1. 清新低彩度 x 2
+            renderPaletteCard(container, generatePalette(hsl, 'fresh'), 'fresh', '清新低彩度', '輕盈、放鬆、空氣感');
+            renderPaletteCard(container, generatePalette(hsl, 'fresh'), 'fresh', '清新低彩度', '柔和、自然、舒適');
+
+            // 2. 暗黑風格 x 2
+            renderPaletteCard(container, generatePalette(hsl, 'dark'), 'dark', '暗黑風格', '現代、科技、沈穩');
+            renderPaletteCard(container, generatePalette(hsl, 'dark'), 'dark', '暗黑風格', '神秘、高級、質感');
+
+            // 3. 活潑高飽和 x 1
+            renderPaletteCard(container, generatePalette(hsl, 'vibrant'), 'vibrant', '活潑高飽和', '能量、注目、流行');
+        }
+
+        function generateDetailPalettes(seedHex, styleType) {
+            const hsl = hexToHSL(seedHex);
+            const container = document.getElementById('detailContainer');
+            container.innerHTML = '';
+
+            // 生成 5 組類似風格
+            for(let i=0; i<5; i++) {
+                renderPaletteCard(container, generatePalette(hsl, styleType), styleType, getStyleName(styleType) + ` 方案 ${i+1}`, '點擊色塊複製');
+            }
+        }
+
+        function getStyleName(type) {
+            if (type === 'fresh') return '清新低彩度';
+            if (type === 'dark') return '暗黑風格';
+            return '活潑高飽和';
+        }
+
+        // 核心：根據風格生成一組顏色 (HSL 邏輯)
+        function generatePalette(baseHSL, style) {
+            let colors = [];
+            let h = baseHSL.h;
+            let s = baseHSL.s;
+            let l = baseHSL.l;
+
+            // 確保調色盤有 4-5 個顏色
+            const count = Math.floor(Math.random() * 2) + 4; // 4 or 5
+
+            for (let i = 0; i < count; i++) {
+                let newH, newS, newL;
+
+                if (style === 'fresh') {
+                    // 清新：高亮度 (75-95)，低彩度 (10-40)，色相微調
+                    newH = (h + (Math.random() * 60 - 30)) % 360; 
+                    newS = Math.floor(Math.random() * 30) + 10; 
+                    newL = Math.floor(Math.random() * 20) + 75; 
+                } 
+                else if (style === 'dark') {
+                    // 暗黑：極低亮度 (10-25) 作背景，保留一個亮色作點綴
+                    if (i === 0) {
+                        // 點綴色
+                        newH = h;
+                        newS = Math.floor(Math.random() * 40) + 40;
+                        newL = Math.floor(Math.random() * 30) + 50;
+                    } else {
+                        // 背景色
+                        newH = (h + (Math.random() * 40 - 20)) % 360;
+                        newS = Math.floor(Math.random() * 30) + 10;
+                        newL = Math.floor(Math.random() * 15) + 10;
+                    }
+                } 
+                else if (style === 'vibrant') {
+                    // 活潑：中等亮度 (45-65)，高彩度 (70-100)，對比色相
+                    let hueShift = i * (360 / count) + (Math.random() * 20); // 廣色域分布
+                    newH = (h + hueShift) % 360;
+                    newS = Math.floor(Math.random() * 30) + 70;
+                    newL = Math.floor(Math.random() * 20) + 45;
+                }
+
+                colors.push(HSLToHex(newH, newS, newL));
+            }
+            
+            // 將顏色排序（依亮度），讓視覺更整齊
+            if(style !== 'dark') {
+                colors.sort((a,b) => {
+                    let la = hexToHSL(a).l;
+                    let lb = hexToHSL(b).l;
+                    return lb - la; // 亮到暗
+                });
+            }
+
+            return colors;
+        }
+
+        // --- 渲染 UI ---
+
+        function renderPaletteCard(container, colors, styleType, title, subtitle) {
+            const card = document.createElement('div');
+            card.className = "bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group border border-slate-100";
+            
+            // 標題區 (可點擊進入詳細)
+            const header = document.createElement('div');
+            header.className = "p-4 border-b border-slate-50 flex justify-between items-center cursor-pointer bg-slate-50/50 hover:bg-slate-100 transition-colors";
+            header.innerHTML = `
+                <div>
+                    <h3 class="font-bold text-slate-700">${title}</h3>
+                    <p class="text-xs text-slate-400">${subtitle}</p>
+                </div>
+                <div class="opacity-0 group-hover:opacity-100 text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+            `;
+            header.onclick = () => viewDetails(styleType, colors[0]);
+            
+            // 色塊區
+            const grid = document.createElement('div');
+            grid.className = "flex-grow flex flex-col sm:flex-row h-48 sm:h-40 w-full";
+            
+            colors.forEach(color => {
+                const block = document.createElement('div');
+                block.className = "flex-1 color-chip relative group/chip flex items-center justify-center sm:items-end sm:justify-start";
+                block.style.backgroundColor = color;
+                
+                // 判斷文字顏色 (黑/白)
+                const isDark = hexToHSL(color).l < 50;
+                const textColor = isDark ? 'text-white/90' : 'text-slate-800/90';
+                
+                block.innerHTML = `
+                    <div class="p-2 sm:p-3 w-full text-center sm:text-left transition-opacity">
+                        <span class="font-mono text-xs sm:text-sm font-bold opacity-70 group-hover/chip:opacity-100 ${textColor}">${color.toUpperCase()}</span>
+                        <div class="copy-hint absolute inset-0 flex items-center justify-center opacity-0 bg-black/10 backdrop-blur-[1px] transition-opacity">
+                            <span class="text-white text-xs font-bold bg-black/50 px-2 py-1 rounded">複製</span>
+                        </div>
+                    </div>
+                `;
+                
+                block.onclick = (e) => {
+                    e.stopPropagation(); // 防止觸發卡片點擊
+                    copyColor(color);
+                };
+                
+                grid.appendChild(block);
+            });
+
+            card.appendChild(header);
+            card.appendChild(grid);
+            container.appendChild(card);
+        }
+
+        // --- 工具函式 ---
+
+        function copyColor(hex) {
+            navigator.clipboard.writeText(hex).then(() => {
+                showToast(`已複製 ${hex.toUpperCase()}`);
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.textContent = msg;
+            
+            toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }, 2000);
+        }
+
+        // Hex to HSL
+        function hexToHSL(H) {
+            let r = 0, g = 0, b = 0;
+            if (H.length == 4) {
+                r = "0x" + H[1] + H[1];
+                g = "0x" + H[2] + H[2];
+                b = "0x" + H[3] + H[3];
+            } else if (H.length == 7) {
+                r = "0x" + H[1] + H[2];
+                g = "0x" + H[3] + H[4];
+                b = "0x" + H[5] + H[6];
+            }
+            r /= 255; g /= 255; b /= 255;
+            let cmin = Math.min(r,g,b), cmax = Math.max(r,g,b), delta = cmax - cmin;
+            let h = 0, s = 0, l = 0;
+            if (delta == 0) h = 0;
+            else if (cmax == r) h = ((g - b) / delta) % 6;
+            else if (cmax == g) h = (b - r) / delta + 2;
+            else h = (r - g) / delta + 4;
+            h = Math.round(h * 60);
+            if (h < 0) h += 360;
+            l = (cmax + cmin) / 2;
+            s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+            s = +(s * 100).toFixed(1);
+            l = +(l * 100).toFixed(1);
+            return { h, s, l };
+        }
+
+        // HSL to Hex
+        function HSLToHex(h, s, l) {
+            s /= 100; l /= 100;
+            let c = (1 - Math.abs(2 * l - 1)) * s,
+                x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
+                m = l - c / 2,
+                r = 0, g = 0, b = 0;
+            if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+            else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+            else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+            else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+            else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+            else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
+            r = Math.round((r + m) * 255).toString(16);
+            g = Math.round((g + m) * 255).toString(16);
+            b = Math.round((b + m) * 255).toString(16);
+            if (r.length == 1) r = "0" + r;
+            if (g.length == 1) g = "0" + g;
+            if (b.length == 1) b = "0" + b;
+            return "#" + r + g + b;
+        }
+    </script>
+</body>
+</html>

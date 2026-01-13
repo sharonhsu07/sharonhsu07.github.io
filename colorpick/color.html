@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Inspiration</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Global Reset for Square Look */
+        * {
+            border-radius: 0 !important;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            /* background-color: #ffffff; Removed solid color */
+            background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); /* Added subtle grey gradient */
+            background-attachment: fixed; /* Ensures gradient covers full scroll area */
+            color: #111;
+            overflow-x: hidden;
+        }
+        
+        /* --- Premium Animations --- */
+        .fade-in { animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @keyframes slideInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .card-enter {
+            opacity: 0; 
+            animation: slideInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        /* Page Transitions */
+        .page-container {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            width: 100%;
+            position: absolute;
+            top: 0; left: 0;
+        }
+        .page-active {
+            opacity: 1; transform: translateY(0); pointer-events: auto; position: relative; z-index: 10;
+        }
+        .page-hidden {
+            opacity: 0; transform: translateY(20px); pointer-events: none; position: absolute; z-index: 0;
+        }
+
+        /* Custom Color Input */
+        .color-wrapper {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #eee;
+            background: white;
+            transition: all 0.3s ease;
+        }
+        .color-wrapper:hover {
+            border-color: #000;
+            transform: scale(1.02);
+        }
+        input[type="color"] {
+            -webkit-appearance: none; border: none; width: 150%; height: 150%;
+            position: absolute; top: -25%; left: -25%; cursor: pointer; padding: 0; background: none;
+        }
+
+        /* Minimal Input Style */
+        .hex-input {
+            background: transparent;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s ease;
+            text-transform: uppercase;
+        }
+        .hex-input:focus {
+            outline: none;
+            border-bottom-color: #000;
+        }
+        .hex-input::placeholder { color: #e5e5e5; }
+
+        /* Preset Swatches - Minimal */
+        .preset-swatch {
+            width: 24px; height: 24px; cursor: pointer;
+            transition: transform 0.2s; border: 1px solid transparent;
+        }
+        .preset-swatch:hover { 
+            transform: scale(1.2); border: 1px solid #111; z-index: 10;
+        }
+        
+        /* UI Utilities */
+        .btn-line { @apply px-6 py-2 text-sm font-medium text-black bg-transparent border border-gray-300 hover:bg-black hover:text-white transition-all uppercase tracking-wider; }
+        .btn-primary-square { @apply px-12 py-5 text-white bg-black hover:bg-gray-800 transition-all font-medium text-lg tracking-widest border border-transparent; }
+        .palette-card { @apply bg-transparent flex flex-col transition-all duration-300 border border-transparent hover:border-gray-200 p-2; }
+        .mode-toggle-btn { @apply px-6 py-2 text-xs font-medium transition-all border border-gray-300 hover:bg-gray-50 bg-white text-gray-500; }
+        .mode-toggle-btn.active { @apply bg-black text-white border-black; }
+        .color-chip:hover { opacity: 0.95; }
+        .color-chip:hover .copy-hint { opacity: 1; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col fade-in selection:bg-black selection:text-white">
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 transition-transform duration-500 transform -translate-y-full border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <button onclick="goBack()" id="backBtn" class="flex items-center gap-2 text-gray-400 hover:text-black transition-colors hidden text-xs font-medium uppercase tracking-widest group">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter" class="group-hover:-translate-x-1 transition-transform"><path d="m15 18-6-6 6-6"/></svg>
+                Back
+            </button>
+            <div id="navSpacer" class="w-16"></div>
+            <button onclick="resetApp()" class="text-xs font-medium text-gray-400 hover:text-black transition-colors uppercase tracking-[0.2em]">Restart</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8 relative mt-20 flex flex-col items-center">
+        
+        <!-- STEP 1: Color Picker (Redesigned) -->
+        <div id="step1" class="page-container page-active flex flex-col items-center justify-center min-h-[70vh]">
+            <div class="w-full max-w-2xl animate-fadeIn flex flex-col items-center gap-12">
+                
+                <!-- Title -->
+                <h1 class="text-5xl md:text-6xl font-thin text-black tracking-tighter text-center leading-none opacity-90">
+                    Color<br><span class="font-bold">Pick.</span>
+                </h1>
+                
+                <div class="flex flex-col items-center w-full gap-8">
+                    <!-- Main Picker Wrapper -->
+                    <!-- Sized down slightly to match text -->
+                    <div class="color-wrapper w-40 h-40 md:w-40 md:h-40 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)]">
+                        <input type="color" id="baseColorInput" value="#5778a2">
+                    </div>
+
+                    <!-- Editable Hex Input Group -->
+                    <div class="flex items-center justify-center gap-2 group relative">
+                        <span class="text-2xl font-light text-gray-300 select-none">#</span>
+                        <input type="text" id="hexInput" value="5778a2" maxlength="6"
+                               class="hex-input w-40 text-center text-3xl md:text-4xl font-light text-black tracking-widest placeholder-gray-200"
+                               placeholder="HEX">
+                    </div>
+
+                    <!-- Minimal Presets -->
+                    <div class="flex items-center gap-6 mt-2">
+                        <span class="text-[10px] font-bold tracking-[0.2em] text-gray-300 uppercase">Start With</span>
+                        <div class="flex gap-4">
+                            <div class="preset-swatch bg-black" onclick="setBaseColor('#000000')"></div>
+                            <div class="preset-swatch bg-red-500" onclick="setBaseColor('#ef4444')"></div>
+                            <div class="preset-swatch bg-blue-500" onclick="setBaseColor('#3b82f6')"></div>
+                            <div class="preset-swatch bg-yellow-400" onclick="setBaseColor('#facc15')"></div>
+                            <div class="preset-swatch bg-emerald-500" onclick="setBaseColor('#10b981')"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button onclick="startGeneration()" class="btn-primary-square flex items-center justify-center gap-4 group">
+                        GENERATE PALETTES
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter" class="group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: Results -->
+        <div id="step2" class="page-container page-hidden w-full max-w-7xl">
+            <div class="flex justify-between items-end mb-20 px-2 border-b border-gray-100 pb-6">
+                <div>
+                    <h2 class="text-4xl font-light text-black tracking-tight">Curated Palettes</h2>
+                </div>
+                <button onclick="regenerateStep2()" class="btn-line flex items-center gap-2 group" title="Shuffle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter" class="group-hover:rotate-180 transition-transform duration-500"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+                    Shuffle
+                </button>
+            </div>
+            
+            <div id="paletteContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
+                <!-- Cards injected here -->
+            </div>
+        </div>
+
+        <!-- STEP 3: Details & Explore -->
+        <div id="step3" class="page-container page-hidden w-full max-w-6xl">
+            <!-- Header with Controls -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-gray-100 pb-6 gap-6">
+                <div class="flex flex-col gap-6 items-start">
+                    <div>
+                        <!-- Removed detailStyleLabel span here -->
+                        <h2 class="text-4xl font-light text-black tracking-tight">Variations</h2>
+                    </div>
+
+                    <!-- Seed Color Indicator -->
+                    <div class="flex items-center gap-4 pl-1">
+                        <span class="text-[10px] font-bold text-gray-300 uppercase tracking-widest">BASED ON</span>
+                        <div class="flex items-center gap-3 group cursor-pointer" onclick="copyColor(currentDetailSeed)">
+                            <div id="detailSeedColorBox" class="w-8 h-8 border border-gray-200 transition-transform group-hover:scale-105 bg-gray-200 shadow-sm"></div>
+                            <span id="detailSeedColorHex" class="text-sm font-mono text-gray-400 group-hover:text-black transition-colors">#------</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-6">
+                    <!-- Mode Toggles -->
+                    <div class="flex gap-4">
+                        <button onclick="setExploreMode('same')" id="btnModeSame" class="mode-toggle-btn active">KEEP HUE</button>
+                        <button onclick="setExploreMode('shift')" id="btnModeShift" class="mode-toggle-btn">SHIFT HUE</button>
+                    </div>
+
+                    <!-- Shuffle Button -->
+                    <button onclick="regenerateStep3()" class="p-3 border border-gray-300 text-black hover:bg-black hover:text-white transition-all group" title="Shuffle Variations">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter" class="group-hover:rotate-180 transition-transform duration-500"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="detailContainer" class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-20">
+                <!-- Detail cards injected here -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-0 right-0 m-8 bg-black text-white px-8 py-4 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none flex items-center gap-4 z-50 text-sm font-medium tracking-wide">
+        <span class="w-2 h-2 bg-white"></span>
+        <span id="toastMsg">COPIED</span>
+    </div>
+
+    <script>
+        // --- State ---
+        let currentStep = 1;
+        let baseColorHex = "#5778A2";
+        let currentDetailSeed = null;
+        let currentDetailStyle = null;
+        let exploreMode = 'same'; 
+        let globalSeed = 0; 
+
+        // DOM Elements
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const navbar = document.getElementById('navbar');
+        const backBtn = document.getElementById('backBtn');
+        const navSpacer = document.getElementById('navSpacer');
+        const colorInput = document.getElementById('baseColorInput');
+        const hexInput = document.getElementById('hexInput');
+
+        // Events
+        
+        // 1. Color Picker Change -> Update Hex Input & State
+        colorInput.addEventListener('input', (e) => {
+            const hex = e.target.value;
+            baseColorHex = hex;
+            hexInput.value = hex.substring(1).toUpperCase(); // remove #
+        });
+
+        // 2. Hex Input Change -> Update Color Picker & State
+        hexInput.addEventListener('input', (e) => {
+            let val = e.target.value.toUpperCase();
+            
+            // Allow only Hex chars
+            val = val.replace(/[^0-9A-F]/g, '');
+            e.target.value = val;
+
+            if (val.length === 6) {
+                const fullHex = "#" + val;
+                baseColorHex = fullHex;
+                colorInput.value = fullHex;
+            }
+        });
+
+        function focusHexInput() {
+            hexInput.focus();
+        }
+
+        function setBaseColor(hex) {
+            baseColorHex = hex;
+            colorInput.value = hex;
+            hexInput.value = hex.substring(1).toUpperCase();
+        }
+
+        // --- Navigation ---
+
+        function startGeneration() {
+            // Validate Hex before starting
+            if(hexInput.value.length < 6) {
+                // If invalid, fallback or just use current picker value
+                hexInput.value = colorInput.value.substring(1).toUpperCase();
+                baseColorHex = colorInput.value;
+            }
+            transitionTo(2);
+            showNavbar(true);
+            generateMainPalettes(baseColorHex);
+        }
+
+        function regenerateStep2() {
+            const container = document.getElementById('paletteContainer');
+            container.style.opacity = '0.5';
+            globalSeed++;
+            setTimeout(() => {
+                generateMainPalettes(baseColorHex);
+                container.style.opacity = '1';
+            }, 300);
+        }
+
+        function viewDetails(styleType, seedColor) {
+            currentDetailSeed = seedColor;
+            currentDetailStyle = styleType;
+            exploreMode = 'same'; 
+            
+            updateExploreButtons();
+            // Removed: document.getElementById('detailStyleLabel').textContent = styleType.toUpperCase();
+
+            // UPDATE SEED COLOR UI
+            document.getElementById('detailSeedColorBox').style.backgroundColor = seedColor;
+            document.getElementById('detailSeedColorHex').textContent = seedColor.toUpperCase();
+            
+            if (currentStep === 3) {
+                const container = document.getElementById('detailContainer');
+                container.style.opacity = '0'; 
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setTimeout(() => {
+                    generateDetailPalettes();
+                    container.style.opacity = '1';
+                }, 400);
+            } else {
+                transitionTo(3);
+                backBtn.classList.remove('hidden');
+                navSpacer.classList.add('hidden');
+                generateDetailPalettes();
+            }
+        }
+
+        function regenerateStep3() {
+            const container = document.getElementById('detailContainer');
+            container.style.opacity = '0.5';
+            globalSeed++;
+            setTimeout(() => {
+                generateDetailPalettes();
+                container.style.opacity = '1';
+            }, 300);
+        }
+
+        function setExploreMode(mode) {
+            exploreMode = mode;
+            updateExploreButtons();
+            regenerateStep3();
+        }
+
+        function updateExploreButtons() {
+            const btnSame = document.getElementById('btnModeSame');
+            const btnShift = document.getElementById('btnModeShift');
+            
+            if (exploreMode === 'same') {
+                btnSame.classList.add('active');
+                btnShift.classList.remove('active');
+            } else {
+                btnSame.classList.remove('active');
+                btnShift.classList.add('active');
+            }
+        }
+
+        function goBack() {
+            if (currentStep === 3) {
+                transitionTo(2);
+                backBtn.classList.add('hidden');
+                navSpacer.classList.remove('hidden');
+            }
+        }
+
+        function resetApp() {
+            transitionTo(1);
+            showNavbar(false);
+            backBtn.classList.add('hidden');
+            navSpacer.classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('paletteContainer').innerHTML = '';
+                document.getElementById('detailContainer').innerHTML = '';
+            }, 500);
+        }
+
+        function transitionTo(step) {
+            [step1, step2, step3].forEach(el => {
+                el.classList.remove('page-active');
+                el.classList.add('page-hidden');
+            });
+            const target = document.getElementById(`step${step}`);
+            target.classList.remove('page-hidden');
+            target.classList.add('page-active');
+            
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 50);
+
+            currentStep = step;
+        }
+
+        function showNavbar(show) {
+            if (show) navbar.classList.remove('-translate-y-full');
+            else navbar.classList.add('-translate-y-full');
+        }
+
+        // --- Logic & Algorithms ---
+
+        function generateMainPalettes(hex) {
+            const hsl = hexToHSL(hex);
+            const container = document.getElementById('paletteContainer');
+            container.innerHTML = '';
+
+            const items = [
+                {style: 'fresh', variant: 'A', title: 'Clean & Soft', sub: 'Airy, Minimalist'},
+                {style: 'fresh', variant: 'B', title: 'Natural & Warm', sub: 'Organic, Cozy'},
+                {style: 'dark', variant: 'A', title: 'Modern Dark', sub: 'Sleek, High Contrast'},
+                {style: 'dark', variant: 'B', title: 'Deep & Muted', sub: 'Elegant, Professional'},
+                {style: 'vibrant', variant: 'A', title: 'Vibrant Pop', sub: 'Energetic, Bold'}
+            ];
+
+            items.forEach((item, index) => {
+                const colors = generatePalette(hsl, item.style, item.variant, hex);
+                renderPaletteCard(container, colors, item.style, item.title, item.sub, false, index);
+            });
+        }
+
+        function generateDetailPalettes() {
+            const hsl = hexToHSL(currentDetailSeed);
+            const container = document.getElementById('detailContainer');
+            container.innerHTML = '';
+
+            for(let i=0; i<6; i++) {
+                const randomOffset = i + globalSeed * 7; 
+                const colors = generateExplorePalette(hsl, currentDetailStyle, exploreMode, i, randomOffset);
+                const keywords = getKeywordDescription(currentDetailStyle, i);
+                renderPaletteCard(container, colors, currentDetailStyle, `Variation ${i+1}`, keywords, true, i);
+            }
+        }
+        
+        function getKeywordDescription(style, index) {
+            const freshKeywords = ["Airy & Light", "Soft Pastel", "Cool Breeze", "Natural Calm", "Morning Mist", "Clean Slate"];
+            const darkKeywords = ["Midnight Tone", "Neon Glow", "Deep & Rich", "Cyber Punk", "Elegant Noir", "Shadow Realm"];
+            const vibrantKeywords = ["Electric Pop", "Bold Energy", "Summer Vibes", "High Contrast", "Playful Hue", "Vivid Dream"];
+            let list = [];
+            if(style === 'fresh') list = freshKeywords;
+            else if(style === 'dark') list = darkKeywords;
+            else list = vibrantKeywords;
+            return list[index % list.length];
+        }
+
+        function generateExplorePalette(baseHSL, style, mode, cardIndex, seedOffset) {
+            let colors = [];
+            const count = 5;
+            let h = baseHSL.h;
+            let currentBaseHue = h;
+            if (mode === 'shift') {
+                const shifts = [30, -30, 150, 210, 180, 120, 90, -90]; 
+                currentBaseHue = (h + shifts[seedOffset % shifts.length] + (Math.random()*40-20)) % 360;
+            } else {
+                const microShifts = [0, 15, -15, 30, -30, 45, -45, 10]; 
+                currentBaseHue = (h + microShifts[seedOffset % microShifts.length] + (Math.random()*20-10)) % 360;
+            }
+            let sBias = 0;
+            let lBias = 0;
+            if (mode === 'same') {
+                const profile = cardIndex % 4; 
+                if (profile === 0) { sBias = 20; lBias = -10; } 
+                else if (profile === 1) { sBias = -25; lBias = 15; } 
+                else if (profile === 2) { sBias = 10; lBias = -20; } 
+                else { sBias = 0; lBias = 0; }
+            }
+
+            for (let i = 0; i < count; i++) {
+                let newH, newS, newL;
+                let randomS = Math.random() * 25;
+                let randomL = Math.random() * 20;
+
+                // Spread logic for explore mode as well
+                let spread = (i * 15) - 30; // Spread hues within the card
+
+                if (style === 'fresh') {
+                    newH = (currentBaseHue + spread + (Math.random() * 20 - 10)) % 360; 
+                    newS = Math.floor(20 + randomS + sBias); 
+                    newL = Math.floor(75 + randomL + lBias);
+                    
+                    // Alternating L for contrast
+                    if (i % 2 === 0) newL += 10; else newL -= 10;
+
+                    if (newS < 5) newS = 5; if (newS > 100) newS = 100;
+                    if (newL < 10) newL = 10; if (newL > 98) newL = 98;
+                    if (i === count - 1) { newL = Math.floor(30 + Math.random()*20); newS = Math.floor(30 + Math.random()*20); }
+                } 
+                else if (style === 'dark') {
+                    if (i === 0) {
+                        newH = currentBaseHue; newS = Math.floor(60 + randomS + sBias); newL = Math.floor(60 + randomL);
+                        if(newL > 90) newL = 90;
+                    } else {
+                        // Spread backgrounds
+                        newH = (currentBaseHue + (i * 10)) % 360;
+                        newS = Math.floor(15 + Math.random()*20 + (sBias/2)); 
+                        newL = Math.floor(10 + Math.random()*15);
+                        if(newL < 5) newL = 5;
+                    }
+                } 
+                else { 
+                    let spread = mode === 'shift' ? 120 : 60;
+                    newH = (currentBaseHue + (Math.random() * spread - (spread/2))) % 360;
+                    newS = Math.floor(60 + randomS + sBias); 
+                    
+                    // L map for vibrancy
+                    let lMap = [50, 65, 40, 60, 45];
+                    newL = lMap[i%5] + (lBias/2);
+
+                    if (newS > 100) newS = 100; if(newS < 40) newS = 40;
+                    if (newL > 90) newL = 90; if(newL < 20) newL = 20;
+                }
+                colors.push(HSLToHex(newH, newS, newL));
+            }
+            if (style !== 'dark') colors.sort((a,b) => hexToHSL(b).l - hexToHSL(a).l);
+            return colors;
+        }
+
+        function generatePalette(baseHSL, style, variant, forceColor = null) {
+            let colors = [];
+            let h = baseHSL.h;
+            const count = forceColor ? 4 : 5;
+            
+            // NEW: Add a global random shift for this specific generation call
+            // This ensures every "Shuffle" produces a noticeably different set, 
+            // even if the base color is the same.
+            let shiftH = (Math.random() * 40 - 20); // +/- 20 degrees shift
+            let shiftS = (Math.random() * 20 - 10);
+            
+            for (let i = 0; i < count; i++) {
+                let newH, newS, newL;
+                
+                // Increased random noise range for distinctness
+                let rndHue = (Math.random() * 40 - 20); 
+                let rndSat = (Math.random() * 30);      
+                let rndLit = (Math.random() * 20);      
+
+                if (style === 'fresh') {
+                    // Spread hues: Analogous range
+                    let hueOffset = (i * 15) - 30; // -30, -15, 0, 15...
+                    
+                    if (variant === 'A') { // Cool/Clean
+                        newH = (h + hueOffset + rndHue + shiftH) % 360;
+                        newS = 5 + rndSat + (i * 5) + shiftS; // Vary saturation
+                        // Alternating Lightness for contrast: High, Mid, High, Mid
+                        newL = 85 + (i % 2 === 0 ? 5 : -10) + rndLit;
+                    } else { // Warm/Natural
+                        newH = (h + hueOffset + rndHue + shiftH) % 360;
+                        newS = 20 + rndSat + (i * 5) + shiftS;
+                        newL = 80 + (i % 2 === 0 ? 5 : -10) + rndLit;
+                    }
+                } 
+                else if (style === 'dark') {
+                    if (variant === 'A') { // High Contrast
+                        if (i === 0) { 
+                            // Main Accent
+                            newH = (h + 180 + rndHue + shiftH) % 360; newS = 90 + shiftS; newL = 60 + (rndLit/2); 
+                        } else if (i === 1) { 
+                            // Secondary Accent
+                            newH = (h + rndHue + shiftH) % 360; newS = 80 + shiftS; newL = 70 + (rndLit/2); 
+                        } else { 
+                            // Backgrounds: Vary the dark shades hue and lightness
+                            newH = (h + (i * 10) + shiftH) % 360; 
+                            newS = 15 + (shiftS/2); 
+                            newL = 10 + (i * 3) + (rndLit/3); // 10, 13, 16... gradient effect
+                        }
+                    } else { // Muted
+                         if (i === 0) { 
+                            newH = h + rndHue + shiftH; newS = 40 + shiftS; newL = 50 + rndLit; 
+                         } else {
+                            newH = (h + (i * 15) + shiftH) % 360; // Shift hues for darks
+                            newS = 20 + (shiftS/2); 
+                            newL = 15 + (i * 4) + (rndLit/3); // Distinct dark shades
+                         }
+                    }
+                } 
+                else { // Vibrant
+                    // Split Complementary / Triadic spread with enforced L variation
+                    let hueMap = [0, 30, -30, 180, 210]; 
+                    newH = (h + hueMap[i] + rndHue + shiftH) % 360;
+                    
+                    newS = 70 + (Math.random() * 20) + shiftS;
+                    // Spread Lightness: Dark, Light, Dark, Light pattern
+                    let lMap = [50, 65, 40, 60, 45];
+                    newL = lMap[i % 5] + rndLit;
+                }
+                
+                // Safety clamp
+                if (newS > 100) newS = 100; if (newS < 0) newS = 0;
+                if (newL > 100) newL = 100; if (newL < 0) newL = 0;
+                
+                colors.push(HSLToHex(newH, newS, newL));
+            }
+            if (forceColor) colors.push(forceColor);
+            if(style !== 'dark') colors.sort((a,b) => hexToHSL(b).l - hexToHSL(a).l);
+            return colors;
+        }
+
+        // --- Rendering ---
+        function renderPaletteCard(container, colors, styleType, title, subtitle, isDetail = false, index = 0) {
+            const card = document.createElement('div');
+            card.className = "palette-card group cursor-default card-enter";
+            card.style.animationDelay = `${index * 100}ms`;
+            
+            const grid = document.createElement('div');
+            grid.className = "flex h-32 w-full mb-4 border border-gray-100";
+            
+            colors.forEach(color => {
+                const block = document.createElement('div');
+                block.className = "flex-1 color-chip relative group/chip flex items-end justify-center pb-3 border-r border-white/10 last:border-0";
+                block.style.backgroundColor = color;
+                const isDark = hexToHSL(color).l < 50;
+                const textColor = isDark ? 'text-white/90' : 'text-black/90';
+                block.innerHTML = `<div class="opacity-0 group-hover/chip:opacity-100 transition-opacity flex flex-col items-center"><span class="text-[10px] font-medium tracking-wider ${textColor}">${color.toUpperCase()}</span></div>`;
+                block.onclick = (e) => { e.stopPropagation(); copyColor(color); };
+                grid.appendChild(block);
+            });
+
+            grid.style.cursor = "pointer";
+            grid.onclick = () => viewDetails(styleType, colors[0]);
+
+            const header = document.createElement('div');
+            header.className = "flex justify-between items-end px-1"; 
+            let headerContent = `<div><h3 class="font-medium text-black text-sm tracking-widest uppercase">${title}</h3><p class="text-[10px] text-gray-400 mt-1 uppercase tracking-wide">${subtitle}</p></div>`;
+            headerContent += `<div class="flex flex-col items-end opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" onclick="viewDetails('${styleType}', '${colors[0]}')"><span class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 font-semibold">EXPLORE</span><span class="text-xl font-bold leading-none text-black hover:text-gray-600 transition-colors -mb-1">...</span></div>`;
+            header.innerHTML = headerContent;
+            card.appendChild(grid); card.appendChild(header); container.appendChild(card);
+        }
+
+        function copyColor(hex) {
+            navigator.clipboard.writeText(hex).then(() => { showToast(hex.toUpperCase()); });
+        }
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.textContent = msg;
+            toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+            setTimeout(() => { toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none'); }, 1500);
+        }
+        function hexToHSL(H) {
+            let r = 0, g = 0, b = 0;
+            if (H.length == 4) { r = "0x" + H[1] + H[1]; g = "0x" + H[2] + H[2]; b = "0x" + H[3] + H[3]; } 
+            else if (H.length == 7) { r = "0x" + H[1] + H[2]; g = "0x" + H[3] + H[4]; b = "0x" + H[5] + H[6]; }
+            r /= 255; g /= 255; b /= 255;
+            let cmin = Math.min(r,g,b), cmax = Math.max(r,g,b), delta = cmax - cmin;
+            let h = 0, s = 0, l = 0;
+            if (delta == 0) h = 0;
+            else if (cmax == r) h = ((g - b) / delta) % 6;
+            else if (cmax == g) h = (b - r) / delta + 2;
+            else h = (r - g) / delta + 4;
+            h = Math.round(h * 60); if (h < 0) h += 360;
+            l = (cmax + cmin) / 2; s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+            s = +(s * 100).toFixed(1); l = +(l * 100).toFixed(1);
+            return { h, s, l };
+        }
+        function HSLToHex(h, s, l) {
+            s /= 100; l /= 100;
+            let c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2, r = 0, g = 0, b = 0;
+            if (0 <= h && h < 60) { r = c; g = x; b = 0; }
+            else if (60 <= h && h < 120) { r = x; g = c; b = 0; }
+            else if (120 <= h && h < 180) { r = 0; g = c; b = x; }
+            else if (180 <= h && h < 240) { r = 0; g = x; b = c; }
+            else if (240 <= h && h < 300) { r = x; g = 0; b = c; }
+            else if (300 <= h && h < 360) { r = c; g = 0; b = x; }
+            r = Math.round((r + m) * 255).toString(16); g = Math.round((g + m) * 255).toString(16); b = Math.round((b + m) * 255).toString(16);
+            if (r.length == 1) r = "0" + r; if (g.length == 1) g = "0" + g; if (b.length == 1) b = "0" + b;
+            return "#" + r + g + b;
+        }
+    </script>
+</body>
+</html>
