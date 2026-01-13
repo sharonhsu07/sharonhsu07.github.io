@@ -14,9 +14,8 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            /* background-color: #ffffff; Removed solid color */
-            background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%); /* Added subtle grey gradient */
-            background-attachment: fixed; /* Ensures gradient covers full scroll area */
+            background: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+            background-attachment: fixed;
             color: #111;
             overflow-x: hidden;
         }
@@ -125,9 +124,14 @@
                 
                 <div class="flex flex-col items-center w-full gap-8">
                     <!-- Main Picker Wrapper -->
-                    <!-- Sized down slightly to match text -->
-                    <div class="color-wrapper w-40 h-40 md:w-40 md:h-40 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)]">
+                    <div class="color-wrapper w-40 h-40 md:w-40 md:h-40 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] group cursor-pointer">
                         <input type="color" id="baseColorInput" value="#5778a2">
+                        <!-- Select Color Text Overlay -->
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                            <span class="text-[10px] font-bold tracking-[0.2em] text-white/90 drop-shadow-md uppercase text-center leading-relaxed">
+                                Select<br>Color
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Editable Hex Input Group -->
@@ -177,22 +181,29 @@
             </div>
         </div>
 
-        <!-- STEP 3: Details & Explore -->
+        <!-- STEP 3: Details & Explore (UPDATED: Editable Seed) -->
         <div id="step3" class="page-container page-hidden w-full max-w-6xl">
             <!-- Header with Controls -->
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-gray-100 pb-6 gap-6">
                 <div class="flex flex-col gap-6 items-start">
                     <div>
-                        <!-- Removed detailStyleLabel span here -->
                         <h2 class="text-4xl font-light text-black tracking-tight">Variations</h2>
                     </div>
 
-                    <!-- Seed Color Indicator -->
+                    <!-- Seed Color Indicator (EDITABLE) -->
                     <div class="flex items-center gap-4 pl-1">
                         <span class="text-[10px] font-bold text-gray-300 uppercase tracking-widest">BASED ON</span>
-                        <div class="flex items-center gap-3 group cursor-pointer" onclick="copyColor(currentDetailSeed)">
-                            <div id="detailSeedColorBox" class="w-8 h-8 border border-gray-200 transition-transform group-hover:scale-105 bg-gray-200 shadow-sm"></div>
-                            <span id="detailSeedColorHex" class="text-sm font-mono text-gray-400 group-hover:text-black transition-colors">#------</span>
+                        <div class="flex items-center gap-3 group relative">
+                            <!-- Wrapper for Color Input and Visual Box -->
+                            <div class="relative w-8 h-8 overflow-hidden border border-gray-200 transition-transform group-hover:scale-105 shadow-sm">
+                                <div id="detailSeedColorBox" class="w-full h-full bg-gray-200 pointer-events-none"></div>
+                                <!-- Hidden Input overlay -->
+                                <input type="color" id="detailColorInput" class="absolute top-0 left-0 w-[150%] h-[150%] -top-[25%] -left-[25%] opacity-0 cursor-pointer" title="Change Base Color">
+                            </div>
+                            
+                            <label for="detailColorInput" id="detailSeedColorHex" class="text-sm font-mono text-gray-400 group-hover:text-black transition-colors cursor-pointer select-none">
+                                #------
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -218,6 +229,13 @@
 
     </main>
 
+    <!-- NEW: Sticky Footer -->
+    <footer class="w-full py-1.5 text-center border-t border-gray-100 mt-auto bg-white/50 backdrop-blur-sm">
+        <p class="text-[8px] text-gray-400 uppercase tracking-widest font-medium">
+            &copy; <span id="year"></span> ColorPick. All rights reserved.
+        </p>
+    </footer>
+
     <!-- Toast -->
     <div id="toast" class="fixed bottom-0 right-0 m-8 bg-black text-white px-8 py-4 transition-all duration-300 opacity-0 translate-y-4 pointer-events-none flex items-center gap-4 z-50 text-sm font-medium tracking-wide">
         <span class="w-2 h-2 bg-white"></span>
@@ -242,6 +260,10 @@
         const navSpacer = document.getElementById('navSpacer');
         const colorInput = document.getElementById('baseColorInput');
         const hexInput = document.getElementById('hexInput');
+        const detailColorInput = document.getElementById('detailColorInput');
+
+        // Set Copyright Year
+        document.getElementById('year').textContent = new Date().getFullYear();
 
         // Events
         
@@ -265,6 +287,19 @@
                 baseColorHex = fullHex;
                 colorInput.value = fullHex;
             }
+        });
+
+        // 3. Detail/Variations Page Input Change
+        detailColorInput.addEventListener('input', (e) => {
+            const hex = e.target.value;
+            currentDetailSeed = hex;
+            
+            // Update Visuals immediately
+            document.getElementById('detailSeedColorBox').style.backgroundColor = hex;
+            document.getElementById('detailSeedColorHex').textContent = hex.toUpperCase();
+            
+            // Regenerate
+            generateDetailPalettes();
         });
 
         function focusHexInput() {
@@ -307,11 +342,11 @@
             exploreMode = 'same'; 
             
             updateExploreButtons();
-            // Removed: document.getElementById('detailStyleLabel').textContent = styleType.toUpperCase();
 
-            // UPDATE SEED COLOR UI
+            // UPDATE SEED COLOR UI & SYNC INPUT
             document.getElementById('detailSeedColorBox').style.backgroundColor = seedColor;
             document.getElementById('detailSeedColorHex').textContent = seedColor.toUpperCase();
+            detailColorInput.value = seedColor; // Sync the hidden picker
             
             if (currentStep === 3) {
                 const container = document.getElementById('detailContainer');
@@ -405,12 +440,14 @@
             const container = document.getElementById('paletteContainer');
             container.innerHTML = '';
 
+            // Updated items list with 6th palette
             const items = [
                 {style: 'fresh', variant: 'A', title: 'Clean & Soft', sub: 'Airy, Minimalist'},
                 {style: 'fresh', variant: 'B', title: 'Natural & Warm', sub: 'Organic, Cozy'},
                 {style: 'dark', variant: 'A', title: 'Modern Dark', sub: 'Sleek, High Contrast'},
                 {style: 'dark', variant: 'B', title: 'Deep & Muted', sub: 'Elegant, Professional'},
-                {style: 'vibrant', variant: 'A', title: 'Vibrant Pop', sub: 'Energetic, Bold'}
+                {style: 'vibrant', variant: 'A', title: 'Vibrant Pop', sub: 'Energetic, Bold'},
+                {style: 'vibrant', variant: 'B', title: 'Electric Dream', sub: 'Neon, Futuristic'} // New 6th item
             ];
 
             items.forEach((item, index) => {
@@ -521,8 +558,7 @@
             const count = forceColor ? 4 : 5;
             
             // NEW: Add a global random shift for this specific generation call
-            // This ensures every "Shuffle" produces a noticeably different set, 
-            // even if the base color is the same.
+            // This ensures every "Shuffle" produces a noticeably different set
             let shiftH = (Math.random() * 40 - 20); // +/- 20 degrees shift
             let shiftS = (Math.random() * 20 - 10);
             
@@ -574,14 +610,27 @@
                     }
                 } 
                 else { // Vibrant
-                    // Split Complementary / Triadic spread with enforced L variation
-                    let hueMap = [0, 30, -30, 180, 210]; 
-                    newH = (h + hueMap[i] + rndHue + shiftH) % 360;
                     
-                    newS = 70 + (Math.random() * 20) + shiftS;
-                    // Spread Lightness: Dark, Light, Dark, Light pattern
-                    let lMap = [50, 65, 40, 60, 45];
-                    newL = lMap[i % 5] + rndLit;
+                    if (variant === 'B') { 
+                        // VARIANT B: Electric/Neon (New Logic)
+                        // Split Complementary / Square with Extreme Saturation
+                        let hueMap = [0, 180, 180, 90, 270]; // Complementary + Squares
+                        newH = (h + hueMap[i] + rndHue + shiftH) % 360;
+                        newS = 85 + (Math.random() * 15) + shiftS; // Very saturated (85-100)
+                        
+                        // Lightness: mix of very bright and dark for neon effect
+                        let lMap = [50, 90, 10, 80, 20];
+                        newL = lMap[i % 5] + rndLit;
+                    } 
+                    else {
+                        // VARIANT A: Vibrant Pop (Original)
+                        let hueMap = [0, 30, -30, 180, 210]; 
+                        newH = (h + hueMap[i] + rndHue + shiftH) % 360;
+                        newS = 70 + (Math.random() * 20) + shiftS;
+                        
+                        let lMap = [50, 65, 40, 60, 45];
+                        newL = lMap[i % 5] + rndLit;
+                    }
                 }
                 
                 // Safety clamp
