@@ -96,7 +96,7 @@
         .color-chip:hover .copy-hint { opacity: 1; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col fade-in selection:bg-black selection:text-white">
+<body class="min-h-screen flex flex-col selection:bg-black selection:text-white">
 
     <!-- Navbar -->
     <nav id="navbar" class="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 transition-transform duration-500 transform -translate-y-full border-b border-gray-100">
@@ -111,7 +111,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow container mx-auto px-4 py-8 relative mt-20 flex flex-col items-center">
+    <main class="flex-grow container mx-auto px-4 py-8 relative mt-20 flex flex-col items-center fade-in">
         
         <!-- STEP 1: Color Picker (Redesigned) -->
         <div id="step1" class="page-container page-active flex flex-col items-center justify-center min-h-[70vh]">
@@ -250,14 +250,14 @@
     </main>
 
     <!-- NEW: Sticky Footer -->
-    <footer class="w-full py-1.5 text-center border-t border-gray-100 mt-auto bg-white/50 backdrop-blur-sm">
+    <footer class="w-full py-1.5 text-center border-t border-gray-100 mt-auto bg-white/50 backdrop-blur-sm fade-in">
         <p class="text-[8px] text-gray-400 uppercase tracking-widest font-medium">
             &copy; <span id="year"></span> ColorPick. All rights reserved.
         </p>
     </footer>
 
-    <!-- Toast (Top Center) -->
-    <div id="toast" class="fixed top-0 left-1/2 -translate-x-1/2 mt-10 bg-black text-white px-8 py-4 transition-all duration-300 opacity-0 -translate-y-4 pointer-events-none flex items-center gap-4 z-50 text-sm font-medium tracking-wide shadow-2xl">
+    <!-- Toast (Fixed Top Center) - Z-Index 100 to stay above everything -->
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 bg-black text-white px-8 py-4 transition-all duration-300 opacity-0 -translate-y-4 pointer-events-none flex items-center gap-4 z-[100] text-sm font-medium tracking-wide shadow-2xl">
         <span class="w-2 h-2 bg-white"></span>
         <span id="toastMsg">COPIED</span>
     </div>
@@ -559,37 +559,77 @@
             let sAdj = 0;
             let lAdj = 0;
             
+            // Random factors - Increase range significantly for more variation
+            // Use seedOffset/globalSeed to influence the "base" randoms so shuffles feel distinct
+            
+            // Derive a pseudo-random factor from the seed so it feels "shuffled" but consistent for that seed
+            // We also add pure Math.random() for noise.
+            
             if (mode === 'shift') {
                 // SHIFT MODE: Rotate the hue of the entire palette
-                // 30, 180 (comp), 150 (split), 90, 60, -30
+                // Base shifts: 30, 180 (comp), 150 (split), 90, 60, -30
+                // New: Add a "Shuffle Rotation" that changes every time you click shuffle
+                const shuffleRotation = (Math.floor(seedOffset / 7) * 45); // Rotate 45deg per shuffle
+                
                 const shifts = [30, 180, 150, 90, 60, -30];
-                hAdj = shifts[cardIndex % shifts.length] + (Math.random() * 10 - 5);
+                let baseShift = shifts[cardIndex % shifts.length];
+                
+                // Add large random noise (+/- 15deg)
+                hAdj = baseShift + shuffleRotation + (Math.random() * 30 - 15);
+                
+                // Randomize Sat/Lit slightly in Shift mode too
+                sAdj = (Math.random() * 10 - 5);
+                lAdj = (Math.random() * 10 - 5);
+
             } else {
                 // SAME MODE: Keep Hue, tweak S and L (Vibe change)
-                // 0: Vivid (+S)
-                // 1: Muted (-S)
-                // 2: Brighter (+L)
-                // 3: Darker (-L)
-                // 4: Warmer (+H small)
-                // 5: Cooler (-H small)
                 
-                if (cardIndex % 6 === 0) { sAdj = 15; lAdj = 0; } // Vivid
-                else if (cardIndex % 6 === 1) { sAdj = -20; lAdj = 5; } // Muted
-                else if (cardIndex % 6 === 2) { lAdj = 10; sAdj = 5; } // Brighter
-                else if (cardIndex % 6 === 3) { lAdj = -15; sAdj = 5; } // Darker
-                else if (cardIndex % 6 === 4) { hAdj = 15; } // Warmer (approx)
-                else if (cardIndex % 6 === 5) { hAdj = -15; } // Cooler
+                // Multiply effect intensity by a random factor (0.8 to 1.5)
+                const intensity = 0.8 + Math.random() * 0.7;
                 
-                // Add a tiny bit of random noise so they aren't static
-                hAdj += (Math.random() * 6 - 3); 
+                // Add a global drift per shuffle
+                const driftH = (Math.random() * 20 - 10);
+                
+                if (cardIndex % 6 === 0) { // Vivid
+                    sAdj = 20 * intensity; 
+                    lAdj = (Math.random() * 10 - 5); 
+                } 
+                else if (cardIndex % 6 === 1) { // Muted
+                    sAdj = -25 * intensity; 
+                    lAdj = 5 + (Math.random() * 10 - 5); 
+                } 
+                else if (cardIndex % 6 === 2) { // Brighter
+                    lAdj = 15 * intensity; 
+                    sAdj = 5 + (Math.random() * 10 - 5); 
+                } 
+                else if (cardIndex % 6 === 3) { // Darker
+                    lAdj = -20 * intensity; 
+                    sAdj = 5 + (Math.random() * 10 - 5); 
+                } 
+                else if (cardIndex % 6 === 4) { // Warmer
+                    hAdj = 15 + driftH; 
+                    sAdj = (Math.random() * 10 - 5);
+                } 
+                else if (cardIndex % 6 === 5) { // Cooler
+                    hAdj = -15 + driftH; 
+                    sAdj = (Math.random() * 10 - 5);
+                }
+                
+                hAdj += driftH;
             }
 
             // Apply logic to each color in the palette
             newColors = baseHSL.map(c => {
                 let newH = (c.h + hAdj) % 360;
+                
+                // Increased Per-Color Scatter for more "Organic" randomness
+                // Old: +/- 2.5. New: +/- 8
+                let scatterS = (Math.random() * 16 - 8);
+                let scatterL = (Math.random() * 16 - 8);
+                
                 // Clamp S and L
-                let newS = Math.max(5, Math.min(100, c.s + sAdj + (Math.random() * 5 - 2.5)));
-                let newL = Math.max(5, Math.min(98, c.l + lAdj + (Math.random() * 5 - 2.5)));
+                let newS = Math.max(5, Math.min(100, c.s + sAdj + scatterS));
+                let newL = Math.max(5, Math.min(98, c.l + lAdj + scatterL));
                 
                 return HSLToHex(newH, newS, newL);
             });
