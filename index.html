@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hsu's Work | Design & Creation</title>
+    <title>Hsu's Work</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -166,8 +166,8 @@
     <!-- Floating Navigation UI -->
     <div class="fixed right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-6 items-end mix-blend-multiply hidden md:flex">
         <div class="nav-dot active" data-label="Home" onclick="goToSection('page-center')"></div>
-        <div class="nav-dot" data-label="Design Tools" onclick="goToSection('page-design')"></div>
         <div class="nav-dot" data-label="Creation" onclick="goToSection('page-creation')"></div>
+        <div class="nav-dot" data-label="Design Tools" onclick="goToSection('page-design')"></div>
     </div>
 
     <div class="fixed top-6 right-6 z-50 md:hidden">
@@ -189,7 +189,7 @@
     <div id="app-slider">
 
         <!-- === HERO SECTION === -->
-        <section id="page-center" class="page-section flex flex-col justify-center h-screen snap-center">
+        <section id="page-center" class="page-section flex flex-col justify-center snap-center">
             <div class="container mx-auto px-6 text-center z-10">
                 <div class="inline-block relative mb-6">
                     <span class="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold tracking-[0.3em] text-gray-400 uppercase">Portfolio</span>
@@ -198,19 +198,29 @@
                     </h1>
                 </div>
                 
-                <p class="text-sm md:text-base text-gray-500 font-medium max-w-xl mx-auto leading-relaxed opacity-0 animate-[fadeInUpSmooth_1s_0.4s_forwards] uppercase tracking-wide">
+                <p class="text-sm md:text-base text-gray-500 font-medium max-w-xl mx-auto leading-relaxed opacity-0 animate-[fadeInUpSmooth_1s_0.4s_forwards] tracking-wide">
                     Efficiently complete the design and apply it to products through collaboration between AI and designers
                 </p>
 
                 <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto opacity-0 animate-[fadeInUpSmooth_1s_0.6s_forwards]">
-                    <!-- Design Card -->
-                    <div onclick="goToSection('page-design')" class="glass-card p-8 cursor-pointer group text-left relative overflow-hidden h-64 flex flex-col justify-between">
-                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-100 transition-opacity duration-500 transform group-hover:rotate-12">
-                            <svg class="w-24 h-24 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" /></svg>
-                        </div>
+                    
+                    <!-- Creation Card -->
+                    <div onclick="goToSection('page-creation')" class="glass-card p-6 md:p-8 cursor-pointer group text-left relative overflow-hidden h-44 flex flex-col justify-between">
                         <div>
                             <span class="text-xs font-bold text-gray-400 tracking-widest uppercase">01</span>
-                            <h2 class="text-3xl font-bold text-gray-800 mt-2 group-hover:translate-x-1 transition-transform">Design Tools</h2>
+                            <h2 class="text-3xl font-bold text-gray-800 mt-2">Creation</h2>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <p class="text-sm text-gray-500 w-2/3">Visual Works</p>
+                            <span class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center group-hover:bg-gray-800 group-hover:text-white transition-colors">↓</span>
+                        </div>
+                    </div>
+
+                    <!-- Design Card -->
+                    <div onclick="goToSection('page-design')" class="glass-card p-6 md:p-8 cursor-pointer group text-left relative overflow-hidden h-44 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-gray-400 tracking-widest uppercase">02</span>
+                            <h2 class="text-3xl font-bold text-gray-800 mt-2">Design Tools</h2>
                         </div>
                         <div class="flex justify-between items-end">
                             <p class="text-sm text-gray-500 w-2/3">Efficiency Solutions</p>
@@ -218,26 +228,229 @@
                         </div>
                     </div>
 
-                    <!-- Creation Card -->
-                    <div onclick="goToSection('page-creation')" class="glass-card p-8 cursor-pointer group text-left relative overflow-hidden h-64 flex flex-col justify-between">
-                        <div class="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-100 transition-opacity duration-500 transform group-hover:-rotate-12">
-                            <svg class="w-24 h-24 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <div>
-                            <span class="text-xs font-bold text-gray-400 tracking-widest uppercase">02</span>
-                            <h2 class="text-3xl font-bold text-gray-800 mt-2 group-hover:translate-x-1 transition-transform">Creation</h2>
-                        </div>
-                        <div class="flex justify-between items-end">
-                            <p class="text-sm text-gray-500 w-2/3">Visual Works</p>
-                            <span class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center group-hover:bg-gray-800 group-hover:text-white transition-colors">↓</span>
-                        </div>
-                    </div>
                 </div>
                 
                 <!-- Footer in Hero -->
-                <div class="absolute bottom-4 left-0 w-full text-center">
-                    <p class="text-[10px] text-gray-400 uppercase tracking-widest">© 2025 Hsu's Portfolio</p>
+                <div class="absolute bottom-4 md:bottom-8 left-0 w-full text-center px-4">
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest leading-relaxed">
+                        © 2025 Hsu's Portfolio 
+                        <span class="block md:inline normal-case tracking-normal md:ml-2 mt-1 md:mt-0">
+                            <span class="hidden md:inline">| </span>Partially created with AI & web assets
+                        </span>
+                    </p>
                 </div>
+            </div>
+        </section>
+
+        <!-- === CREATION SECTION === -->
+        <section id="page-creation" class="page-section">
+            <div class="container mx-auto px-6 max-w-6xl">
+                <div class="mb-16 md:mb-20 text-right">
+                    <h2 class="text-5xl md:text-7xl font-serif italic text-gray-800 mb-4 tracking-tight">Creation</h2>
+                    <div class="h-1 w-20 bg-gray-300 rounded-full ml-auto"></div>
+                </div>
+
+                <!-- Web Projects -->
+                <div id="create-web" class="mb-24">
+                     <!-- Added Web Title Here -->
+                     <h3 class="text-3xl font-bold text-gray-800 mb-8 border-l-4 border-gray-800 pl-4">Web</h3>
+
+                     <div class="flex gap-8 mb-8 border-b border-gray-200 pb-4">
+                        <button onclick="switchTab('create-web', 0, this)" class="text-xl font-bold text-gray-800 transition-colors">Eva x niko and...</button>
+                        <button onclick="switchTab('create-web', 1, this)" class="text-xl font-bold text-gray-400 hover:text-gray-600 transition-colors">Chiikawa Park</button>
+                    </div>
+
+                    <div class="relative min-h-[500px]">
+                        <!-- Eva Project -->
+                        <div class="slide-item absolute inset-0 transition-all duration-700 opacity-100 translate-x-0" data-index="0">
+                            <div class="glass-card p-0 overflow-hidden flex flex-col md:flex-row h-full">
+                                <div class="md:w-3/5 bg-gray-800 min-h-[300px] bg-cover bg-center relative group" 
+                                     style="background-image: url('eva/index_preview.jpg')">
+                                     <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500"></div>
+                                </div>
+                                <div class="md:w-2/5 p-10 flex flex-col justify-center bg-white/40 backdrop-blur-md">
+                                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Evangelion x niko and...</h3>
+                                    <p class="text-gray-600 mb-6">提供 Gemini 設計參考圖，迅速完成切版和基礎特效。</p>
+                                    <div class="flex flex-wrap gap-2 mb-6">
+                                        <span class="tag-pill"># Front end</span>
+                                        <span class="tag-pill"># Gemini</span>
+                                    </div>
+                                    <a href="eva/index.html" target="_blank" class="text-sm font-bold border-b-2 border-gray-900 pb-1 self-start hover:text-blue-600 hover:border-blue-600 transition-colors">LIVE DEMO -></a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Chiikawa Project -->
+                        <div class="slide-item absolute inset-0 transition-all duration-700 opacity-0 translate-x-10 pointer-events-none" data-index="1">
+                            <div class="glass-card p-0 overflow-hidden flex flex-col md:flex-row h-full">
+                                <div class="md:w-3/5 bg-pink-50 min-h-[300px] bg-cover bg-center" 
+                                     style="background-image: url('chiikawa/index_preview.png')"></div>
+                                <div class="md:w-2/5 p-10 flex flex-col justify-center bg-white/40 backdrop-blur-md">
+                                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Chiikawa park</h3>
+                                    <p class="text-gray-600 mb-6">提供 Gemini IP 相關風格參考物，迅速製作出符合 IP 風格的前端網頁。</p>
+                                    <div class="flex flex-wrap gap-2 mb-6">
+                                        <span class="tag-pill"># Front end</span>
+                                        <span class="tag-pill"># Gemini</span>
+                                    </div>
+                                    <a href="chiikawa/index.html" target="_blank" class="text-sm font-bold border-b-2 border-gray-900 pb-1 self-start hover:text-pink-500 hover:border-pink-500 transition-colors">LIVE DEMO -></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphic & Motion Grid (Expanded Bento Style with Categories) -->
+                <div id="create-graphic">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-8 border-l-4 border-gray-800 pl-4">Motion & Graphic</h3>
+                    
+                    <!-- 1. Motion Design 影像 -->
+                    <div class="mb-16">
+                        <div class="flex items-center gap-4 mb-6">
+                            <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">Motion Design <span class="text-sm text-gray-400 font-normal ml-2">影像</span></h4>
+                            <div class="h-px bg-gray-300 flex-1"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px]">
+                            <!-- Video: Suisei (2x2) -->
+                            <div class="md:col-span-2 md:row-span-2 glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openVideoPopup(this, 'motion/suisei.mp4')" data-tags="# Gemini, # AE">
+                                <div class="w-full h-full rounded-[1.5rem] overflow-hidden relative border border-white/50">
+                                    <video class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" autoplay muted loop playsinline>
+                                        <source src="motion/suisei.mp4" type="video/mp4">
+                                    </video>
+                                    <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                        <span class="tag-pill bg-white/90"># Gemini</span>
+                                        <span class="tag-pill bg-white/90"># AE</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Video: Lightbox (1x1) -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openVideoPopup(this, 'motion/lightbox.mp4')" data-tags="# Blender, # AE">
+                                 <div class="w-full h-full rounded-[1.5rem] overflow-hidden relative border border-white/50">
+                                    <video class="w-full h-full object-cover img-hover-zoom" autoplay muted loop playsinline>
+                                        <source src="motion/lightbox.mp4" type="video/mp4">
+                                    </video>
+                                    <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                        <span class="tag-pill bg-white/90"># Blender</span>
+                                        <span class="tag-pill bg-white/90"># AE</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Video: Surges (1x1) -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openVideoPopup(this, 'motion/surges.mp4')" data-tags="# Gemini, # AE">
+                                 <div class="w-full h-full rounded-[1.5rem] overflow-hidden relative border border-white/50">
+                                    <video class="w-full h-full object-cover img-hover-zoom" autoplay muted loop playsinline>
+                                        <source src="motion/surges.mp4" type="video/mp4">
+                                    </video>
+                                    <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                        <span class="tag-pill bg-white/90"># Gemini</span>
+                                        <span class="tag-pill bg-white/90"># AE</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. 3D Modeling 3D建模 -->
+                    <div class="mb-16">
+                        <div class="flex items-center gap-4 mb-6">
+                            <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">3D Modeling <span class="text-sm text-gray-400 font-normal ml-2">3D 建模</span></h4>
+                            <div class="h-px bg-gray-300 flex-1"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px]">
+                            <!-- Img: 3d-box-preview -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Blender, # Unity">
+                                <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/3d-box-preview.jpg')"></div>
+                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <span class="tag-pill bg-white/90"># Blender</span>
+                                    <span class="tag-pill bg-white/90"># Unity</span>
+                                </div>
+                            </div>
+                            <!-- Img: 1210 -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Blender">
+                                <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/1210.png')"></div>
+                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <span class="tag-pill bg-white/90"># Blender</span>
+                                </div>
+                            </div>
+                            <!-- Img: 1216 -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Blender">
+                                <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/1216.png')"></div>
+                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <span class="tag-pill bg-white/90"># Blender</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Game Banner Design 遊戲 Banner (Shorter rows for landscape display) -->
+                    <div class="mb-16">
+                        <div class="flex items-center gap-4 mb-6">
+                            <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">Game Promotion <span class="text-sm text-gray-400 font-normal ml-2">遊戲宣傳 Banner</span></h4>
+                            <div class="h-px bg-gray-300 flex-1"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-[200px]">
+                            <!-- Img: fps1 -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Gemini">
+                                <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/fps1.jpg')"></div>
+                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <span class="tag-pill bg-white/90"># Photoshop</span>
+                                    <span class="tag-pill bg-white/90"># Gemini</span>
+                                </div>
+                            </div>
+                            <!-- Img: fps2 -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Gemini">
+                                <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/fps2.jpg')"></div>
+                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <span class="tag-pill bg-white/90"># Photoshop</span>
+                                    <span class="tag-pill bg-white/90"># Gemini</span>
+                                </div>
+                            </div>
+                            <!-- Img: rpg1 -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Gemini">
+                                <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/rpg1.jpg')"></div>
+                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <span class="tag-pill bg-white/90"># Photoshop</span>
+                                    <span class="tag-pill bg-white/90"># Gemini</span>
+                                </div>
+                            </div>
+                            <!-- Img: rpg2 -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Gemini">
+                                <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/rpg2.jpg')"></div>
+                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <span class="tag-pill bg-white/90"># Photoshop</span>
+                                    <span class="tag-pill bg-white/90"># Gemini</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Cover Design 書籍封面 (Higher rows for portrait display) -->
+                    <div class="mb-16">
+                        <div class="flex items-center gap-4 mb-6">
+                            <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">Cover Design <span class="text-sm text-gray-400 font-normal ml-2">書籍封面</span></h4>
+                            <div class="h-px bg-gray-300 flex-1"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-[300px] md:auto-rows-[400px]">
+                            <!-- Img: 2-1 -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop">
+                                <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/2-1.png')"></div>
+                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <span class="tag-pill bg-white/90"># Photoshop</span>
+                                </div>
+                            </div>
+                            <!-- Img: 2-2 -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop">
+                                <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/2-2.png')"></div>
+                                 <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <span class="tag-pill bg-white/90"># Photoshop</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
         </section>
 
@@ -364,166 +577,6 @@
             </div>
         </section>
 
-        <!-- === CREATION SECTION === -->
-        <section id="page-creation" class="page-section">
-            <div class="container mx-auto px-6 max-w-6xl">
-                <div class="mb-16 md:mb-20 text-right">
-                    <h2 class="text-5xl md:text-7xl font-serif italic text-gray-800 mb-4 tracking-tight">Creation</h2>
-                    <div class="h-1 w-20 bg-gray-300 rounded-full ml-auto"></div>
-                </div>
-
-                <!-- Web Projects -->
-                <div id="create-web" class="mb-24">
-                     <!-- Added Web Title Here -->
-                     <h3 class="text-3xl font-bold text-gray-800 mb-8 border-l-4 border-gray-800 pl-4">Web</h3>
-
-                     <div class="flex gap-8 mb-8 border-b border-gray-200 pb-4">
-                        <button onclick="switchTab('create-web', 0, this)" class="text-xl font-bold text-gray-800 transition-colors">Eva x niko and...</button>
-                        <button onclick="switchTab('create-web', 1, this)" class="text-xl font-bold text-gray-400 hover:text-gray-600 transition-colors">Chiikawa Park</button>
-                    </div>
-
-                    <div class="relative min-h-[500px]">
-                        <!-- Eva Project -->
-                        <div class="slide-item absolute inset-0 transition-all duration-700 opacity-100 translate-x-0" data-index="0">
-                            <div class="glass-card p-0 overflow-hidden flex flex-col md:flex-row h-full">
-                                <div class="md:w-3/5 bg-gray-800 min-h-[300px] bg-cover bg-center relative group" 
-                                     style="background-image: url('eva/index_preview.jpg')">
-                                     <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500"></div>
-                                </div>
-                                <div class="md:w-2/5 p-10 flex flex-col justify-center bg-white/40 backdrop-blur-md">
-                                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Evangelion x niko and...</h3>
-                                    <p class="text-gray-600 mb-6">提供 Gemini 設計參考圖，迅速完成切版和基礎特效。</p>
-                                    <div class="flex flex-wrap gap-2 mb-6">
-                                        <span class="tag-pill"># Front end</span>
-                                        <span class="tag-pill"># Gemini</span>
-                                    </div>
-                                    <a href="eva/index.html" target="_blank" class="text-sm font-bold border-b-2 border-gray-900 pb-1 self-start hover:text-blue-600 hover:border-blue-600 transition-colors">LIVE DEMO -></a>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Chiikawa Project -->
-                        <div class="slide-item absolute inset-0 transition-all duration-700 opacity-0 translate-x-10 pointer-events-none" data-index="1">
-                            <div class="glass-card p-0 overflow-hidden flex flex-col md:flex-row h-full">
-                                <div class="md:w-3/5 bg-pink-50 min-h-[300px] bg-cover bg-center" 
-                                     style="background-image: url('chiikawa/index_preview.png')"></div>
-                                <div class="md:w-2/5 p-10 flex flex-col justify-center bg-white/40 backdrop-blur-md">
-                                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Chiikawa park</h3>
-                                    <p class="text-gray-600 mb-6">提供 Gemini IP 相關風格參考物，迅速製作出符合 IP 風格的前端網頁。</p>
-                                    <div class="flex flex-wrap gap-2 mb-6">
-                                        <span class="tag-pill"># Front end</span>
-                                        <span class="tag-pill"># Gemini</span>
-                                    </div>
-                                    <a href="chiikawa/index.html" target="_blank" class="text-sm font-bold border-b-2 border-gray-900 pb-1 self-start hover:text-pink-500 hover:border-pink-500 transition-colors">LIVE DEMO -></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Graphic & Motion Grid (Expanded Bento Style) -->
-                <div id="create-graphic">
-                    <h3 class="text-3xl font-bold text-gray-800 mb-8 border-l-4 border-gray-800 pl-4">Motion & Graphic</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px]">
-                        
-                        <!-- 1. Video: Suisei (New Main Feature - 2x2) -->
-                        <div class="md:col-span-2 md:row-span-2 glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openVideoPopup(this, 'motion/suisei.mp4')" data-tags="# AE, # Gemini">
-                            <div class="w-full h-full rounded-[1.5rem] overflow-hidden relative border border-white/50">
-                                <video class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" autoplay muted loop playsinline>
-                                    <source src="motion/suisei.mp4" type="video/mp4">
-                                </video>
-                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                                    <span class="tag-pill bg-white/90"># AE</span>
-                                    <span class="tag-pill bg-white/90"># Gemini</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 2. Video: Surges (1x1) -->
-                        <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openVideoPopup(this, 'motion/surges.mp4')" data-tags="# AE, # Gemini">
-                             <div class="w-full h-full rounded-[1.5rem] overflow-hidden relative border border-white/50">
-                                <video class="w-full h-full object-cover img-hover-zoom" autoplay muted loop playsinline>
-                                    <source src="motion/surges.mp4" type="video/mp4">
-                                </video>
-                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                                    <span class="tag-pill bg-white/90"># AE</span>
-                                    <span class="tag-pill bg-white/90"># Gemini</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 3. Video: Lightbox (1x1) -->
-                        <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openVideoPopup(this, 'motion/lightbox.mp4')" data-tags="# AE, # Blender">
-                             <div class="w-full h-full rounded-[1.5rem] overflow-hidden relative border border-white/50">
-                                <video class="w-full h-full object-cover img-hover-zoom" autoplay muted loop playsinline>
-                                    <source src="motion/lightbox.mp4" type="video/mp4">
-                                </video>
-                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                                    <span class="tag-pill bg-white/90"># AE</span>
-                                    <span class="tag-pill bg-white/90"># Blender</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 4. Video: Sky3 (1x1) -->
-                        <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openVideoPopup(this, 'motion/sky3.mp4')" data-tags="# AE">
-                             <div class="w-full h-full rounded-[1.5rem] overflow-hidden relative border border-white/50">
-                                <video class="w-full h-full object-cover img-hover-zoom" autoplay muted loop playsinline>
-                                    <source src="motion/sky3.mp4" type="video/mp4">
-                                </video>
-                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <span class="tag-pill bg-white/90"># AE</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 5. Img: 1210 (1x1) -->
-                        <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Blender">
-                            <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/1210.png')"></div>
-                            <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span class="tag-pill bg-white/90"># Blender</span>
-                            </div>
-                        </div>
-
-                        <!-- 6. Img: 1216 (1x1) -->
-                        <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Blender">
-                            <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/1216.png')"></div>
-                            <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span class="tag-pill bg-white/90"># Blender</span>
-                            </div>
-                        </div>
-
-                        <!-- 7. Img: Miya (1x1) -->
-                        <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop">
-                            <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/miya1000_1.jpg')"></div>
-                             <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span class="tag-pill bg-white/90"># Photoshop</span>
-                            </div>
-                        </div>
-
-                         <!-- 8. Img: 2-1 (1x1) -->
-                        <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop">
-                            <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/2-1.png')"></div>
-                            <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span class="tag-pill bg-white/90"># Photoshop</span>
-                            </div>
-                        </div>
-
-                         <!-- 9. Img: 2-2 (1x1) -->
-                        <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop">
-                            <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/2-2.png')"></div>
-                             <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span class="tag-pill bg-white/90"># Photoshop</span>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
         <!-- Footer -->
         <footer class="py-10 text-center text-gray-400 text-xs tracking-wider">
             <p>DESIGNED & DEVELOPED BY HSU</p>
@@ -538,7 +591,8 @@
         }
 
         function updateNavState() {
-            const sections = ['page-center', 'page-design', 'page-creation'];
+            // Updated section order to reflect Creation coming before Design
+            const sections = ['page-center', 'page-creation', 'page-design'];
             const scrollY = window.scrollY + window.innerHeight * 0.4;
             
             let activeId = 'page-center';
