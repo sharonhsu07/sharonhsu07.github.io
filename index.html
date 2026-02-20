@@ -151,9 +151,13 @@
         /* --- Popup Animation --- */
         #img-popup.open { opacity: 1; visibility: visible; pointer-events: auto; }
         #img-popup.open img, #img-popup.open video { transform: scale(1); }
+
+        /* --- Language Toggle --- */
+        body.lang-zh .lang-ja { display: none !important; }
+        body.lang-ja .lang-zh { display: none !important; }
     </style>
 </head>
-<body data-state="home">
+<body class="lang-zh" data-state="home">
 
     <!-- Background -->
     <div id="bg-wrapper">
@@ -171,8 +175,19 @@
         <div class="nav-dot" data-label="Workflow" onclick="goToSection('page-workflow')"></div>
     </div>
 
-    <div class="fixed top-6 right-6 z-50 md:hidden">
-        <button onclick="goToSection('page-center')" class="bg-white/80 backdrop-blur-md p-3 rounded-full shadow-lg border border-white/50">
+    <!-- Fixed Top Right Actions -->
+    <div class="fixed top-6 right-6 z-50 flex items-center gap-3">
+        <!-- Language Toggle -->
+        <button onclick="toggleLanguage()" class="bg-white/80 backdrop-blur-md px-4 py-2.5 rounded-full shadow-lg border border-white/50 text-sm font-bold text-gray-700 hover:text-gray-900 transition-colors flex items-center gap-2 group">
+            <svg class="w-4 h-4 text-gray-500 group-hover:text-gray-800 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+            <div class="flex items-center gap-1 tracking-wider">
+                <span id="lang-zh-text" class="transition-opacity duration-300 opacity-100">CH</span>
+                <span class="text-gray-300 font-normal">/</span>
+                <span id="lang-ja-text" class="transition-opacity duration-300 opacity-40">JP</span>
+            </div>
+        </button>
+        <!-- Mobile Menu/To Top (Hidden on md) -->
+        <button onclick="goToSection('page-center')" class="md:hidden bg-white/80 backdrop-blur-md p-3 rounded-full shadow-lg border border-white/50">
             <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
         </button>
     </div>
@@ -246,9 +261,9 @@
         <!-- === CREATION SECTION === -->
         <section id="page-creation" class="page-section">
             <div class="container mx-auto px-6 max-w-6xl">
-                <div class="mb-16 md:mb-20 text-right">
+                <div class="mb-16 md:mb-20 text-center">
                     <h2 class="text-5xl md:text-7xl font-serif italic text-gray-800 mb-4 tracking-tight">Creation</h2>
-                    <div class="h-1 w-20 bg-gray-300 rounded-full ml-auto"></div>
+                    <div class="h-1 w-20 bg-gray-300 rounded-full mx-auto"></div>
                 </div>
 
                 <!-- Web Projects -->
@@ -270,7 +285,10 @@
                                 </div>
                                 <div class="md:w-2/5 p-10 flex flex-col justify-center bg-white/40 backdrop-blur-md">
                                     <h3 class="text-3xl font-bold text-gray-900 mb-4">Evangelion x niko and...</h3>
-                                    <p class="text-gray-600 mb-6">提供 Gemini 設計參考圖，迅速完成切版和基礎特效。</p>
+                                    <p class="text-sm md:text-base text-gray-600 leading-relaxed mb-6">
+                                        <span class="lang-zh">提供 Gemini 預先設計好的參考圖，迅速完成切版和特效。</span>
+                                        <span class="lang-ja">Geminiにデザイン済みの参考画像を提供し、コーディングとエフェクトの実装を迅速に行います。</span>
+                                    </p>
                                     <div class="flex flex-wrap gap-2 mb-6">
                                         <span class="tag-pill"># Front end</span>
                                         <span class="tag-pill"># Gemini</span>
@@ -287,7 +305,10 @@
                                      style="background-image: url('chiikawa/index_preview.png')"></div>
                                 <div class="md:w-2/5 p-10 flex flex-col justify-center bg-white/40 backdrop-blur-md">
                                     <h3 class="text-3xl font-bold text-gray-900 mb-4">Chiikawa park</h3>
-                                    <p class="text-gray-600 mb-6">提供 Gemini IP 相關風格參考物，迅速製作出符合 IP 風格的前端網頁。</p>
+                                    <p class="text-sm md:text-base text-gray-600 leading-relaxed mb-6">
+                                        <span class="lang-zh">提供 Gemini IP 相關風格參考物，迅速製作出符合 IP 風格的前端網頁。</span>
+                                        <span class="lang-ja">GeminiにIP（キャラクター）のスタイル参考を提供し、その世界観にマッチしたフロントエンド画面を迅速に制作します。</span>
+                                    </p>
                                     <div class="flex flex-wrap gap-2 mb-6">
                                         <span class="tag-pill"># Front end</span>
                                         <span class="tag-pill"># Gemini</span>
@@ -306,7 +327,7 @@
                     <!-- 1. Motion Design 影像 -->
                     <div class="mb-16">
                         <div class="flex items-center gap-4 mb-6">
-                            <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">Motion Design <span class="text-sm text-gray-400 font-normal ml-2">影像</span></h4>
+                            <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">Motion Design <span class="text-sm text-gray-400 font-normal ml-2"><span class="lang-zh">影像</span><span class="lang-ja">映像</span></span></h4>
                             <div class="h-px bg-gray-300 flex-1"></div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px]">
@@ -354,7 +375,7 @@
                     <!-- 2. 3D Modeling 3D建模 -->
                     <div class="mb-16">
                         <div class="flex items-center gap-4 mb-6">
-                            <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">3D Modeling <span class="text-sm text-gray-400 font-normal ml-2">3D 建模</span></h4>
+                            <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">3D Modeling <span class="text-sm text-gray-400 font-normal ml-2"><span class="lang-zh">3D 建模</span><span class="lang-ja">3Dモデリング</span></span></h4>
                             <div class="h-px bg-gray-300 flex-1"></div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px]">
@@ -386,7 +407,7 @@
                     <!-- 3. Game Banner Design 遊戲 Banner -->
                     <div class="mb-16">
                         <div class="flex items-center gap-4 mb-6">
-                            <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">Game Promotion <span class="text-sm text-gray-400 font-normal ml-2">遊戲宣傳 Banner</span></h4>
+                            <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">Game Promotion <span class="text-sm text-gray-400 font-normal ml-2"><span class="lang-zh">遊戲宣傳 Banner</span><span class="lang-ja">ゲーム宣伝バナー</span></span></h4>
                             <div class="h-px bg-gray-300 flex-1"></div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-[200px]">
@@ -428,7 +449,7 @@
                     <!-- 4. Cover Design 書籍封面 -->
                     <div class="mb-16">
                         <div class="flex items-center gap-4 mb-6">
-                            <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">Cover Design <span class="text-sm text-gray-400 font-normal ml-2">書籍封面</span></h4>
+                            <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">Cover Design <span class="text-sm text-gray-400 font-normal ml-2"><span class="lang-zh">書籍封面</span><span class="lang-ja">書籍カバー</span></span></h4>
                             <div class="h-px bg-gray-300 flex-1"></div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-[300px] md:auto-rows-[400px]">
@@ -458,9 +479,9 @@
         <section id="page-design" class="page-section">
             <div class="container mx-auto px-6 max-w-6xl">
                 <!-- Section Header -->
-                <div class="mb-16 md:mb-20">
+                <div class="mb-16 md:mb-20 text-center">
                     <h2 class="text-5xl md:text-7xl font-serif italic text-gray-800 mb-4 tracking-tight">Design Tools</h2>
-                    <div class="h-1 w-20 bg-gray-300 rounded-full"></div>
+                    <div class="h-1 w-20 bg-gray-300 rounded-full mx-auto"></div>
                 </div>
                 
                 <!-- PS Tool -->
@@ -483,8 +504,9 @@
                                 <div>
                                     <div class="mb-6">
                                         <h4 class="text-3xl font-bold text-gray-800 mb-4 tracking-tight">Text Exporter Plugin</h4>
-                                        <p class="text-gray-600 leading-relaxed text-sm md:text-base">
-                                            使用 UXP Developer Tools 製作 Photoshop 增效模組，讓使用者可以一次獲取 PSD 內所有文字內容，方便整理翻譯給譯者，進行翻譯作業。
+                                        <p class="text-sm md:text-base text-gray-600 leading-relaxed">
+                                            <span class="lang-zh">使用 UXP Developer Tools 製作 Photoshop 增效模組，讓使用者可以一次獲取 PSD 內所有文字內容，方便整理翻譯給譯者，進行翻譯作業。</span>
+                                            <span class="lang-ja">UXP Developer Toolsを使用してPhotoshopプラグインを開発しました。PSD内の全テキストデータを一括取得でき、翻訳者への手配や翻訳作業を大幅に効率化します。</span>
                                         </p>
                                     </div>
                                     <div class="flex flex-wrap gap-2 mb-8">
@@ -515,8 +537,9 @@
                              <div class="grid md:grid-cols-12 gap-8 h-full">
                                 <div class="md:col-span-5 flex flex-col justify-center">
                                     <h4 class="text-3xl font-bold text-gray-800 mb-4 tracking-tight">Auto Localization</h4>
-                                    <p class="text-gray-600 leading-relaxed text-sm mb-6">
-                                        使用 JSX 一鍵替換 PSD 中的所有文字內容與字體樣式。此腳本專為多語言漫畫發行設計，能取代繁瑣的複製貼上作業，讓設計師直接進入設計微調作業。
+                                    <p class="text-sm md:text-base text-gray-600 leading-relaxed mb-6">
+                                        <span class="lang-zh">使用 JSX 一鍵替換 PSD 中的所有文字內容與字體樣式。此腳本專為多語言漫畫發行設計，能取代繁瑣的複製貼上作業，讓設計師直接進入設計微調作業。</span>
+                                        <span class="lang-ja">JSXを使用し、PSD内の全テキストとフォントスタイルをワンクリックで置換するスクリプトです。多言語コミックの出版向けに設計されており、面倒なコピペ作業を省くことで、デザイナーがすぐに微調整作業に取り掛かれるようにします。</span>
                                     </p>
                                     <div class="flex flex-wrap gap-2 mb-6">
                                         <span class="tag-pill"># JSX</span>
@@ -560,8 +583,9 @@
                         </div>
                         <div class="w-full md:w-1/2 space-y-6">
                             <h4 class="text-4xl font-bold text-gray-900 tracking-tight">Color Picker</h4>
-                            <p class="text-gray-600 text-lg leading-relaxed">
-                                提供一個顏色後，產出多個配色提案協助設計師配色。利用 Gemini 生成功能完整的色彩組合推薦器，並以此程式碼為基底，進行配色、 UI 介面與操作體驗的優化設計。
+                            <p class="text-sm md:text-base text-gray-600 leading-relaxed">
+                                <span class="lang-zh">提供一個顏色後，產出多個配色提案協助設計師配色。利用 Gemini 生成功能完整的色彩組合推薦器，並以此程式碼為基底，進行配色、 UI 介面與操作體驗的優化設計。</span>
+                                <span class="lang-ja">ベースカラーを1色指定するだけで、デザイナー向けの配色案を複数生成します。Geminiを活用して機能的なカラーパレット提案ツールを構築し、生成されたコードをベースに配色やUI/UXの最適化を行いました。</span>
                             </p>
                             <div class="flex flex-wrap gap-2 mt-4">
                                 <span class="tag-pill"># Gemini</span>
@@ -620,6 +644,30 @@
         // --- Navigation Logic ---
         function goToSection(id) {
             document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- Language Toggle Logic ---
+        let currentLang = 'zh';
+        function toggleLanguage() {
+            const body = document.body;
+            const zhText = document.getElementById('lang-zh-text');
+            const jaText = document.getElementById('lang-ja-text');
+            
+            if (currentLang === 'zh') {
+                body.classList.remove('lang-zh');
+                body.classList.add('lang-ja');
+                currentLang = 'ja';
+                zhText.classList.replace('opacity-100', 'opacity-40');
+                jaText.classList.replace('opacity-40', 'opacity-100');
+                document.documentElement.lang = 'ja';
+            } else {
+                body.classList.remove('lang-ja');
+                body.classList.add('lang-zh');
+                currentLang = 'zh';
+                zhText.classList.replace('opacity-40', 'opacity-100');
+                jaText.classList.replace('opacity-100', 'opacity-40');
+                document.documentElement.lang = 'zh-TW';
+            }
         }
 
         function updateNavState() {
