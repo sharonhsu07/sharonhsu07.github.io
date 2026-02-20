@@ -168,6 +168,7 @@
         <div class="nav-dot active" data-label="Home" onclick="goToSection('page-center')"></div>
         <div class="nav-dot" data-label="Creation" onclick="goToSection('page-creation')"></div>
         <div class="nav-dot" data-label="Design Tools" onclick="goToSection('page-design')"></div>
+        <div class="nav-dot" data-label="Workflow" onclick="goToSection('page-workflow')"></div>
     </div>
 
     <div class="fixed top-6 right-6 z-50 md:hidden">
@@ -252,7 +253,6 @@
 
                 <!-- Web Projects -->
                 <div id="create-web" class="mb-24">
-                     <!-- Added Web Title Here -->
                      <h3 class="text-3xl font-bold text-gray-800 mb-8 border-l-4 border-gray-800 pl-4">Web</h3>
 
                      <div class="flex gap-8 mb-8 border-b border-gray-200 pb-4">
@@ -299,7 +299,7 @@
                     </div>
                 </div>
 
-                <!-- Graphic & Motion Grid (Expanded Bento Style with Categories) -->
+                <!-- Graphic & Motion Grid -->
                 <div id="create-graphic">
                     <h3 class="text-3xl font-bold text-gray-800 mb-8 border-l-4 border-gray-800 pl-4">Motion & Graphic</h3>
                     
@@ -383,7 +383,7 @@
                         </div>
                     </div>
 
-                    <!-- 3. Game Banner Design 遊戲 Banner (Shorter rows for landscape display) -->
+                    <!-- 3. Game Banner Design 遊戲 Banner -->
                     <div class="mb-16">
                         <div class="flex items-center gap-4 mb-6">
                             <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">Game Promotion <span class="text-sm text-gray-400 font-normal ml-2">遊戲宣傳 Banner</span></h4>
@@ -425,7 +425,7 @@
                         </div>
                     </div>
 
-                    <!-- 4. Cover Design 書籍封面 (Higher rows for portrait display) -->
+                    <!-- 4. Cover Design 書籍封面 -->
                     <div class="mb-16">
                         <div class="flex items-center gap-4 mb-6">
                             <h4 class="text-xl font-bold text-gray-700 tracking-wide uppercase">Cover Design <span class="text-sm text-gray-400 font-normal ml-2">書籍封面</span></h4>
@@ -581,6 +581,34 @@
             </div>
         </section>
 
+        <!-- === AI WORKFLOW SECTION (Figma Embed) === -->
+        <section id="page-workflow" class="page-section">
+            <div class="container mx-auto px-6 max-w-6xl">
+                <!-- Section Header -->
+                <div class="mb-12 md:mb-16 text-center">
+                    <h2 class="text-5xl md:text-7xl font-serif italic text-gray-800 mb-4 tracking-tight">AI Workflow</h2>
+                    <div class="h-1 w-20 bg-gray-300 rounded-full mx-auto"></div>
+                    <p class="mt-6 text-gray-500 font-medium max-w-2xl mx-auto tracking-wide">
+                        The mindset and workflow tools behind my AI-assisted design process
+                    </p>
+                </div>
+
+                <!-- Figma Embed Container -->
+                <div class="glass-card p-2 md:p-4 rounded-[2rem] overflow-hidden group">
+                    <div class="relative w-full h-[500px] md:h-[650px] rounded-[1.5rem] overflow-hidden bg-[#E5E5E5] border border-white/50">
+                        <!-- Make the iframe responsive to fill the container 100% -->
+                        <iframe 
+                            style="border: none;" 
+                            width="100%" 
+                            height="100%" 
+                            src="https://embed.figma.com/board/oR6fWk4DweFLgAL3YjTpbq/My-AI-design-map?node-id=0-1&embed-host=share" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Footer -->
         <footer class="py-10 text-center text-gray-400 text-xs tracking-wider">
             <p>DESIGNED & DEVELOPED BY HSU</p>
@@ -595,8 +623,8 @@
         }
 
         function updateNavState() {
-            // Updated section order to reflect Creation coming before Design
-            const sections = ['page-center', 'page-creation', 'page-design'];
+            // Added 'page-workflow' to the sections array
+            const sections = ['page-center', 'page-creation', 'page-design', 'page-workflow'];
             const scrollY = window.scrollY + window.innerHeight * 0.4;
             
             let activeId = 'page-center';
