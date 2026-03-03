@@ -486,8 +486,9 @@
                             Photoshop
                         </h3>
                         <div class="flex p-1 bg-white/50 backdrop-blur rounded-full border border-gray-200">
+                            <!-- 已去除 Localization 的 hover 效果，並且讓它們的基礎結構統一 -->
                             <button onclick="switchTab('tool-ps', 0, this)" class="px-5 py-2 rounded-full text-sm font-semibold text-white bg-gray-800 shadow-sm transition-all">Text Exporter</button>
-                            <button onclick="switchTab('tool-ps', 1, this)" class="px-5 py-2 rounded-full text-sm font-semibold text-gray-500 hover:text-gray-800 transition-all">Localization</button>
+                            <button onclick="switchTab('tool-ps', 1, this)" class="px-5 py-2 rounded-full text-sm font-semibold text-gray-500 transition-all">Localization</button>
                         </div>
                     </div>
                     
@@ -722,15 +723,17 @@
                     }
                 });
             } else if (btn) {
-                // For Pill buttons
+                // For Pill buttons (Design Tools section)
                 const container = btn.parentElement;
                 const buttons = container.querySelectorAll('button');
+                
+                // 修復：正確移除與增加 shadow-sm 來統一兩個按鈕的外觀
                 buttons.forEach(b => {
-                    b.classList.remove('bg-gray-800', 'text-white');
+                    b.classList.remove('bg-gray-800', 'text-white', 'shadow-sm');
                     b.classList.add('text-gray-500');
                 });
                 btn.classList.remove('text-gray-500');
-                btn.classList.add('bg-gray-800', 'text-white');
+                btn.classList.add('bg-gray-800', 'text-white', 'shadow-sm');
             }
         }
 
