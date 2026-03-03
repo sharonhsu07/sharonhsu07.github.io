@@ -608,28 +608,43 @@
 
         /* --- 手機版調整 (Responsive) --- */
         @media (max-width: 900px) {
-            .hero-content {
-                flex-direction: column-reverse; /* 手機上圖片在文字上方 (或下方，看偏好) */
-                text-align: center;
-                padding-top: 40px;
+            .hero {
+                /* 改用 svh，並拿掉強制的 100vh 避免被內容過度拉長 */
+                min-height: 100svh; 
+                padding-top: 100px;
+                padding-bottom: 60px;
+                height: auto;
             }
 
             .hero-content {
                 flex-direction: column; /* 手機上：文字在上，圖片在下 */
                 text-align: center;
+                padding-top: 20px;
+                gap: 20px; /* 控制好固定的間距，不再亂分 */
             }
 
             .hero-text-group {
+                flex: unset; /* 取消 flex: 1，不強制填滿剩餘高度 */
                 text-align: center;
-                margin-bottom: 30px;
+                margin-bottom: 10px;
+                max-width: 100%;
             }
             
-            .hero h1 { font-size: 3.5rem; }
+            .hero-main-visual {
+                flex: unset; /* 取消 flex: 1 */
+                max-width: 80%;
+                width: 100%;
+                margin: 0 auto;
+            }
+            
+            .hero h1 { font-size: 3rem; }
+            .hero p { font-size: 1rem; padding: 10px 20px; }
+            
             .nav-menu { display: none; }
             .logo { flex-grow: 1; text-align: center; }
+            
             .access-info { grid-template-columns: 1fr; }
             .map-placeholder { height: 200px; }
-            .hero-main-visual { max-width: 80%; }
             
             .concept-box {
                 padding: 25px; /* 手機版內距縮小 */
