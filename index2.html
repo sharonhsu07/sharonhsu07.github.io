@@ -42,10 +42,14 @@
 
     <style>
         /* --- 全局基礎 --- */
-        html { scroll-behavior: smooth; }
+        html { 
+            scroll-behavior: smooth; 
+            overflow-x: hidden; /* 確保畫面不會左右滑動 */
+        }
         body {
             background-color: #f0f2f5;
             overflow-x: hidden;
+            width: 100%;
             color: #1a1a1a;
         }
 
@@ -113,7 +117,12 @@
         .orb-3 { width: 35vw; height: 35vw; background: #fef3c7; top: 40%; left: 40%; animation-delay: 4s; }
 
         /* --- 滾動區域 --- */
-        #app-slider { position: relative; z-index: 10; width: 100vw; }
+        #app-slider { 
+            position: relative; 
+            z-index: 10; 
+            width: 100%; /* 將 100vw 改為 100% 避免出現橫向滾動條 */
+            overflow-x: hidden;
+        }
         .page-section { min-height: 100vh; position: relative; padding-top: 6rem; padding-bottom: 6rem; }
 
         /* --- UI Elements --- */
@@ -221,7 +230,7 @@
                 <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto opacity-0 animate-[fadeInUpSmooth_1s_0.6s_forwards]">
                     
                     <!-- Creation Card -->
-                    <div onclick="goToSection('page-creation')" class="glass-card p-6 md:p-8 cursor-pointer group text-left relative overflow-hidden h-44 flex flex-col justify-between">
+                    <div onclick="goToSection('page-creation')" class="glass-card p-6 md:p-8 cursor-pointer group text-left relative overflow-hidden h-auto min-h-[11rem] flex flex-col justify-between gap-4">
                         <div>
                             <span class="text-xs font-bold text-gray-400 tracking-widest uppercase">01</span>
                             <h2 class="text-3xl font-bold text-gray-800 mt-2">Creation</h2>
@@ -233,7 +242,7 @@
                     </div>
 
                     <!-- Design Card -->
-                    <div onclick="goToSection('page-design')" class="glass-card p-6 md:p-8 cursor-pointer group text-left relative overflow-hidden h-44 flex flex-col justify-between">
+                    <div onclick="goToSection('page-design')" class="glass-card p-6 md:p-8 cursor-pointer group text-left relative overflow-hidden h-auto min-h-[11rem] flex flex-col justify-between gap-4">
                         <div>
                             <span class="text-xs font-bold text-gray-400 tracking-widest uppercase">02</span>
                             <h2 class="text-3xl font-bold text-gray-800 mt-2">Design Tools</h2>
@@ -275,15 +284,16 @@
                         <button onclick="switchTab('create-web', 1, this)" class="text-xl font-bold text-gray-400 hover:text-gray-600 transition-colors">Chiikawa Park</button>
                     </div>
 
-                    <div class="relative min-h-[500px]">
+                    <!-- 使用 Grid 取代 absolute inset-0 確保高度可以自適應 -->
+                    <div class="relative grid">
                         <!-- Eva Project -->
-                        <div class="slide-item absolute inset-0 transition-all duration-700 opacity-100 translate-x-0" data-index="0">
+                        <div class="slide-item col-start-1 row-start-1 transition-all duration-700 opacity-100 translate-x-0 z-10" data-index="0">
                             <div class="glass-card p-0 overflow-hidden flex flex-col md:flex-row h-full">
                                 <div class="md:w-3/5 bg-gray-800 min-h-[300px] bg-cover bg-center relative group" 
                                      style="background-image: url('eva/index_preview.jpg')">
                                      <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500"></div>
                                 </div>
-                                <div class="md:w-2/5 p-10 flex flex-col justify-center bg-white/40 backdrop-blur-md">
+                                <div class="md:w-2/5 p-6 md:p-10 flex flex-col justify-center bg-white/40 backdrop-blur-md">
                                     <h3 class="text-3xl font-bold text-gray-900 mb-4">Evangelion x niko and...</h3>
                                     <p class="text-sm md:text-base text-gray-600 leading-relaxed mb-6">
                                         <span class="lang-zh">提供 Gemini 預先設計好的參考圖，迅速完成切版和特效。</span>
@@ -299,11 +309,11 @@
                         </div>
                         
                         <!-- Chiikawa Project -->
-                        <div class="slide-item absolute inset-0 transition-all duration-700 opacity-0 translate-x-10 pointer-events-none" data-index="1">
+                        <div class="slide-item col-start-1 row-start-1 transition-all duration-700 opacity-0 translate-x-10 pointer-events-none" data-index="1">
                             <div class="glass-card p-0 overflow-hidden flex flex-col md:flex-row h-full">
                                 <div class="md:w-3/5 bg-pink-50 min-h-[300px] bg-cover bg-center" 
                                      style="background-image: url('chiikawa/index_preview.png')"></div>
-                                <div class="md:w-2/5 p-10 flex flex-col justify-center bg-white/40 backdrop-blur-md">
+                                <div class="md:w-2/5 p-6 md:p-10 flex flex-col justify-center bg-white/40 backdrop-blur-md">
                                     <h3 class="text-3xl font-bold text-gray-900 mb-4">Chiikawa park</h3>
                                     <p class="text-sm md:text-base text-gray-600 leading-relaxed mb-6">
                                         <span class="lang-zh">提供 Gemini IP 相關風格參考物，迅速製作出符合 IP 風格的前端網頁。</span>
@@ -337,7 +347,7 @@
                                     <video class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" autoplay muted loop playsinline>
                                         <source src="motion/suisei.mp4" type="video/mp4">
                                     </video>
-                                    <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
                                         <span class="tag-pill bg-white/90"># Gemini</span>
                                         <span class="tag-pill bg-white/90"># AE</span>
                                     </div>
@@ -350,7 +360,7 @@
                                     <video class="w-full h-full object-cover img-hover-zoom" autoplay muted loop playsinline>
                                         <source src="motion/lightbox.mp4" type="video/mp4">
                                     </video>
-                                    <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                    <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
                                         <span class="tag-pill bg-white/90"># Blender</span>
                                         <span class="tag-pill bg-white/90"># AE</span>
                                     </div>
@@ -358,13 +368,13 @@
                             </div>
 
                             <!-- Video: Surges (1x1) -->
-                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openVideoPopup(this, 'motion/surges.mp4')" data-tags="# Gemini, # AE">
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openVideoPopup(this, 'motion/surges.mp4')" data-tags="# Firefly, # AE">
                                  <div class="w-full h-full rounded-[1.5rem] overflow-hidden relative border border-white/50">
                                     <video class="w-full h-full object-cover img-hover-zoom" autoplay muted loop playsinline>
                                         <source src="motion/surges.mp4" type="video/mp4">
                                     </video>
-                                    <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                                        <span class="tag-pill bg-white/90"># Gemini</span>
+                                    <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
+                                        <span class="tag-pill bg-white/90"># Firefly</span>
                                         <span class="tag-pill bg-white/90"># AE</span>
                                     </div>
                                 </div>
@@ -382,7 +392,7 @@
                             <!-- Img: 3d-box-preview -->
                             <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Blender, # Unity">
                                 <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/3d-box-preview.jpg')"></div>
-                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
                                     <span class="tag-pill bg-white/90"># Blender</span>
                                     <span class="tag-pill bg-white/90"># Unity</span>
                                 </div>
@@ -390,14 +400,14 @@
                             <!-- Img: 1210 -->
                             <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Blender">
                                 <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/1210.png')"></div>
-                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
                                     <span class="tag-pill bg-white/90"># Blender</span>
                                 </div>
                             </div>
                             <!-- Img: 1216 -->
                             <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Blender">
                                 <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/1216.png')"></div>
-                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
                                     <span class="tag-pill bg-white/90"># Blender</span>
                                 </div>
                             </div>
@@ -412,35 +422,51 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-[200px]">
                             <!-- Img: fps1 -->
-                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Gemini">
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Firefly">
                                 <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/fps1.jpg')"></div>
-                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
                                     <span class="tag-pill bg-white/90"># Photoshop</span>
-                                    <span class="tag-pill bg-white/90"># Gemini</span>
+                                    <span class="tag-pill bg-white/90"># Firefly</span>
                                 </div>
                             </div>
                             <!-- Img: fps2 -->
-                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Gemini">
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Firefly">
                                 <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/fps2.jpg')"></div>
-                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
                                     <span class="tag-pill bg-white/90"># Photoshop</span>
-                                    <span class="tag-pill bg-white/90"># Gemini</span>
+                                    <span class="tag-pill bg-white/90"># Firefly</span>
                                 </div>
                             </div>
                             <!-- Img: rpg1 -->
-                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Gemini">
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Firefly">
                                 <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/rpg1.jpg')"></div>
-                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
                                     <span class="tag-pill bg-white/90"># Photoshop</span>
-                                    <span class="tag-pill bg-white/90"># Gemini</span>
+                                    <span class="tag-pill bg-white/90"># Firefly</span>
+                                </div>
+                            </div>
+                            <!-- Img: rpg4 -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Firefly">
+                                <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/rpg4.jpg')"></div>
+                                <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
+                                    <span class="tag-pill bg-white/90"># Photoshop</span>
+                                    <span class="tag-pill bg-white/90"># Firefly</span>
                                 </div>
                             </div>
                             <!-- Img: rpg2 -->
-                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Gemini">
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Firefly">
                                 <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/rpg2.jpg')"></div>
-                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
                                     <span class="tag-pill bg-white/90"># Photoshop</span>
-                                    <span class="tag-pill bg-white/90"># Gemini</span>
+                                    <span class="tag-pill bg-white/90"># Firefly</span>
+                                </div>
+                            </div>
+                            <!-- Img: rpg5 -->
+                            <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop, # Firefly">
+                                <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/rpg5.jpg')"></div>
+                                <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
+                                    <span class="tag-pill bg-white/90"># Photoshop</span>
+                                    <span class="tag-pill bg-white/90"># Firefly</span>
                                 </div>
                             </div>
                         </div>
@@ -456,14 +482,14 @@
                             <!-- Img: 2-1 -->
                             <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop">
                                 <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/2-1.png')"></div>
-                                <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
                                     <span class="tag-pill bg-white/90"># Photoshop</span>
                                 </div>
                             </div>
                             <!-- Img: 2-2 -->
                             <div class="glass-card p-2 group relative overflow-hidden cursor-pointer" onclick="openPopup(this)" data-tags="# Photoshop">
                                 <div class="w-full h-full rounded-[1.5rem] bg-gray-200 bg-cover bg-center img-hover-zoom border border-white/50" style="background-image: url('graphic/2-2.png')"></div>
-                                 <div class="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                 <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap gap-2">
                                     <span class="tag-pill bg-white/90"># Photoshop</span>
                                 </div>
                             </div>
@@ -492,14 +518,16 @@
                             Photoshop
                         </h3>
                         <div class="flex p-1 bg-white/50 backdrop-blur rounded-full border border-gray-200">
+                            <!-- 已去除 Localization 的 hover 效果，並且讓它們的基礎結構統一 -->
                             <button onclick="switchTab('tool-ps', 0, this)" class="px-5 py-2 rounded-full text-sm font-semibold text-white bg-gray-800 shadow-sm transition-all">Text Exporter</button>
-                            <button onclick="switchTab('tool-ps', 1, this)" class="px-5 py-2 rounded-full text-sm font-semibold text-gray-500 hover:text-gray-800 transition-all">Localization</button>
+                            <button onclick="switchTab('tool-ps', 1, this)" class="px-5 py-2 rounded-full text-sm font-semibold text-gray-500 transition-all">Localization</button>
                         </div>
                     </div>
                     
-                    <div class="glass-card p-1 min-h-[500px] relative overflow-hidden group">
+                    <!-- 同樣採用 Grid 架構取代絕對定位的高度限制 -->
+                    <div class="glass-card p-1 relative overflow-hidden group grid">
                         <!-- Tab Content 0: Exporter -->
-                        <div class="slide-item absolute inset-0 p-8 md:p-12 overflow-y-auto custom-scrollbar transition-all duration-500 opacity-100 translate-x-0" data-index="0">
+                        <div class="slide-item col-start-1 row-start-1 p-6 md:p-12 transition-all duration-500 opacity-100 translate-x-0 z-10" data-index="0">
                             <div class="grid md:grid-cols-2 gap-12 h-full items-center">
                                 <div>
                                     <div class="mb-6">
@@ -513,6 +541,7 @@
                                          <span class="tag-pill"># UXP</span>
                                          <span class="tag-pill"># JSX</span>
                                          <span class="tag-pill"># Automation</span>
+                                         <span class="tag-pill"># Gemini</span>
                                     </div>
                                     <div class="aspect-video rounded-2xl overflow-hidden shadow-lg border border-gray-100 relative group/video cursor-pointer" onclick="openVideoPopup(this, 'ps/TextExporter_preview.mp4')">
                                         <video class="w-full h-full object-cover" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()">
@@ -524,16 +553,16 @@
                                     </div>
                                 </div>
                                 <div class="h-full flex flex-col gap-4">
-                                    <div class="flex-1 bg-gray-100 rounded-2xl bg-cover bg-center shadow-inner border border-white/50 cursor-pointer hover:scale-[1.02] transition-transform duration-500"
+                                    <div class="w-full min-h-[250px] md:min-h-[300px] flex-1 bg-gray-100 rounded-2xl bg-cover bg-center shadow-inner border border-white/50 cursor-pointer hover:scale-[1.02] transition-transform duration-500"
                                          style="background-image: url('ps/ps2_preview.png')"
-                                         onclick="openPopup(this)" data-tags="# UI Design, # Plugin">
+                                         onclick="openPopup(this)" data-tags="">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Tab Content 1: Localization -->
-                        <div class="slide-item absolute inset-0 p-8 md:p-12 overflow-y-auto custom-scrollbar transition-all duration-500 opacity-0 translate-x-full pointer-events-none" data-index="1">
+                        <div class="slide-item col-start-1 row-start-1 p-6 md:p-12 transition-all duration-500 opacity-0 translate-x-full pointer-events-none" data-index="1">
                              <div class="grid md:grid-cols-12 gap-8 h-full">
                                 <div class="md:col-span-5 flex flex-col justify-center">
                                     <h4 class="text-3xl font-bold text-gray-800 mb-4 tracking-tight">Auto Localization</h4>
@@ -544,6 +573,7 @@
                                     <div class="flex flex-wrap gap-2 mb-6">
                                         <span class="tag-pill"># JSX</span>
                                         <span class="tag-pill"># Automation</span>
+                                        <span class="tag-pill"># Gemini</span>
                                     </div>
                                     <div class="bg-white/60 p-4 rounded-xl border border-gray-200 font-mono text-xs text-gray-500 mb-6 shadow-sm">
                                         <div class="flex items-center gap-2 mb-2 pb-2 border-b border-gray-200">
@@ -558,10 +588,10 @@
                                     </div>
                                 </div>
                                 <div class="md:col-span-7 grid grid-cols-2 gap-4">
-                                    <div class="bg-gray-200 rounded-xl bg-cover bg-center h-48 md:h-full cursor-pointer hover:shadow-xl transition-all duration-300" 
-                                         style="background-image: url('ps/ps1_jp.jpg')" onclick="openPopup(this)" data-tags="# Original"></div>
-                                    <div class="bg-gray-200 rounded-xl bg-cover bg-center h-48 md:h-full cursor-pointer hover:shadow-xl transition-all duration-300" 
-                                         style="background-image: url('ps/ps1_en.jpg')" onclick="openPopup(this)" data-tags="# Result"></div>
+                                    <div class="bg-gray-200 rounded-xl bg-cover bg-center h-48 md:h-full min-h-[250px] cursor-pointer hover:shadow-xl transition-all duration-300" 
+                                         style="background-image: url('ps/ps1_jp.jpg')" onclick="openPopup(this)" data-tags="Original"></div>
+                                    <div class="bg-gray-200 rounded-xl bg-cover bg-center h-48 md:h-full min-h-[250px] cursor-pointer hover:shadow-xl transition-all duration-300" 
+                                         style="background-image: url('ps/ps1_en.jpg')" onclick="openPopup(this)" data-tags="Result"></div>
                                 </div>
                              </div>
                         </div>
@@ -576,7 +606,7 @@
                             Web Tool
                         </h3>
                     </div>
-                    <div class="glass-card p-8 md:p-12 flex flex-col md:flex-row gap-10 items-center">
+                    <div class="glass-card p-6 md:p-12 flex flex-col md:flex-row gap-10 items-center">
                         <div class="w-full md:w-1/2 aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl shadow-gray-200 border-4 border-white transform hover:rotate-1 transition-transform duration-500 cursor-pointer"
                              onclick="openPopup(this)" style="background-image: url('colorpick/preview.jpg'); background-size: cover; background-position: center;"
                              data-tags="# Gemini, # UIUX Design">
@@ -591,7 +621,7 @@
                                 <span class="tag-pill"># Gemini</span>
                                 <span class="tag-pill"># UIUX Design</span>
                             </div>
-                            <div class="flex gap-4 pt-2">
+                            <div class="flex flex-wrap gap-4 pt-2">
                                 <a href="colorpick/color.html" target="_blank" class="btn-premium px-8 py-3 rounded-full font-bold text-sm tracking-wide">
                                     Launch App
                                 </a>
@@ -703,10 +733,12 @@
                     slide.style.opacity = '1';
                     slide.style.transform = 'translateX(0)';
                     slide.style.pointerEvents = 'auto';
+                    slide.classList.add('z-10');
                 } else {
                     slide.style.opacity = '0';
                     slide.style.transform = i < index ? 'translateX(-50px)' : 'translateX(50px)';
                     slide.style.pointerEvents = 'none';
+                    slide.classList.remove('z-10');
                 }
             });
 
@@ -723,15 +755,17 @@
                     }
                 });
             } else if (btn) {
-                // For Pill buttons
+                // For Pill buttons (Design Tools section)
                 const container = btn.parentElement;
                 const buttons = container.querySelectorAll('button');
+                
+                // 修復：正確移除與增加 shadow-sm 來統一兩個按鈕的外觀
                 buttons.forEach(b => {
-                    b.classList.remove('bg-gray-800', 'text-white');
+                    b.classList.remove('bg-gray-800', 'text-white', 'shadow-sm');
                     b.classList.add('text-gray-500');
                 });
                 btn.classList.remove('text-gray-500');
-                btn.classList.add('bg-gray-800', 'text-white');
+                btn.classList.add('bg-gray-800', 'text-white', 'shadow-sm');
             }
         }
 
