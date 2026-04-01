@@ -131,13 +131,7 @@
             transition: all 0.3s; cursor: pointer; position: relative;
         }
         .nav-dot.active { background: #1a1a1a; transform: scale(1.5); }
-        .nav-dot::after {
-            content: attr(data-label);
-            position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
-            opacity: 0; white-space: nowrap; font-size: 0.75rem; font-weight: 600; color: #64748b;
-            transition: all 0.3s; letter-spacing: 0.1em; text-transform: uppercase;
-        }
-        .nav-dot:hover::after { opacity: 1; left: 16px; }
+        /* 移除了原本的 .nav-dot::after 樣式，這樣就不會顯示被切掉的文字了 */
 
         /* --- 標題特效 --- */
         .hero-title {
